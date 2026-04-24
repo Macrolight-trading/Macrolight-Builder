@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crestwood Legal Group | Free Case Evaluation — You Pay Nothing Unless We Win</title>
+  <meta name="description" content="Injured? Get a free case evaluation in 60 seconds. Crestwood Legal Group has recovered over $750 million for clients. No fees unless we win your case.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #0B1D3A;
+      --navy-mid: #132E5B;
+      --navy-light: #1C4587;
+      --gold: #C9A84C;
+      --gold-light: #E8D48B;
+      --gold-pale: #FDF8EC;
+      --red: #C0392B;
+      --white: #FFFFFF;
+      --off-white: #F7F8FA;
+      --gray-100: #F1F3F5;
+      --gray-200: #E2E6EA;
+      --gray-400: #8E99A4;
+      --gray-600: #5A6474;
+      --gray-800: #2C3440;
+      --text: #1A1F26;
+      --shadow: 0 4px 24px rgba(11,29,58,0.08);
+      --shadow-lg: 0 12px 48px rgba(11,29,58,0.15);
+      --shadow-gold: 0 4px 20px rgba(201,168,76,0.3);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: 0.3s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 { font-family: 'DM Serif Display', serif; line-height: 1.2; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 0;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .top-bar strong { color: var(--gold); }
+    .top-bar a { color: var(--gold); font-weight: 600; }
+
+    /* ── Header ── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark {
+      width: 42px; height: 42px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      width: 18px; height: 18px;
+      border: 3px solid var(--gold);
+      border-radius: 50%;
+      position: absolute;
+    }
+    .logo-text { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--navy); }
+    .logo-text span { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-400); font-weight: 600; }
+    .header-phone {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    }
+    .header-phone svg { width: 20px; height: 20px; }
+    .header-phone small { display: block; font-size: 0.7rem; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1920&q=80&fit=crop') center/cover no-repeat;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(11,29,58,0.92) 0%, rgba(19,46,91,0.88) 50%, rgba(28,69,135,0.82) 100%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: 60px;
+      align-items: center;
+      padding: 80px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-text { color: var(--white); }
+    .hero-urgency {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(192,57,43,0.2);
+      border: 1px solid rgba(192,57,43,0.4);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #F5A6A0;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-urgency .pulse {
+      width: 8px; height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(192,57,43,0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(192,57,43,0); }
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 32px;
+      max-width: 520px;
+      line-height: 1.8;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .hero-stat .num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      color: var(--gold);
+    }
+    .hero-stat .lbl {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* ── Quiz Card ── */
+    .quiz-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .quiz-header {
+      background: var(--navy);
+      padding: 24px 32px;
+      text-align: center;
+      color: var(--white);
+    }
+    .quiz-header h2 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+    .quiz-header p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .quiz-progress {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+    }
+    .quiz-progress-bar {
+      height: 100%;
+      background: var(--gold);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .quiz-body {
+      padding: 32px;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+    }
+    .quiz-step { display: none; flex-direction: column; gap: 16px; flex: 1; }
+    .quiz-step.active { display: flex; }
+    .quiz-step h3 {
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .quiz-step p.hint {
+      font-size: 0.85rem;
+      color: var(--gray-400);
+      margin-bottom: 8px;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .quiz-option:hover {
+      border-color: var(--navy-light);
+      background: var(--off-white);
+    }
+    .quiz-option.selected {
+      border-color: var(--navy);
+      background: rgba(11,29,58,0.04);
+    }
+    .quiz-option .icon {
+      width: 40px; height: 40px;
+      background: var(--off-white);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .quiz-option.selected .icon {
+      background: var(--navy);
+      color: var(--white);
+    }
+    .quiz-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .quiz-form-grid .full { grid-column: span 2; }
+    .quiz-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      transition: border-color var(--transition);
+    }
+    .quiz-input:focus {
+      outline: none;
+      border-color: var(--navy);
+    }
+    .quiz-input::placeholder { color: var(--gray-400); }
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+    .quiz-back {
+      background: none; border: none;
+      color: var(--gray-400); font-size: 0.9rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .quiz-back:hover { color: var(--navy); }
+    .quiz-next, .quiz-submit {
+      padding: 14px 32px;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-gold);
+    }
+    .quiz-next:hover, .quiz-submit:hover {
+      background: #B8963E;
+      transform: translateY(-1px);
+    }
+    .quiz-next:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .quiz-trust {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 16px 32px;
+      background: var(--off-white);
+      font-size: 0.75rem;
+      color: var(--gray-400);
+    }
+    .quiz-trust svg { width: 14px; height: 14px; fill: var(--gray-400); }
+    .quiz-success {
+      display: none;
+      text-align: center;
+      padding: 48px 32px;
+    }
+    .quiz-success .checkmark {
+      width: 72px; height: 72px;
+      background: #27AE60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .quiz-success .checkmark svg { width: 36px; height: 36px; stroke: white; fill: none; stroke-width: 3; }
+    .quiz-success h3 { font-size: 1.5rem; color: var(--navy); margin-bottom: 8px; }
+    .quiz-success p { color: var(--gray-600); line-height: 1.7; }
+
+    /* ── Trust Bar ── */
+    .trust-bar {
+      background: var(--off-white);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 28px 0;
+    }
+    .trust-bar-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+    .trust-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .trust-icon.gold { background: var(--gold-pale); color: var(--gold); }
+    .trust-icon.navy { background: rgba(11,29,58,0.08); color: var(--navy); }
+    .trust-icon svg { width: 20px; height: 20px; }
+
+    /* ── Sections ── */
+    .section { padding: 100px 0; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray-600);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    /* ── Practice Areas ── */
+    .practice-areas { background: var(--white); }
+    .pa-header { text-align: center; margin-bottom: 60px; }
+    .pa-header .section-sub { margin: 0 auto; }
+    .pa-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .pa-card {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 280px;
+      cursor: pointer;
+    }
+    .pa-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .pa-card:hover img { transform: scale(1.06); }
+    .pa-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(transparent 30%, rgba(11,29,58,0.85));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      transition: background var(--transition);
+    }
+    .pa-card:hover .pa-card-overlay {
+      background: linear-gradient(transparent 10%, rgba(11,29,58,0.92));
+    }
+    .pa-card h3 {
+      color: var(--white);
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+    .pa-card p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+    }
+    .pa-card .pa-arrow {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .pa-card:hover .pa-arrow { opacity: 1; }
+    .pa-card .pa-arrow svg { width: 16px; height: 16px; stroke: white; fill: none; stroke-width: 2; }
+
+    /* ── Results ── */
+    .results { background: var(--navy); color: var(--white); }
+    .results-header { text-align: center; margin-bottom: 60px; }
+    .results-header .section-label { color: var(--gold); }
+    .results-header .section-title { color: var(--white); }
+    .results-header .section-sub { color: rgba(255,255,255,0.5); margin: 0 auto; }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .result-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .result-card:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-4px);
+    }
+    .result-amount {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .result-type {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .result-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+
+    /* ── How It Works ── */
+    .how-it-works { background: var(--off-white); }
+    .hiw-header { text-align: center; margin-bottom: 60px; }
+    .hiw-header .section-sub { margin: 0 auto; }
+    .hiw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+    .hiw-grid::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 16%;
+      right: 16%;
+      height: 2px;
+      background: var(--gray-200);
+      z-index: 0;
+    }
+    .hiw-step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hiw-num {
+      width: 80px; height: 80px;
+      background: var(--white);
+      border: 3px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin: 0 auto 20px;
+      box-shadow: var(--shadow);
+    }
+    .hiw-step h3 {
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .hiw-step p {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* ── Testimonials ── */
+    .testimonials { background: var(--white); }
+    .test-header { text-align: center; margin-bottom: 60px; }
+    .test-header .section-sub { margin: 0 auto; }
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .test-card {
+      background: var(--off-white);
+      border-radius: var(--radius);
+      padding: 36px;
+      border: 1px solid var(--gray-200);
+      transition: all var(--transition);
+    }
+    .test-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-4px);
+    }
+    .test-stars { display: flex; gap: 3px; margin-bottom: 16px; }
+    .test-stars svg { width: 16px; height: 16px; fill: var(--gold); }
+    .test-card blockquote {
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .test-result {
+      display: inline-block;
+      background: rgba(39,174,96,0.1);
+      color: #1E8449;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .test-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .test-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .test-name { font-weight: 600; font-size: 0.95rem; }
+    .test-case { font-size: 0.8rem; color: var(--gray-400); }
+
+    /* ── CTA Banner ── */
+    .cta-banner {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&q=80&fit=crop') center/cover no-repeat;
+      padding: 100px 24px;
+      text-align: center;
+      color: var(--white);
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(11,29,58,0.93), rgba(19,46,91,0.88));
+    }
+    .cta-banner .container { position: relative; z-index: 1; }
+    .cta-banner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 16px;
+    }
+    .cta-banner h2 em { font-style: normal; color: var(--gold); }
+    .cta-banner p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.8;
+    }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-gold {
+      padding: 18px 40px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-gold:hover {
+      background: #B8963E;
+      transform: translateY(-2px);
+    }
+    .btn-white-outline {
+      padding: 18px 40px;
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-white-outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--white);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.5);
+      padding: 60px 0 24px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand h3 {
+      color: var(--white);
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+    }
+    .footer-brand p { font-size: 0.9rem; line-height: 1.7; }
+    .footer-col h4 {
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a {
+      font-size: 0.9rem;
+      transition: color var(--transition);
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-disclaimer {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+
+    /* ── Sticky Mobile CTA ── */
+    .sticky-cta {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      z-index: 200;
+      background: var(--navy);
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+    }
+    .sticky-cta-inner {
+      display: flex;
+      gap: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .sticky-cta a {
+      flex: 1;
+      text-align: center;
+      padding: 14px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .sticky-cta .sticky-call {
+      background: var(--white);
+      color: var(--navy);
+    }
+    .sticky-cta .sticky-quiz {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    /* ── Animations ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-text { text-align: center; }
+      .hero-sub { margin: 0 auto 32px; }
+      .hero-stats { justify-content: center; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 70px 0; }
+      .hero { min-height: auto; }
+      .hero-inner { padding: 60px 16px; }
+      .hero-stats { flex-wrap: wrap; gap: 24px; }
+      .quiz-form-grid { grid-template-columns: 1fr; }
+      .quiz-form-grid .full { grid-column: span 1; }
+      .results-grid { grid-template-columns: 1fr; }
+      .hiw-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hiw-grid::before { display: none; }
+      .test-grid { grid-template-columns: 1fr; }
+      .pa-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .sticky-cta { display: block; }
+      footer { padding-bottom: 80px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <strong>Free Case Review</strong> — You Pay <strong>$0</strong> Unless We Win. <a href="#quiz">Start Now &rarr;</a>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-mark"></div>
+        <div class="logo-text">
+          Crestwood Legal
+          <span>Injury &amp; Accident Attorneys</span>
+        </div>
+      </a>
+      <a href="tel:6145550347" class="header-phone">
+        <div>
+          <small>Free 24/7 Consultation</small>
+          (614) 555-0347
+        </div>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero + Quiz -->
+  <section class="hero" id="quiz">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-urgency">
+          <span class="pulse"></span>
+          Limited time to file your claim
+        </div>
+        <h1>Injured? You Deserve <em>Justice &amp; Compensation.</em></h1>
+        <p class="hero-sub">Our attorneys have recovered over $750 million for people just like you. Find out what your case is worth in under 60 seconds — completely free, completely confidential.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="num">$750M+</div>
+            <div class="lbl">Recovered</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">15,000+</div>
+            <div class="lbl">Cases Won</div>
+          </div>
+          <div class="hero-stat">
+            <div class="num">98%</div>
+            <div class="lbl">Success Rate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Form -->
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-header">
+          <h2>Free Case Evaluation</h2>
+          <p>Find out what your case is worth</p>
+          <div class="quiz-progress"><div class="quiz-progress-bar" id="progressBar"></div></div>
+        </div>
+        <div class="quiz-body" id="quizBody">
+
+          <!-- Step 1: Case Type -->
+          <div class="quiz-step active" data-step="1">
+            <h3>What happened to you?</h3>
+            <p class="hint">Select the option that best describes your situation.</p>
+            <div class="quiz-option" data-value="auto" onclick="selectOption(this)">
+              <div class="icon">&#128663;</div>
+              <div>Car / Truck Accident</div>
+            </div>
+            <div class="quiz-option" data-value="slip" onclick="selectOption(this)">
+              <div class="icon">&#9888;&#65039;</div>
+              <div>Slip &amp; Fall Injury</div>
+            </div>
+            <div class="quiz-option" data-value="work" onclick="selectOption(this)">
+              <div class="icon">&#127959;</div>
+              <div>Workplace Injury</div>
+            </div>
+            <div class="quiz-option" data-value="medical" onclick="selectOption(this)">
+              <div class="icon">&#127973;</div>
+              <div>Medical Malpractice</div>
+            </div>
+            <div class="quiz-option" data-value="other" onclick="selectOption(this)">
+              <div class="icon">&#128221;</div>
+              <div>Other Injury / Not Sure</div>
+            </div>
+            <div class="quiz-nav">
+              <span></span>
+              <button class="quiz-next" disabled onclick="nextStep()">Continue &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Timing -->
+          <div class="quiz-step" data-step="2">
+            <h3>When did this happen?</h3>
+            <p class="hint">The timing matters for your claim's eligibility.</p>
+            <div class="quiz-option" data-value="days" onclick="selectOption(this)">
+              <div class="icon">&#128197;</div>
+              <div>Within the last 30 days</div>
+            </div>
+            <div class="quiz-option" data-value="months" onclick="selectOption(this)">
+              <div class="icon">&#128197;</div>
+              <div>1 &ndash; 6 months ago</div>
+            </div>
+            <div class="quiz-option" data-value="year" onclick="selectOption(this)">
+              <div class="icon">&#128197;</div>
+              <div>6 &ndash; 12 months ago</div>
+            </div>
+            <div class="quiz-option" data-value="over-year" onclick="selectOption(this)">
+              <div class="icon">&#128197;</div>
+              <div>Over a year ago</div>
+            </div>
+            <div class="quiz-nav">
+              <button class="quiz-back" onclick="prevStep()">&larr; Back</button>
+              <button class="quiz-next" disabled onclick="nextStep()">Continue &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Treatment -->
+          <div class="quiz-step" data-step="3">
+            <h3>Did you receive medical treatment?</h3>
+            <p class="hint">Medical records strengthen your case significantly.</p>
+            <div class="quiz-option" data-value="yes-er" onclick="selectOption(this)">
+              <div class="icon">&#128657;</div>
+              <div>Yes &mdash; Emergency Room</div>
+            </div>
+            <div class="quiz-option" data-value="yes-doc" onclick="selectOption(this)">
+              <div class="icon">&#129658;</div>
+              <div>Yes &mdash; Doctor / Urgent Care</div>
+            </div>
+            <div class="quiz-option" data-value="ongoing" onclick="selectOption(this)">
+              <div class="icon">&#127973;</div>
+              <div>Yes &mdash; Still in Treatment</div>
+            </div>
+            <div class="quiz-option" data-value="no" onclick="selectOption(this)">
+              <div class="icon">&#10060;</div>
+              <div>No, I haven't yet</div>
+            </div>
+            <div class="quiz-nav">
+              <button class="quiz-back" onclick="prevStep()">&larr; Back</button>
+              <button class="quiz-next" disabled onclick="nextStep()">Continue &rarr;</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Contact Info -->
+          <div class="quiz-step" data-step="4">
+            <h3>Almost done! How can we reach you?</h3>
+            <p class="hint">Your information is 100% confidential and protected by attorney-client privilege.</p>
+            <div class="quiz-form-grid">
+              <input class="quiz-input" type="text" placeholder="First Name *" required>
+              <input class="quiz-input" type="text" placeholder="Last Name *" required>
+              <input class="quiz-input" type="tel" placeholder="Phone Number *" required>
+              <input class="quiz-input" type="email" placeholder="Email Address *" required>
+              <textarea class="quiz-input full" rows="3" placeholder="Briefly describe what happened (optional)"></textarea>
+            </div>
+            <div class="quiz-nav">
+              <button class="quiz-back" onclick="prevStep()">&larr; Back</button>
+              <button class="quiz-submit" onclick="submitQuiz()">Get My Free Evaluation &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="quiz-success" id="quizSuccess">
+          <div class="checkmark"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3>We're Reviewing Your Case</h3>
+          <p>A member of our legal team will contact you within <strong>15 minutes</strong> during business hours. In the meantime, if this is urgent, call us directly at <a href="tel:6145550347" style="color:var(--gold); font-weight:700;">(614) 555-0347</a>.</p>
+        </div>
+
+        <div class="quiz-trust">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          256-bit encryption
+          <span style="color:var(--gray-200);">|</span>
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Attorney-client privilege
+          <span style="color:var(--gray-200);">|</span>
+          100% confidential
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Bar -->
+  <div class="trust-bar">
+    <div class="container">
+      <div class="trust-bar-inner">
+        <div class="trust-item">
+          <div class="trust-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          No Fees Unless We Win
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          24/7 Free Consultations
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          $750M+ Recovered
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          50+ Attorneys Nationwide
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice Areas -->
+  <section class="practice-areas section" id="practice-areas">
+    <div class="container">
+      <div class="pa-header fade-in">
+        <span class="section-label">Practice Areas</span>
+        <h2 class="section-title">We Fight For You</h2>
+        <p class="section-sub">Our experienced attorneys handle a wide range of personal injury and accident cases. If you've been wronged, we can help.</p>
+      </div>
+      <div class="pa-grid">
+        <div class="pa-card fade-in">
+          <img src="https://images.unsplash.com/photo-1449965408869-ecd309fba004?w=600&q=80&fit=crop" alt="Car accident on highway">
+          <div class="pa-card-overlay">
+            <h3>Auto Accidents</h3>
+            <p>Car, truck &amp; motorcycle crashes</p>
+            <div class="pa-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+        <div class="pa-card fade-in">
+          <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&q=80&fit=crop" alt="Hospital corridor for medical malpractice">
+          <div class="pa-card-overlay">
+            <h3>Medical Malpractice</h3>
+            <p>Surgical errors &amp; misdiagnosis</p>
+            <div class="pa-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+        <div class="pa-card fade-in">
+          <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80&fit=crop" alt="Construction site workplace injury">
+          <div class="pa-card-overlay">
+            <h3>Workplace Injuries</h3>
+            <p>Workers' comp &amp; third-party claims</p>
+            <div class="pa-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+        <div class="pa-card fade-in">
+          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80&fit=crop" alt="Wet floor sign for slip and fall">
+          <div class="pa-card-overlay">
+            <h3>Slip &amp; Fall</h3>
+            <p>Premises liability cases</p>
+            <div class="pa-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="results section">
+    <div class="container">
+      <div class="results-header fade-in">
+        <span class="section-label">Proven Results</span>
+        <h2 class="section-title">We've Won Millions for Our Clients</h2>
+        <p class="section-sub">Every number represents a real person whose life we helped rebuild. Here are some of our notable case results.</p>
+      </div>
+      <div class="results-grid fade-in">
+        <div class="result-card">
+          <div class="result-amount">$12.4M</div>
+          <div class="result-type">Trucking Accident</div>
+          <div class="result-desc">Multi-vehicle collision caused by fatigued commercial driver</div>
+        </div>
+        <div class="result-card">
+          <div class="result-amount">$8.7M</div>
+          <div class="result-type">Medical Malpractice</div>
+          <div class="result-desc">Delayed cancer diagnosis leading to advanced-stage treatment</div>
+        </div>
+        <div class="result-card">
+          <div class="result-amount">$5.2M</div>
+          <div class="result-type">Workplace Injury</div>
+          <div class="result-desc">Construction site fall due to inadequate safety equipment</div>
+        </div>
+        <div class="result-card">
+          <div class="result-amount">$3.1M</div>
+          <div class="result-type">Slip &amp; Fall</div>
+          <div class="result-desc">Spinal injury from unmarked hazard at commercial property</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works section">
+    <div class="container">
+      <div class="hiw-header fade-in">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">Three Simple Steps to Justice</h2>
+        <p class="section-sub">Getting the compensation you deserve shouldn't be complicated. We make it easy.</p>
+      </div>
+      <div class="hiw-grid fade-in">
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <h3>Tell Us Your Story</h3>
+          <p>Complete our 60-second case evaluation quiz or call us directly. It's free and confidential.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <h3>We Build Your Case</h3>
+          <p>Our legal team investigates, gathers evidence, and builds the strongest possible case on your behalf.</p>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <h3>You Get Paid</h3>
+          <p>We negotiate aggressively or go to trial. You pay nothing unless we win your case.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials section" id="reviews">
+    <div class="container">
+      <div class="test-header fade-in">
+        <span class="section-label">Client Testimonials</span>
+        <h2 class="section-title">Real Clients, Real Results</h2>
+        <p class="section-sub">Don't just take our word for it. Hear from people we've helped get the compensation they deserved.</p>
+      </div>
+      <div class="test-grid">
+        <div class="test-card fade-in">
+          <div class="test-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <span class="test-result">Settled &mdash; $1.2M</span>
+          <blockquote>"After my car accident, I didn't know where to turn. Crestwood handled everything — the insurance companies, the paperwork, the doctors. I just focused on healing. They got me more than I ever expected."</blockquote>
+          <div class="test-author">
+            <div class="test-avatar">RN</div>
+            <div>
+              <div class="test-name">R. Navarro</div>
+              <div class="test-case">Auto Accident &bull; Maplewood, OH</div>
+            </div>
+          </div>
+        </div>
+        <div class="test-card fade-in">
+          <div class="test-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <span class="test-result">Verdict &mdash; $3.8M</span>
+          <blockquote>"My employer said my injury wasn't their fault. Crestwood proved otherwise. They took my case to trial and won. I was able to afford the surgery I needed and support my family during recovery."</blockquote>
+          <div class="test-author">
+            <div class="test-avatar">TW</div>
+            <div>
+              <div class="test-name">T. Williams</div>
+              <div class="test-case">Workplace Injury &bull; Cedar Hills, OH</div>
+            </div>
+          </div>
+        </div>
+        <div class="test-card fade-in">
+          <div class="test-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <span class="test-result">Settled &mdash; $925K</span>
+          <blockquote>"I slipped on an icy walkway at a shopping center and broke my hip. The property owner denied responsibility. Crestwood fought for me and settled for nearly a million dollars. Life-changing."</blockquote>
+          <div class="test-author">
+            <div class="test-avatar">PG</div>
+            <div>
+              <div class="test-name">P. Gonzalez</div>
+              <div class="test-case">Slip &amp; Fall &bull; Oakdale, OH</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Your Case Evaluation is <em>100% Free.</em></h2>
+      <p>Every minute you wait could affect your case. Statutes of limitations apply. Get your free evaluation now — there's zero risk and zero obligation.</p>
+      <div class="cta-buttons">
+        <a href="#quiz" class="btn-gold">Start Free Case Review &rarr;</a>
+        <a href="tel:6145550347" class="btn-white-outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Call (614) 555-0347
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Crestwood Legal Group</h3>
+          <p>Fighting for the rights of injured people since 2002. We've recovered over $750 million for our clients and we don't stop until justice is served.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Practice Areas</h4>
+          <ul>
+            <li><a href="#practice-areas">Auto Accidents</a></li>
+            <li><a href="#practice-areas">Medical Malpractice</a></li>
+            <li><a href="#practice-areas">Workplace Injuries</a></li>
+            <li><a href="#practice-areas">Slip &amp; Fall</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Firm</h4>
+          <ul>
+            <li><a href="#reviews">Client Reviews</a></li>
+            <li><a href="#quiz">Free Case Review</a></li>
+            <li><a href="#">Our Attorneys</a></li>
+            <li><a href="#">Office Locations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:6145550347">(614) 555-0347</a></li>
+            <li>200 Crestwood Blvd, Ste 400</li>
+            <li>Maplewood, OH 43050</li>
+            <li>Available 24/7</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Crestwood Legal Group. All rights reserved.</span>
+        <span>Serving clients across Ohio</span>
+      </div>
+      <p class="footer-disclaimer">Disclaimer: This is a sample/demo website for a fictional law firm. The information on this site is not legal advice. Every case is different. Past results do not guarantee future outcomes. This site is for demonstration purposes only.</p>
+    </div>
+  </footer>
+
+  <!-- Sticky Mobile CTA -->
+  <div class="sticky-cta">
+    <div class="sticky-cta-inner">
+      <a href="tel:6145550347" class="sticky-call">&#9742; Call Now</a>
+      <a href="#quiz" class="sticky-quiz">Free Case Review</a>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    function selectOption(el) {
+      const step = el.closest('.quiz-step');
+      step.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      step.querySelector('.quiz-next').disabled = false;
+    }
+
+    function nextStep() {
+      const steps = document.querySelectorAll('.quiz-step');
+      if (currentStep >= totalSteps) return;
+      steps[currentStep - 1].classList.remove('active');
+      currentStep++;
+      steps[currentStep - 1].classList.add('active');
+      updateProgress();
+    }
+
+    function prevStep() {
+      const steps = document.querySelectorAll('.quiz-step');
+      if (currentStep <= 1) return;
+      steps[currentStep - 1].classList.remove('active');
+      currentStep--;
+      steps[currentStep - 1].classList.add('active');
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    function submitQuiz() {
+      document.getElementById('quizBody').style.display = 'none';
+      document.getElementById('quizSuccess').style.display = 'block';
+      document.getElementById('progressBar').style.width = '100%';
+    }
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Auto-advance on option click (after brief delay)
+    document.querySelectorAll('.quiz-step[data-step="1"] .quiz-option, .quiz-step[data-step="2"] .quiz-option, .quiz-step[data-step="3"] .quiz-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        setTimeout(() => nextStep(), 400);
+      });
+    });
+  </script>
+</body>
+</html>
