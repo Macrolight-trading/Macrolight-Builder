@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import HeroPhotoCarousel from "./HeroPhotoCarousel";
 
 const MARQUEE_ITEMS = [
   "Conversion-Optimized Design",
@@ -41,7 +42,7 @@ export default function Hero() {
     <section className="relative overflow-hidden bg-white">
       {/* ── Main split layout ── */}
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 min-h-[calc(100vh-64px)] items-center py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 lg:min-h-[calc(100vh-64px)] items-center py-16 lg:py-20">
 
           {/* ── Left: Text ── */}
           <div className="flex flex-col justify-center">
@@ -154,7 +155,12 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right: Photo collage ── */}
+          {/* ── Mobile: Photo carousel (shown below text, hidden on desktop) ── */}
+          <div className="lg:hidden -mt-4 pb-2">
+            <HeroPhotoCarousel />
+          </div>
+
+          {/* ── Right: Photo collage (desktop only) ── */}
           <div className="hidden lg:flex flex-col gap-4 h-full items-stretch animate-fade-in" style={{ animationDelay: "0.2s" }}>
 
             {/* Top: large hero image */}
