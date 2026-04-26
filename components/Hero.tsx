@@ -17,22 +17,22 @@ const MARQUEE_ITEMS = [
 // Photo collage — real businesses benefiting from great websites
 const COLLAGE = [
   {
-    src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=80&fit=crop",
-    alt: "Business owner reviewing website results with their team",
+    src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&fit=crop",
+    alt: "Thriving restaurant dining room with warm lighting",
+    label: "Restaurant · Cleveland, OH",
+    stat: "4.9★ client rating",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1632759145351-1d592919f522?w=600&q=80&fit=crop",
+    alt: "Roofer installing shingles on a residential roof",
     label: "Roofing · Columbus, OH",
     stat: "+340% more leads",
   },
   {
-    src: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80&fit=crop&crop=center",
-    alt: "Roofing contractor on the job",
+    src: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop&crop=center",
+    alt: "HVAC technician working on an air conditioning system",
     label: "HVAC · Cincinnati, OH",
     stat: "21 days to launch",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80&fit=crop",
-    alt: "Thriving restaurant dining room",
-    label: "Restaurant · Cleveland, OH",
-    stat: "4.9★ client rating",
   },
 ];
 

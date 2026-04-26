@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Section from "./Section";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const SLIDE_INTERVAL = 5000;
 
@@ -278,7 +278,7 @@ function HVACSlide() {
         </div>
 
         {/* Right: photo + overlays */}
-        <div style={{ flex: 1, backgroundImage: "url('https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=900&q=80&fit=crop')", backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
+        <div style={{ flex: 1, backgroundImage: "url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=900&q=80&fit=crop')", backgroundSize: "cover", backgroundPosition: "center", position: "relative" }}>
           {/* Gradient blend */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #0f4f90 0%, transparent 25%)" }} />
           {/* Rating card */}
@@ -405,6 +405,12 @@ export default function SamplePreviews() {
   const [paused, setPaused] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
 
+  // Touch / swipe state
+  const touchStartXRef = useRef<number | null>(null);
+  const [dragDelta, setDragDelta] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const swipedRef = useRef(false);
+
   const goTo = useCallback((index: number) => {
     setCurrent(index);
     setProgressKey((k) => k + 1);
@@ -418,6 +424,36 @@ export default function SamplePreviews() {
     const id = setTimeout(next, SLIDE_INTERVAL);
     return () => clearTimeout(id);
   }, [paused, current, next]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    setDragDelta(0);
+    setIsDragging(true);
+    swipedRef.current = false;
+    setPaused(true);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const delta = e.touches[0].clientX - touchStartXRef.current;
+    setDragDelta(delta);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    setDragDelta((delta) => {
+      if (delta < -50) {
+        swipedRef.current = true;
+        setTimeout(next, 0);
+      } else if (delta > 50) {
+        swipedRef.current = true;
+        setTimeout(prev, 0);
+      }
+      return 0;
+    });
+    touchStartXRef.current = null;
+    setIsDragging(false);
+    setPaused(false);
+  }, [next, prev]);
 
   const slide = SLIDES[current];
 
@@ -470,11 +506,16 @@ export default function SamplePreviews() {
 
           {/* Sliding track */}
           <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             style={{
               display: "flex",
-              transform: `translateX(-${current * 100}%)`,
-              transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+              transform: `translateX(calc(-${current * 100}% + ${dragDelta}px))`,
+              transition: isDragging ? "none" : "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
               willChange: "transform",
+              userSelect: "none",
+              touchAction: "pan-y",
             }}
           >
             {SLIDES.map((s, i) => {
@@ -486,6 +527,7 @@ export default function SamplePreviews() {
                     className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-inset"
                     aria-label={`View ${s.siteName} preview`}
                     tabIndex={i === current ? 0 : -1}
+                    onClick={(e) => { if (swipedRef.current) e.preventDefault(); }}
                   >
                     {/* Browser chrome */}
                     <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50 px-3 py-2">
@@ -527,10 +569,10 @@ export default function SamplePreviews() {
         {/* Prev arrow */}
         <button
           onClick={prev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-gray-200 text-gray-600 hover:text-violet-600 hover:border-violet-300 transition-all duration-200"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-gray-200 text-gray-600 hover:text-violet-600 hover:border-violet-300 transition-all duration-200"
           aria-label="Previous slide"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5" aria-hidden>
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden>
             <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
         </button>
@@ -538,10 +580,10 @@ export default function SamplePreviews() {
         {/* Next arrow */}
         <button
           onClick={next}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-gray-200 text-gray-600 hover:text-violet-600 hover:border-violet-300 transition-all duration-200"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-gray-200 text-gray-600 hover:text-violet-600 hover:border-violet-300 transition-all duration-200"
           aria-label="Next slide"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5" aria-hidden>
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden>
             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
           </svg>
         </button>

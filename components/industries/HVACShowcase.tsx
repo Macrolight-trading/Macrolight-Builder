@@ -62,7 +62,7 @@ const SERVICES = [
 
 const GALLERY = [
   { bg: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=900&q=80&fit=crop", label: "Full System Replacement", span2: true },
-  { bg: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80&fit=crop", label: "AC Unit Installation" },
+  { bg: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80&fit=crop", label: "AC Unit Installation" },
   { bg: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80&fit=crop", label: "Smart Home Integration" },
   { bg: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&fit=crop", label: "New Construction" },
   { bg: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80&fit=crop", label: "Commercial Rooftop Unit" },
@@ -271,7 +271,7 @@ export default function HVACShowcase({ industry: _industry }: { industry: Indust
               <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop" alt="HVAC technician" style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", borderRadius: 12 }} />
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&fit=crop" alt="Comfortable home" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 12 }} />
-                <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80&fit=crop" alt="AC unit" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 12 }} />
+                <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80&fit=crop" alt="AC unit" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", borderRadius: 12 }} />
               </div>
               {/* Floating badge */}
               <div style={{ position: "absolute", bottom: -16, left: "50%", transform: "translateX(-50%)", background: C.orange, color: C.white, borderRadius: 10, padding: "14px 24px", textAlign: "center", boxShadow: "0 8px 24px rgba(232,93,4,0.3)", whiteSpace: "nowrap" }}>
