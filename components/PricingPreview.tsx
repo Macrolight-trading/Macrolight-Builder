@@ -1,21 +1,30 @@
-import Button from "./Button";
+import Link from "next/link";
 import PricingCard from "./PricingCard";
 import Section from "./Section";
 import { pricingTiers } from "@/lib/pricing";
 
 export default function PricingPreview() {
   return (
-    <Section id="pricing" padding="xl" className="border-t border-white/5">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400">
+    <Section id="pricing" padding="xl" className="bg-gray-50 border-t border-gray-100">
+      <div className="flex items-center justify-between border-b border-gray-200 pb-5 mb-16">
+        <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
           Pricing
-        </p>
-        <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white">
-          Transparent pricing. Predictable results.
+        </span>
+        <span className="text-xs text-gray-300 uppercase tracking-widest hidden sm:block">
+          No hidden fees · No annual contracts
+        </span>
+      </div>
+
+      <div className="mb-12 max-w-2xl">
+        <h2
+          className="font-display font-bold tracking-tight text-gray-900 leading-[1.1]"
+          style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)" }}
+        >
+          Transparent pricing.<br />
+          <em className="not-italic text-violet-600">Predictable results.</em>
         </h2>
-        <p className="mt-4 text-lg text-white/60">
-          One build fee. One monthly subscription. Everything included — no
-          hidden charges, no annual contracts.
+        <p className="mt-4 text-base text-gray-500 leading-relaxed">
+          One build fee. One monthly subscription. Everything included.
         </p>
       </div>
 
@@ -25,24 +34,13 @@ export default function PricingPreview() {
         ))}
       </div>
 
-      <div className="mt-10 flex justify-center">
-        <Button href="/pricing" variant="ghost" size="md">
-          Compare all features
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="h-4 w-4"
-            aria-hidden
-          >
-            <path
-              d="M5 12h14M13 5l7 7-7 7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Button>
+      <div className="mt-10 flex justify-start">
+        <Link
+          href="/pricing"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 hover:text-violet-800 transition-colors"
+        >
+          Compare all features →
+        </Link>
       </div>
     </Section>
   );

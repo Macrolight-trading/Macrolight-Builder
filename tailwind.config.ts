@@ -19,13 +19,19 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
-          "Inter",
+          "Plus Jakarta Sans",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
           "Segoe UI",
           "Roboto",
           "sans-serif",
+        ],
+        display: [
+          "Playfair Display",
+          "Georgia",
+          "ui-serif",
+          "serif",
         ],
       },
       boxShadow: {

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bright Smile Dental – Family & Cosmetic Dentistry</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #00897b;
+      --teal-dk: #00574f;
+      --teal-lt: #e0f5f3;
+      --accent:  #ff6b35;
+      --gray:    #4a4a4a;
+      --light:   #f8fbfc;
+      --white:   #ffffff;
+      --radius:  10px;
+    }
+
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: var(--gray); background: var(--white); }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 68px;
+      background: var(--white); position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--teal-dk); }
+    .logo span { color: var(--teal); }
+    nav ul { list-style: none; display: flex; gap: 28px; }
+    nav ul a { color: var(--gray); text-decoration: none; font-size: .95rem; transition: color .2s; }
+    nav ul a:hover { color: var(--teal); }
+    .nav-cta {
+      background: var(--accent); color: var(--white) !important;
+      padding: 9px 22px; border-radius: 6px; font-weight: 700;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: #e05520 !important; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--teal-dk) 0%, var(--teal) 55%, #4db6ac 100%);
+      color: var(--white); padding: 90px 5% 80px;
+      display: flex; align-items: center; gap: 60px; min-height: 500px;
+    }
+    .hero-text { flex: 1; }
+    .hero-text h1 { font-size: 3rem; line-height: 1.15; margin-bottom: 18px; }
+    .hero-text h1 em { font-style: normal; color: #b2ebf2; }
+    .hero-text p { font-size: 1.1rem; opacity: .9; max-width: 480px; margin-bottom: 36px; line-height: 1.75; }
+    .btn-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: var(--white);
+      padding: 14px 32px; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      text-decoration: none; transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: #e05520; transform: translateY(-2px); }
+    .btn-outline {
+      border: 2px solid rgba(255,255,255,.7); color: var(--white);
+      padding: 14px 32px; border-radius: 8px; font-size: 1rem; font-weight: 600;
+      text-decoration: none; transition: background .2s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.15); }
+    .hero-img-box {
+      flex: 0 0 300px; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25); border-radius: 16px;
+      padding: 40px 32px; text-align: center;
+    }
+    .hero-img-box .big-icon { font-size: 5rem; line-height: 1; }
+    .hero-img-box p { font-size: 1rem; opacity: .85; margin-top: 16px; line-height: 1.5; }
+    .hero-img-box strong { font-size: 1.3rem; color: #b2ebf2; }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--teal-lt); padding: 16px 5%;
+      display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+    }
+    .trust-item { display: flex; align-items: center; gap: 9px; font-weight: 600; color: var(--teal-dk); font-size: .9rem; }
+    .trust-icon { font-size: 1.3rem; }
+
+    /* ── SECTION SHELL ── */
+    section { padding: 80px 5%; }
+    .section-label { text-transform: uppercase; letter-spacing: 2px; font-size: .78rem; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+    h2 { font-size: 2.1rem; color: #1a2e2c; margin-bottom: 14px; }
+    .section-intro { max-width: 560px; font-size: 1.05rem; line-height: 1.8; color: #666; margin-bottom: 48px; }
+
+    /* ── SERVICES ── */
+    .services { background: var(--white); }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .card {
+      background: var(--light); border-radius: var(--radius);
+      padding: 28px 24px; border: 1px solid #d4ecea;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(0,137,123,.12); }
+    .card-icon { font-size: 2.2rem; margin-bottom: 14px; }
+    .card h3 { font-size: 1.1rem; color: #1a2e2c; margin-bottom: 8px; }
+    .card p { font-size: .9rem; line-height: 1.7; color: #666; }
+
+    /* ── MEET THE DOCTOR ── */
+    .doctor { background: var(--light); }
+    .doctor-wrap { display: grid; grid-template-columns: auto 1fr; gap: 60px; align-items: start; }
+    .doctor-avatar {
+      width: 200px; height: 200px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), #80cbc4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; flex-shrink: 0;
+      box-shadow: 0 8px 24px rgba(0,137,123,.25);
+    }
+    .doctor-info h3 { font-size: 1.5rem; color: #1a2e2c; margin-bottom: 6px; }
+    .doctor-info .title { color: var(--teal); font-weight: 600; margin-bottom: 18px; font-size: .95rem; }
+    .doctor-info p { line-height: 1.8; color: #666; margin-bottom: 14px; }
+    .credential-list { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .credential-list li {
+      background: var(--teal-lt); color: var(--teal-dk); padding: 5px 14px;
+      border-radius: 20px; font-size: .85rem; font-weight: 600;
+    }
+
+    /* ── STATS ── */
+    .stats { background: var(--teal-dk); color: var(--white); text-align: center; }
+    .stats h2 { color: var(--white); }
+    .stats .section-intro { color: rgba(255,255,255,.75); margin: 0 auto 48px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 32px; }
+    .stat-item .num { font-size: 3rem; font-weight: 800; color: #b2ebf2; }
+    .stat-item .desc { font-size: .95rem; opacity: .8; margin-top: 6px; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--white); }
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .testi-card {
+      background: var(--light); border-radius: var(--radius);
+      padding: 28px; border-top: 4px solid var(--teal);
+    }
+    .stars { color: #f5a623; font-size: 1.1rem; margin-bottom: 14px; }
+    .testi-card blockquote { font-style: italic; font-size: .95rem; line-height: 1.75; color: #555; margin-bottom: 16px; }
+    .testi-author { font-weight: 700; color: #1a2e2c; font-size: .88rem; }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(90deg, var(--accent) 0%, #ff9a5c 100%);
+      color: var(--white); text-align: center; padding: 70px 5%;
+    }
+    .cta-band h2 { color: var(--white); font-size: 2rem; margin-bottom: 12px; }
+    .cta-band p { opacity: .9; font-size: 1.05rem; margin-bottom: 34px; }
+    .btn-white {
+      background: var(--white); color: var(--accent);
+      padding: 16px 42px; border-radius: 8px; font-size: 1rem; font-weight: 800;
+      text-decoration: none; display: inline-block; transition: transform .15s, box-shadow .15s;
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.2); }
+
+    /* ── APPOINTMENT ── */
+    .appointment { background: var(--light); }
+    .appt-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+    .appt-info h3 { font-size: 1.3rem; color: #1a2e2c; margin-bottom: 20px; }
+    .appt-info p { line-height: 1.8; color: #666; margin-bottom: 12px; }
+    .appt-info strong { color: var(--teal-dk); }
+    .appt-info .insurance-logos {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;
+    }
+    .ins-badge {
+      background: var(--white); border: 1px solid #c8e6e3; border-radius: 6px;
+      padding: 6px 14px; font-size: .82rem; font-weight: 600; color: var(--teal-dk);
+    }
+    .appt-form { display: flex; flex-direction: column; gap: 14px; }
+    .appt-form input, .appt-form select, .appt-form textarea {
+      padding: 12px 16px; border: 1px solid #c8e6e3; border-radius: 8px;
+      font-size: .95rem; color: var(--gray); outline: none;
+      transition: border-color .2s;
+    }
+    .appt-form input:focus, .appt-form select:focus { border-color: var(--teal); }
+    .appt-form button {
+      background: var(--teal); color: var(--white); border: none;
+      padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .appt-form button:hover { background: var(--teal-dk); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0d2423; color: rgba(255,255,255,.55);
+      padding: 36px 5%; text-align: center; font-size: .88rem;
+    }
+    footer a { color: #80cbc4; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .hero { flex-direction: column; padding: 60px 5%; }
+      .hero-text h1 { font-size: 2.1rem; }
+      .hero-img-box { width: 100%; }
+      nav ul { display: none; }
+      .doctor-wrap, .appt-wrap { grid-template-columns: 1fr; }
+      .doctor-avatar { margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Bright<span>Smile</span> Dental</div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#doctor">Our Team</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#appointment">Contact</a></li>
+    <li><a href="#appointment" class="nav-cta">Book Appointment</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>A Healthier Smile <em>Starts Here</em></h1>
+    <p>BrightSmile Dental offers gentle, modern dental care for the whole family — from routine cleanings to complete smile makeovers.</p>
+    <div class="btn-group">
+      <a href="#appointment" class="btn-primary">Book an Appointment</a>
+      <a href="tel:+15559876543" class="btn-outline">📞 (555) 987-6543</a>
+    </div>
+  </div>
+  <div class="hero-img-box">
+    <div class="big-icon">🦷</div>
+    <p>New Patient Special<br><strong>$99 Exam &amp; X-Rays</strong><br><small style="opacity:.75">Reg. $265 · Most insurances accepted</small></p>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">✅</span> Board-Certified Dentists</div>
+  <div class="trust-item"><span class="trust-icon">⭐</span> 4.9-Star Rated</div>
+  <div class="trust-item"><span class="trust-icon">👨‍👩‍👧</span> All Ages Welcome</div>
+  <div class="trust-item"><span class="trust-icon">🏥</span> Most Insurance Accepted</div>
+  <div class="trust-item"><span class="trust-icon">📅</span> Same-Day Appointments</div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">Our Services</div>
+  <h2>Complete Dental Care Under One Roof</h2>
+  <p class="section-intro">From first checkup to advanced cosmetic work, we provide everything your smile needs in a warm, anxiety-free environment.</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🪥</div>
+      <h3>Cleanings &amp; Exams</h3>
+      <p>Routine checkups, professional cleanings, and digital X-rays to keep your teeth and gums healthy for life.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">✨</div>
+      <h3>Teeth Whitening</h3>
+      <p>In-office Zoom! whitening or take-home trays — get a shade brighter in just one visit.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🦷</div>
+      <h3>Dental Implants</h3>
+      <p>Permanent, natural-looking tooth replacements that restore function and confidence.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">😁</div>
+      <h3>Invisalign®</h3>
+      <p>Clear aligner therapy to straighten your teeth discreetly — no metal brackets or wires.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h3>Crowns &amp; Veneers</h3>
+      <p>Porcelain crowns and custom veneers that blend seamlessly with your natural smile.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">👶</div>
+      <h3>Pediatric Dentistry</h3>
+      <p>Kid-friendly care that makes dental visits fun and teaches lifelong healthy habits from an early age.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MEET THE DOCTOR -->
+<section class="doctor" id="doctor">
+  <div class="section-label">Our Team</div>
+  <h2>Meet Dr. Sarah Chen, DDS</h2>
+  <div class="doctor-wrap">
+    <div class="doctor-avatar">👩‍⚕️</div>
+    <div class="doctor-info">
+      <h3>Dr. Sarah Chen, DDS, FAGD</h3>
+      <div class="title">Lead Dentist &amp; Founder · BrightSmile Dental</div>
+      <p>Dr. Chen graduated with honors from the University of California School of Dentistry and has been serving patients for over 15 years. She is passionate about creating a relaxed, judgement-free environment where patients of all ages feel at ease.</p>
+      <p>Her areas of special interest include cosmetic smile design, anxiety-free dentistry, and advanced implant restoration. Dr. Chen regularly attends continuing education courses to bring the latest techniques to her patients.</p>
+      <ul class="credential-list">
+        <li>DDS – UC San Francisco</li>
+        <li>Fellow, AGD</li>
+        <li>Invisalign Certified</li>
+        <li>Zoom! Whitening Provider</li>
+        <li>Implant Restoration</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="section-label" style="color:#80cbc4">By The Numbers</div>
+  <h2>Trusted by Thousands of Patients</h2>
+  <p class="section-intro">Over 15 years of creating healthy, confident smiles in our community.</p>
+  <div class="stats-grid">
+    <div class="stat-item"><div class="num">8,400+</div><div class="desc">Happy Patients</div></div>
+    <div class="stat-item"><div class="num">15 yrs</div><div class="desc">In Practice</div></div>
+    <div class="stat-item"><div class="num">4.9 ★</div><div class="desc">Google &amp; Yelp Rating</div></div>
+    <div class="stat-item"><div class="num">98%</div><div class="desc">Patient Retention Rate</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="section-label">Patient Reviews</div>
+  <h2>What Our Patients Are Saying</h2>
+  <p class="section-intro">We let our patients do the talking.</p>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"I used to have terrible dental anxiety but Dr. Chen and her team made me feel completely comfortable. Best dental experience I've ever had. I actually look forward to my checkups now!"</blockquote>
+      <div class="testi-author">— Marcus T., Patient since 2019</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Got Invisalign here and my smile transformed in under a year. The whole process was smooth, the staff always made time to answer my questions, and the results are stunning."</blockquote>
+      <div class="testi-author">— Priya N., Invisalign Patient</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Brought my kids (ages 5 and 8) and they both loved it. The office is bright and welcoming, and Dr. Chen was incredible with them. So glad we found BrightSmile!"</blockquote>
+      <div class="testi-author">— Ashley W., Parent</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Your Best Smile is One Appointment Away</h2>
+  <p>New patients receive a comprehensive exam, X-rays, and cleaning consultation for just $99.</p>
+  <a href="#appointment" class="btn-white">Claim My New Patient Special</a>
+</div>
+
+<!-- APPOINTMENT -->
+<section class="appointment" id="appointment">
+  <div class="section-label">Schedule a Visit</div>
+  <h2>Book Your Appointment</h2>
+  <div class="appt-wrap">
+    <div class="appt-info">
+      <h3>Office Information</h3>
+      <p><strong>Phone:</strong> (555) 987-6543</p>
+      <p><strong>Address:</strong> 142 Wellness Blvd, Suite 300<br>Metro City, ST 00000</p>
+      <p><strong>Hours:</strong><br>Mon–Thu: 8:00 AM – 6:00 PM<br>Friday: 8:00 AM – 4:00 PM<br>Saturday: 9:00 AM – 2:00 PM</p>
+      <p><strong>Insurance:</strong> We accept most major dental plans.</p>
+      <div class="insurance-logos">
+        <span class="ins-badge">Delta Dental</span>
+        <span class="ins-badge">Cigna</span>
+        <span class="ins-badge">Aetna</span>
+        <span class="ins-badge">MetLife</span>
+        <span class="ins-badge">United</span>
+        <span class="ins-badge">BlueCross</span>
+      </div>
+    </div>
+    <form class="appt-form" onsubmit="handleSubmit(event)">
+      <input type="text" placeholder="Full Name" required />
+      <input type="tel" placeholder="Phone Number" required />
+      <input type="email" placeholder="Email Address" />
+      <input type="date" />
+      <select>
+        <option value="">Select Service</option>
+        <option>New Patient Exam &amp; X-Rays</option>
+        <option>Routine Cleaning</option>
+        <option>Teeth Whitening</option>
+        <option>Invisalign Consultation</option>
+        <option>Dental Implant Consultation</option>
+        <option>Crowns / Veneers</option>
+        <option>Pediatric Dentistry</option>
+        <option>Emergency / Tooth Pain</option>
+      </select>
+      <select>
+        <option value="">Insurance Provider (optional)</option>
+        <option>Delta Dental</option>
+        <option>Cigna</option>
+        <option>Aetna</option>
+        <option>MetLife</option>
+        <option>United Healthcare</option>
+        <option>BlueCross BlueShield</option>
+        <option>Self-Pay / No Insurance</option>
+        <option>Other</option>
+      </select>
+      <button type="submit">Request My Appointment →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 BrightSmile Dental. All rights reserved. · <a href="#">Privacy Policy</a> · <a href="#">License #DDS-77341</a> · Designed with ❤️ for healthy smiles</p>
+</footer>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = '✅ Request Received! We\'ll call to confirm.';
+    btn.style.background = '#2e7d32';
+    btn.disabled = true;
+  }
+</script>
+</body>
+</html>

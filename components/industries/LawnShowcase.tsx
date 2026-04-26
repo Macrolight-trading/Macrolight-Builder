@@ -179,13 +179,12 @@ export default function LawnShowcase({
   const [hoveredCard, setHoveredCard]   = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Track scroll inside the scrollable preview frame
+  // Track window scroll (full-page mode)
   useEffect(() => {
-    const el = containerRef.current?.closest(".industry-site-light") as HTMLElement | null;
-    if (!el) return;
-    const onScroll = () => setScrolled(el.scrollTop > 50);
-    el.addEventListener("scroll", onScroll);
-    return () => el.removeEventListener("scroll", onScroll);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollTo = (id: string) => {

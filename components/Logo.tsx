@@ -2,16 +2,18 @@ import Link from "next/link";
 
 interface LogoProps {
   className?: string;
+  /** Pass true when logo sits on a dark background */
+  onDark?: boolean;
 }
 
-export default function Logo({ className = "" }: LogoProps) {
+export default function Logo({ className = "", onDark = false }: LogoProps) {
   return (
     <Link
       href="/"
       className={`flex items-center gap-2 group ${className}`}
       aria-label="Macrolight Builders home"
     >
-      <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 shadow-glow transition-transform duration-300 group-hover:scale-105">
+      <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 shadow-sm transition-transform duration-300 group-hover:scale-105">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -28,9 +30,9 @@ export default function Logo({ className = "" }: LogoProps) {
           />
         </svg>
       </span>
-      <span className="text-white font-bold tracking-tight text-lg">
+      <span className={`font-bold tracking-tight text-lg ${onDark ? "text-white" : "text-gray-900"}`}>
         Macrolight
-        <span className="text-white/50 font-medium ml-1">Builders</span>
+        <span className={`font-medium ml-1 ${onDark ? "text-white/50" : "text-gray-400"}`}>Builders</span>
       </span>
     </Link>
   );

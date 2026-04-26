@@ -1,331 +1,513 @@
-import Button from "@/components/Button";
-import Section from "@/components/Section";
-import ContactForm from "@/components/ContactForm";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import type { IndustryProfile } from "@/lib/industries";
 
-/**
- * Restaurants — charred oak / brass / rose-wine highlights.
- * Example-site mock: live menu cards, same-night reservations, slow-night CTA.
- */
-export default function RestaurantsShowcase({
-  industry,
-}: {
-  industry: IndustryProfile;
-}) {
+// ── The Pearl Kitchen & Bar colour palette ────────────────────────────────────
+const C = {
+  black:      "#0A0A0A",
+  dark:       "#111111",
+  darkCard:   "#161616",
+  darkBorder: "#2A2A2A",
+  gold:       "#C9A96E",
+  goldLight:  "#E0C992",
+  goldDim:    "rgba(201,169,110,0.15)",
+  white:      "#FFFFFF",
+  offWhite:   "#F5F0EB",
+  cream:      "#E8E0D4",
+  textLight:  "#999999",
+  textMid:    "#BBBBBB",
+} as const;
+
+type Tab = "starters" | "mains" | "platters" | "desserts";
+
+const MENU: Record<Tab, { name: string; price: string; desc: string; tag?: string }[]> = {
+  starters: [
+    { name: "Pacific Oysters",       price: "$24", desc: "Half dozen, freshly shucked with champagne mignonette, lemon & Tabasco", tag: "Chef's Pick" },
+    { name: "Lemon Pepper Calamari", price: "$19", desc: "Flash-fried with preserved lemon aioli and micro herbs" },
+    { name: "Tuna Tartare",          price: "$22", desc: "Yellowfin tuna, avocado mousse, sesame, crispy wonton" },
+    { name: "Gratinated Scallops",   price: "$26", desc: "King scallops with garlic herb butter, gruyère & panko crust", tag: "Popular" },
+    { name: "Soft Shell Crab",       price: "$21", desc: "Tempura battered, yuzu kosho, pickled daikon slaw" },
+    { name: "Smoked Salmon Plate",   price: "$20", desc: "House-cured with crème fraîche, capers, toasted brioche" },
+  ],
+  mains: [
+    { name: "Pan-Seared Barramundi", price: "$42", desc: "Crispy skin, saffron risotto, beurre blanc, seasonal greens", tag: "Chef's Pick" },
+    { name: "Lobster Linguine",      price: "$48", desc: "Half lobster, cherry tomato, chili, garlic, white wine & fresh herbs" },
+    { name: "Grilled Tiger Prawns",  price: "$44", desc: "Char-grilled, chimichurri, roasted corn salsa, lime" },
+    { name: "Spanish Seafood Paella",price: "$52", desc: "Prawns, mussels, calamari, saffron, sofrito — serves two", tag: "For Two" },
+    { name: "Oven-Roasted Snapper",  price: "$39", desc: "Whole fish, fennel, olive tapenade, roasted potatoes" },
+    { name: "Wagyu Ribeye",          price: "$56", desc: "300g, truffle mash, red wine jus, roasted bone marrow" },
+  ],
+  platters: [
+    { name: "The Pearl Platter",     price: "$120", desc: "Oysters, prawns, lobster tail, Moreton Bay bugs, smoked salmon, crab — serves 2–3", tag: "Signature" },
+    { name: "Cold Seafood Tower",    price: "$95",  desc: "Three tiers of oysters, prawns, crab, ceviche & accompaniments" },
+    { name: "Hot Shellfish Platter", price: "$110", desc: "Grilled lobster, garlic prawns, scallops, mussels, crusty bread" },
+    { name: "Sunset Tasting Board",  price: "$75",  desc: "Chef's selection of five courses paired with house wines — per person", tag: "Popular" },
+  ],
+  desserts: [
+    { name: "Crème Brûlée",          price: "$16", desc: "Madagascar vanilla bean, caramelized sugar, fresh berries" },
+    { name: "Chocolate Fondant",     price: "$18", desc: "Warm molten centre, salted caramel, vanilla bean ice cream", tag: "Chef's Pick" },
+    { name: "Passionfruit Panna Cotta", price: "$15", desc: "Set coconut cream, tropical coulis, toasted meringue" },
+    { name: "Cheese Selection",      price: "$22", desc: "Three artisan cheeses, honeycomb, fig paste, lavosh" },
+  ],
+};
+
+const GALLERY_IMGS = [
+  { src: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80&fit=crop",  alt: "Grilled lobster dish",        wide: true  },
+  { src: "https://images.unsplash.com/photo-1482275548304-a58859dc31b7?w=600&q=80&fit=crop", alt: "Cocktail being prepared",    wide: false },
+  { src: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80&fit=crop",   alt: "Chef plating dish",          wide: false },
+  { src: "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=800&q=80&fit=crop", alt: "Restaurant dining room",    wide: true  },
+  { src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80&fit=crop", alt: "Beautifully plated seafood", wide: false },
+  { src: "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=600&q=80&fit=crop", alt: "Waterfront dining view",    wide: false },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "The Pearl Platter was absolutely stunning — the oysters were briny perfection and the lobster tail melted in my mouth. The waterfront terrace at sunset made it feel like we were on vacation. Already booked our next visit.",
+    initials: "AH", name: "A. Henderson", src: "Google Review",
+  },
+  {
+    quote: "We celebrated our anniversary here and it was genuinely the best dining experience we've had in years. The chef came out and recommended the paella — absolutely unforgettable. Service was flawless, atmosphere was magical.",
+    initials: "KM", name: "K. & M. Torres", src: "OpenTable Review",
+  },
+  {
+    quote: "As a chef myself, I don't impress easily. The barramundi was cooked to textbook perfection — crispy skin, moist flesh, the beurre blanc was restrained and elegant. The Pearl is the real deal. Worth every dollar.",
+    initials: "JL", name: "J. Larsson", src: "TripAdvisor Review",
+  },
+];
+
+const starPath = "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z";
+
+const Stars = () => (
+  <div style={{ display: "flex", gap: 3, marginBottom: 16 }}>
+    {[0,1,2,3,4].map(i => (
+      <svg key={i} viewBox="0 0 24 24" style={{ width: 14, height: 14, fill: C.gold }}>
+        <path d={starPath} />
+      </svg>
+    ))}
+  </div>
+);
+
+export default function RestaurantsShowcase({ industry }: { industry: IndustryProfile }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>("starters");
+  const [resDone, setResDone] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(`rest-${id}`);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+    setMobileOpen(false);
+  };
+
   return (
-    <div className="relative">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.12),transparent_55%),radial-gradient(ellipse_at_80%_20%,rgba(245,158,11,0.1),transparent_45%)]"
-      />
+    <div
+      ref={containerRef}
+      style={{ fontFamily: "'Montserrat', sans-serif", background: C.black, color: C.white, lineHeight: 1.6, WebkitFontSmoothing: "antialiased", overflowX: "hidden" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap');
+        .rest-nav-link { font-size:0.7rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:${C.textMid}; transition:color 0.4s ease; position:relative; text-decoration:none; cursor:pointer; background:none; border:none; font-family:inherit; }
+        .rest-nav-link:hover { color:${C.gold}; }
+        .rest-gallery-item { overflow:hidden; border-radius:4px; cursor:pointer; }
+        .rest-gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.8s ease; }
+        .rest-gallery-item:hover img { transform:scale(1.08); }
+        .rest-test-card { background:${C.darkCard}; border:1px solid ${C.darkBorder}; border-radius:4px; padding:40px; transition:all 0.4s ease; }
+        .rest-test-card:hover { border-color:${C.goldDim}; transform:translateY(-4px); }
+        .rest-menu-tab { padding:12px 28px; font-family:'Montserrat',sans-serif; font-size:0.65rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:transparent; border:1px solid ${C.darkBorder}; color:${C.textLight}; cursor:pointer; transition:all 0.4s ease; }
+        .rest-menu-tab:hover { border-color:${C.gold}; color:${C.gold}; }
+        .rest-menu-tab.active { background:${C.gold}; border-color:${C.gold}; color:${C.black}; }
+        .rest-about-img { border-radius:4px; overflow:hidden; aspect-ratio:3/4; }
+        .rest-about-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.8s ease; }
+        .rest-about-img:hover img { transform:scale(1.05); }
+        .rest-btn-gold { display:inline-flex; align-items:center; gap:10px; font-family:'Montserrat',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; padding:18px 40px; background:${C.gold}; color:${C.black}; border:none; cursor:pointer; transition:all 0.4s ease; text-decoration:none; }
+        .rest-btn-gold:hover { background:${C.goldLight}; transform:translateY(-2px); box-shadow:0 6px 30px rgba(201,169,110,0.3); }
+        .rest-btn-outline { display:inline-flex; align-items:center; gap:10px; font-family:'Montserrat',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; padding:18px 40px; background:transparent; color:${C.gold}; border:1px solid ${C.gold}; cursor:pointer; transition:all 0.4s ease; text-decoration:none; }
+        .rest-btn-outline:hover { background:${C.gold}; color:${C.black}; }
+        .rest-res-input { width:100%; padding:14px 16px; background:${C.dark}; border:1px solid ${C.darkBorder}; border-radius:4px; color:${C.white}; font-family:'Montserrat',sans-serif; font-size:0.9rem; transition:border-color 0.4s ease; box-sizing:border-box; }
+        .rest-res-input:focus { outline:none; border-color:${C.gold}; }
+        .rest-footer-link { font-size:0.85rem; color:${C.textLight}; font-weight:300; transition:color 0.4s ease; text-decoration:none; cursor:pointer; }
+        .rest-footer-link:hover { color:${C.gold}; }
+        .rest-header-reserve { font-size:0.65rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:${C.gold}; border:1px solid ${C.gold}; padding:12px 28px; transition:all 0.4s ease; text-decoration:none; cursor:pointer; background:none; font-family:inherit; }
+        .rest-header-reserve:hover { background:${C.gold}; color:${C.black}; }
+        @keyframes rest-scroll-line { 0%{opacity:1;transform:scaleY(1);}50%{opacity:0.3;transform:scaleY(0.5);}100%{opacity:1;transform:scaleY(1);} }
+        .rest-scroll-line { width:1px; height:50px; background:linear-gradient(to bottom, ${C.gold}, transparent); animation:rest-scroll-line 2s infinite; }
+      `}</style>
 
-      <section className="relative overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32">
-        <div className="absolute inset-0 grid-bg-light pointer-events-none" aria-hidden />
-        <div className="orb h-[500px] w-[500px] -top-36 -right-32 bg-rose-500" aria-hidden />
-        <div className="orb h-[380px] w-[380px] top-20 -left-24 bg-amber-500 opacity-50" aria-hidden />
+      {/* ── Header ── */}
+      <header
+        id="rest-header"
+        style={{
+          position: "sticky",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          padding: "0 40px",
+          transition: "all 0.4s ease",
+          background: scrolled ? "rgba(10,10,10,0.95)" : "transparent",
+          backdropFilter: scrolled ? "blur(16px)" : "none",
+          borderBottom: scrolled ? `1px solid ${C.darkBorder}` : "none",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: scrolled ? "16px 0" : "24px 0", maxWidth: 1200, margin: "0 auto", transition: "padding 0.4s ease" }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.6rem", fontWeight: 600, letterSpacing: 2, color: C.white }}>
+            The <em style={{ fontStyle: "normal", color: C.gold, fontWeight: 400 }}>Pearl</em>
+          </div>
+          <nav style={{ display: "flex", alignItems: "center", gap: 36 }}>
+            {[["about","Our Story"],["menu","Menu"],["gallery","Gallery"],["reviews","Reviews"],["reservations","Contact"]].map(([id, label]) => (
+              <button key={id} className="rest-nav-link" onClick={() => scrollTo(id)}>{label}</button>
+            ))}
+          </nav>
+          <button className="rest-header-reserve" onClick={() => scrollTo("reservations")}>
+            Reserve a Table
+          </button>
+        </div>
+      </header>
 
-        <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-200 animate-fade-in">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]" />
-                Tonight: tables open 7:00 &amp; 8:30
+      {/* ── Hero ── */}
+      <section style={{ position: "relative", height: "100vh", minHeight: 700, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=85&fit=crop') center/cover no-repeat" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.3) 40%, rgba(10,10,10,0.6) 70%, rgba(10,10,10,0.95) 100%)" }} />
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: 800, padding: "0 24px" }}>
+          <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 5, textTransform: "uppercase" as const, color: C.gold, marginBottom: 24 }}>
+            Fine Seafood & Waterfront Dining
+          </div>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(3rem, 7vw, 5.5rem)", fontWeight: 400, lineHeight: 1.05, marginBottom: 24 }}>
+            Where the Ocean<br />Meets <em style={{ fontStyle: "italic", color: C.gold }}>the Table</em>
+          </h1>
+          <p style={{ fontSize: "1rem", fontWeight: 300, color: C.textMid, maxWidth: 500, margin: "0 auto 40px", lineHeight: 1.9 }}>
+            An elevated dining experience featuring the freshest catches, handcrafted cocktails, and waterfront views that turn an evening into a memory.
+          </p>
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="rest-btn-gold" onClick={() => scrollTo("reservations")}>Reserve Your Table</button>
+            <button className="rest-btn-outline" onClick={() => scrollTo("menu")}>Explore the Menu</button>
+          </div>
+        </div>
+        {/* Scroll indicator */}
+        <div style={{ position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, color: C.textLight, fontSize: "0.6rem", letterSpacing: 3, textTransform: "uppercase" as const, zIndex: 2 }}>
+          Scroll
+          <div className="rest-scroll-line" />
+        </div>
+      </section>
+
+      {/* ── About ── */}
+      <section id="rest-about" style={{ padding: "120px 24px", background: C.dark }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div className="rest-about-img" style={{ marginTop: 40 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80&fit=crop" alt="Chef preparing fresh seafood" />
               </div>
-
-              <h1 className="animate-fade-in-up mt-5 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 leading-[1.05]">
-                The menu is{" "}
-                <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-fuchsia-500 bg-clip-text text-transparent">
-                  unforgettable
-                </span>
-                <br />
-                <span className="text-zinc-800">Your website should be too.</span>
-              </h1>
-
-              <p className="animate-fade-in-up mt-6 text-lg text-rose-100/80 max-w-xl leading-relaxed">
-                {industry.heroTagline} We build reservation-first pages that
-                show your food the way it looks on the pass — and convert
-                scrollers into covers.
-              </p>
-
-              <div className="animate-fade-in-up mt-8 flex flex-col sm:flex-row gap-3">
-                <Button
-                  href="/contact"
-                  size="lg"
-                  className="bg-gradient-to-r from-amber-500 via-rose-500 to-fuchsia-600 text-white hover:shadow-[0_0_40px_-10px_rgba(244,63,94,0.55)] hover:scale-[1.02]"
-                >
-                  Book a Site Tasting Call
-                </Button>
-                <Button href="tel:+15550100" variant="outline" onLight size="lg">
-                  Call the dining room
-                </Button>
-              </div>
-
-              <div className="mt-10 flex flex-wrap gap-6 text-sm text-zinc-900/55">
-                <div>
-                  <div className="text-2xl font-extrabold text-amber-200">+41%</div>
-                  <div className="text-xs">Tuesday covers (example)</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-rose-200">0 PDFs</div>
-                  <div className="text-xs">Menus you have to pinch-zoom</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-fuchsia-200">2 taps</div>
-                  <div className="text-xs">To reserve, not 7</div>
-                </div>
+              <div className="rest-about-img">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80&fit=crop" alt="Elegant restaurant interior" />
               </div>
             </div>
-
-            <div className="relative">
-              <div className="absolute -inset-6 bg-gradient-to-br from-amber-500/20 via-rose-500/10 to-fuchsia-600/5 blur-3xl" />
-              <div className="relative rounded-3xl border border-white/10 bg-[#0c0a0b] shadow-2xl overflow-hidden">
-                <div className="flex items-center gap-2 border-b border-amber-900/20 bg-stone-950/80 px-4 py-3">
-                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/50" />
-                  <div className="mx-auto text-xs text-amber-200/50 tracking-wide">
-                    noorkitchen.com
+            <div>
+              <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 4, textTransform: "uppercase" as const, color: C.gold, marginBottom: 16 }}>Our Story</div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 8 }}>
+                Crafted with Passion,<br />Served with <span style={{ color: C.gold }}>Soul</span>
+              </h2>
+              <div style={{ width: 60, height: 1, background: C.gold, margin: "20px 0" }} />
+              <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8, marginBottom: 16 }}>
+                The Pearl Kitchen & Bar was born from a simple belief: that great seafood deserves more than a plate — it deserves an experience. Our chefs source daily from local fishermen and craft each dish to honor the ocean's bounty.
+              </p>
+              <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8 }}>
+                Perched on the waterfront with sweeping views and an intimate dining room, we've become the destination for those who appreciate the finer things — without the pretension.
+              </p>
+              <div style={{ display: "flex", gap: 40, paddingTop: 32, borderTop: `1px solid ${C.darkBorder}`, marginTop: 32 }}>
+                {[["12","Years Open"],["Daily","Fresh Sourced"],["4.8","Star Rating"]].map(([num, lbl]) => (
+                  <div key={lbl}>
+                    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.5rem", fontWeight: 400, color: C.gold, lineHeight: 1 }}>{num}</div>
+                    <div style={{ fontSize: "0.7rem", color: C.textLight, letterSpacing: 1, textTransform: "uppercase" as const, marginTop: 4 }}>{lbl}</div>
                   </div>
-                </div>
-
-                <div className="p-5 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.2em] text-amber-200/60">
-                        Chef&apos;s this week
-                      </div>
-                      <div className="text-lg font-semibold text-stone-100">
-                        Slow-roasted &amp; seasonal
-                      </div>
-                    </div>
-                    <div className="rounded-full bg-rose-500/20 border border-rose-500/30 px-3 py-1 text-xs text-rose-200">
-                      Res open
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Charred octopus", "Cavatelli", "Aged duck", "Sunchoke"].map(
-                      (d) => (
-                        <div
-                          key={d}
-                          className="rounded-xl border border-white/5 bg-gradient-to-br from-stone-900/90 to-stone-950 p-3"
-                        >
-                          <div className="aspect-[4/3] rounded-lg bg-gradient-to-br from-amber-900/40 to-rose-950/50 mb-2" />
-                          <div className="text-xs font-medium text-stone-200">
-                            {d}
-                          </div>
-                          <div className="text-[10px] text-stone-500">+$4 wine pair</div>
-                        </div>
-                      )
-                    )}
-                  </div>
-
-                  <div className="rounded-xl border border-amber-500/20 bg-gradient-to-r from-amber-950/50 to-rose-950/30 p-4">
-                    <div className="flex items-center justify-between text-xs text-stone-300">
-                      <span>Party of 2 · Fri 8:00</span>
-                      <span className="text-emerald-400">Direct booking</span>
-                    </div>
-                    <div className="mt-3 rounded-lg bg-gradient-to-r from-amber-500 to-rose-600 py-2.5 text-center text-sm font-semibold text-white">
-                      Confirm reservation — no third-party fee
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-3 -right-2 hidden md:block rounded-xl border border-rose-500/20 bg-[#120c0e]/95 backdrop-blur px-3 py-2 text-[11px] text-rose-100 shadow-xl animate-float">
-                <span className="text-amber-300 font-semibold">New:</span> Wine club
-                waitlist +47 signups
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <Section padding="xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-rose-300">
-            Front-of-house leaks
-          </p>
-          <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900">
-            Why diners bounce before the bread hits the table.
-          </h2>
-        </div>
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {industry.painPoints.map((p, i) => (
-            <div
-              key={p.title}
-              className="relative rounded-2xl border border-amber-500/15 bg-gradient-to-b from-amber-950/20 to-transparent p-7 hover:-translate-y-1 hover:border-rose-400/35 transition-all duration-300"
-            >
-              <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500/30 to-rose-500/20 ring-1 ring-amber-400/25 text-amber-200 font-bold">
-                0{i + 1}
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-zinc-900">{p.title}</h3>
-              <p className="mt-2 text-sm text-stone-400 leading-relaxed">
-                {p.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section padding="xl">
-        <div className="grid lg:grid-cols-5 gap-10">
-          <div className="lg:col-span-2">
-            <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">
-              Merchandise the room
-            </p>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900">
-              From menu to last course — one branded journey.
+      {/* ── Menu ── */}
+      <section id="rest-menu" style={{ padding: "120px 24px", background: C.black }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 70 }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 4, textTransform: "uppercase" as const, color: C.gold, marginBottom: 16 }}>The Menu</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 8 }}>
+              A Taste of the <span style={{ color: C.gold }}>Sea</span>
             </h2>
-            <p className="mt-4 text-stone-400 leading-relaxed">
-              We wire photography, private dining, and merch into a single
-              experience so OpenTable isn&apos;t the only place guests remember
-              your name.
+            <div style={{ width: 60, height: 1, background: C.gold, margin: "20px auto" }} />
+            <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+              Each dish is thoughtfully prepared with the freshest seasonal ingredients. Our menu changes with the tides.
             </p>
-            <ul className="mt-6 space-y-3">
-              {industry.services.map((svc) => (
-                <li
-                  key={svc}
-                  className="flex items-center gap-3 text-sm text-stone-200"
-                >
-                  <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-rose-500/15 ring-1 ring-rose-400/20">
-                    <svg
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-3.5 w-3.5 text-rose-300"
-                      aria-hidden
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0l-3.5-3.5a1 1 0 111.4-1.4L8.5 12l6.8-6.7a1 1 0 011.4 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  {svc}
-                </li>
-              ))}
-            </ul>
           </div>
-          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {["Slow Monday", "Industry Tuesday", "Date night", "Brunch block"].map(
-              (t, i) => (
-                <div
-                  key={t}
-                  className="rounded-2xl border border-white/10 bg-gradient-to-br from-stone-900/50 to-stone-950 p-5"
-                >
-                  <div className="text-xs text-amber-200/60 uppercase tracking-wider">
-                    Promo slot
-                  </div>
-                  <div className="mt-2 text-lg font-bold text-zinc-900">{t}</div>
-                  <p className="mt-2 text-sm text-stone-500">
-                    {i % 2 === 0
-                      ? "Auto email + social graphics when covers drop."
-                      : "One-click add-on: wine pairing or dessert flight."}
-                  </p>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      </Section>
 
-      <Section padding="md">
-        <div className="rounded-3xl border border-rose-500/20 bg-gradient-to-r from-amber-500/10 via-rose-500/5 to-fuchsia-600/5 p-8 sm:p-12">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-200">
-                Own the relationship
-              </p>
-              <h3 className="mt-2 text-2xl sm:text-3xl font-bold text-zinc-900">
-                Capture emails before the platforms take their cut.
-              </h3>
-              <p className="mt-2 text-stone-400 max-w-2xl">
-                Birthday campaigns, private-event nurture, and loyalty cues —
-                all tied to the nights you need to fill.
-              </p>
-            </div>
-            <Button
-              href="/contact"
-              size="lg"
-              className="bg-gradient-to-r from-amber-500 to-rose-600 text-white"
-            >
-              See the full stack
-            </Button>
-          </div>
-        </div>
-      </Section>
-
-      <Section padding="lg">
-        <blockquote className="mx-auto max-w-3xl text-center">
-          <div className="flex items-center justify-center gap-0.5 text-amber-400 mb-5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <svg
-                key={i}
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5"
-                aria-hidden
+          {/* Tabs */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 50, flexWrap: "wrap" }}>
+            {(["starters","mains","platters","desserts"] as Tab[]).map(tab => (
+              <button
+                key={tab}
+                className={`rest-menu-tab${activeTab === tab ? " active" : ""}`}
+                onClick={() => setActiveTab(tab)}
               >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 14.347l-3.368 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.645 9.384c-.784-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.957z" />
-              </svg>
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
             ))}
           </div>
-          <p className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 leading-snug">
-            &ldquo;{industry.testimonials[0]?.quote}&rdquo;
-          </p>
-          <footer className="mt-6 text-sm text-stone-400">
-            <span className="text-rose-200 font-medium">
-              {industry.testimonials[0]?.author}
-            </span>{" "}
-            · {industry.testimonials[0]?.role}
-          </footer>
-        </blockquote>
-      </Section>
 
-      <Section padding="xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-amber-300">
-              Table talk
-            </p>
-            <h2 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-900">
-              Get your reservation flow audited on us.
+          {/* Menu items */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px 80px" }}>
+            {MENU[activeTab].map(item => (
+              <div key={item.name} style={{ paddingBottom: 24, borderBottom: `1px solid ${C.darkBorder}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                  <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.35rem", fontWeight: 500, color: C.white }}>{item.name}</span>
+                  <span style={{ flex: 1, borderBottom: `1px dotted ${C.darkBorder}`, margin: "0 12px 6px" }} />
+                  <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", color: C.gold, whiteSpace: "nowrap" as const, marginLeft: 16 }}>{item.price}</span>
+                </div>
+                <p style={{ fontSize: "0.82rem", color: C.textLight, fontWeight: 300, lineHeight: 1.6 }}>{item.desc}</p>
+                {item.tag && (
+                  <span style={{ display: "inline-block", fontSize: "0.6rem", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" as const, color: C.gold, border: `1px solid ${C.goldDim}`, padding: "3px 10px", borderRadius: 2, marginTop: 8 }}>
+                    {item.tag}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: 60 }}>
+            <button className="rest-btn-outline" onClick={() => scrollTo("reservations")}>Reserve & Dine With Us</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Full-Width Image Break ── */}
+      <div style={{ position: "relative", height: 500, overflow: "hidden" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=1600&q=80&fit=crop"
+          alt="Seafood platter close-up"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(10,10,10,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ textAlign: "center", color: C.white }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 400, marginBottom: 8 }}>
+              Fresh. Every <em style={{ fontStyle: "italic", color: C.gold }}>Single</em> Day.
             </h2>
-            <p className="mt-4 text-stone-400 text-lg max-w-lg">
-              We map where you lose the guest between Google, Instagram, and
-              your door — and what to fix first.
+            <p style={{ fontSize: "0.9rem", color: C.textMid, fontWeight: 300 }}>Sourced from local fishermen each morning before sunrise.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Gallery ── */}
+      <section id="rest-gallery" style={{ padding: "120px 24px", background: C.dark }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 4, textTransform: "uppercase" as const, color: C.gold, marginBottom: 16 }}>Gallery</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 8 }}>
+              A Feast for the <span style={{ color: C.gold }}>Eyes</span>
+            </h2>
+            <div style={{ width: 60, height: 1, background: C.gold, margin: "20px auto" }} />
+            <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+              The ambiance, the plates, the moments — take a look inside The Pearl.
             </p>
           </div>
-          <ContactForm variant="preview" />
-        </div>
-      </Section>
-
-      <section className="relative py-24">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-12">
-          <div className="relative overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-stone-950 p-10 sm:p-16 text-center">
-            <div className="orb bg-amber-500 h-72 w-72 -top-16 -right-20 opacity-40" aria-hidden />
-            <div className="relative">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-zinc-900">
-                Get More {industry.clientsLabel}
-              </h2>
-              <p className="mt-5 text-stone-300 text-lg max-w-2xl mx-auto">
-                Empty chairs are expensive. A site that sells the experience
-                isn&apos;t.
-              </p>
-              <div className="mt-8">
-                <Button
-                  href="/contact"
-                  size="lg"
-                  className="bg-gradient-to-r from-amber-500 to-rose-600 text-white"
-                >
-                  Start the audit
-                </Button>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "280px 280px", gap: 12 }}>
+            {GALLERY_IMGS.map((img) => (
+              <div
+                key={img.src}
+                className="rest-gallery-item"
+                style={{ gridColumn: img.wide ? "span 2" : "span 1" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img.src} alt={img.alt} />
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section id="rest-reviews" style={{ padding: "120px 24px", background: C.black }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 4, textTransform: "uppercase" as const, color: C.gold, marginBottom: 16 }}>Guest Reviews</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 8 }}>
+              What Our Guests <span style={{ color: C.gold }}>Say</span>
+            </h2>
+            <div style={{ width: 60, height: 1, background: C.gold, margin: "20px auto" }} />
+            <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8, maxWidth: 520, margin: "0 auto" }}>
+              Don't take our word for it — hear from the people who dine with us.
+            </p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 24 }}>
+            {TESTIMONIALS.map(t => (
+              <div key={t.name} className="rest-test-card">
+                <Stars />
+                <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", fontStyle: "italic", color: C.cream, lineHeight: 1.8, marginBottom: 24, position: "relative" }}>
+                  <span style={{ display: "block", fontFamily: "'Cormorant Garamond', serif", fontSize: "3rem", color: C.gold, lineHeight: 0.5, marginBottom: 16 }}>"</span>
+                  {t.quote}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: C.goldDim, border: `1px solid ${C.gold}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cormorant Garamond', serif", fontSize: "1rem", color: C.gold, fontWeight: 600, flexShrink: 0 }}>
+                    {t.initials}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.9rem", fontWeight: 600, color: C.white }}>{t.name}</div>
+                    <div style={{ fontSize: "0.75rem", color: C.textLight }}>{t.src}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Reservations ── */}
+      <section
+        id="rest-reservations"
+        style={{
+          position: "relative",
+          padding: "120px 24px",
+          background: "url('https://images.unsplash.com/photo-1550966871-3ed3cdb51f3a?w=1600&q=80&fit=crop') center/cover no-repeat",
+        }}
+      >
+        <div style={{ position: "absolute", inset: 0, background: "rgba(10,10,10,0.88)" }} />
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+            {/* Info */}
+            <div>
+              <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 4, textTransform: "uppercase" as const, color: C.gold, marginBottom: 16 }}>Reservations</div>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem, 5vw, 3.5rem)", fontWeight: 400, lineHeight: 1.15, marginBottom: 8 }}>
+                Reserve Your <span style={{ color: C.gold }}>Table</span>
+              </h2>
+              <div style={{ width: 60, height: 1, background: C.gold, margin: "20px 0" }} />
+              <p style={{ fontSize: "0.95rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8, marginBottom: 32 }}>
+                Join us for an unforgettable evening on the waterfront. Walk-ins welcome, but reservations are recommended — especially on weekends.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                {[
+                  { icon: "📍", label: "Location",  value: "88 Harborview Drive\nMaplewood, OH 43050" },
+                  { icon: "🕐", label: "Hours",      value: "Tue – Thu: 5:00 PM – 10:00 PM\nFri – Sat: 5:00 PM – 11:00 PM\nSun: 12:00 PM – 9:00 PM\nMon: Closed" },
+                  { icon: "📞", label: "Phone",      value: "(614) 555-0218" },
+                ].map(item => (
+                  <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+                    <div style={{ width: 44, height: 44, border: `1px solid ${C.darkBorder}`, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "1.1rem" }}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h4 style={{ fontFamily: "'Montserrat', sans-serif", fontSize: "0.7rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 4 }}>{item.label}</h4>
+                      <p style={{ fontSize: "0.95rem", color: C.white, fontWeight: 400, whiteSpace: "pre-line" as const }}>{item.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Form */}
+            <div style={{ background: C.darkCard, border: `1px solid ${C.darkBorder}`, borderRadius: 4, padding: 48 }}>
+              {resDone ? (
+                <div style={{ textAlign: "center", padding: "40px 0" }}>
+                  <div style={{ fontSize: "2.5rem", marginBottom: 12, color: C.gold }}>✓</div>
+                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.4rem", marginBottom: 8 }}>Reservation Requested</h3>
+                  <p style={{ color: C.textLight, fontSize: "0.9rem", lineHeight: 1.7 }}>We'll confirm via text within the hour.<br />See you at The Pearl.</p>
+                </div>
+              ) : (
+                <>
+                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", textAlign: "center", marginBottom: 8 }}>Book a Table</h3>
+                  <p style={{ textAlign: "center", fontSize: "0.8rem", color: C.textLight, marginBottom: 32 }}>We'll confirm your reservation within the hour.</p>
+                  <form onSubmit={e => { e.preventDefault(); setResDone(true); }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Full Name</label>
+                        <input className="rest-res-input" type="text" placeholder="Jane Doe" required />
+                      </div>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Phone</label>
+                        <input className="rest-res-input" type="tel" placeholder="(614) 555-0000" required />
+                      </div>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Date</label>
+                        <input className="rest-res-input" type="date" required />
+                      </div>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Time</label>
+                        <select className="rest-res-input" style={{ appearance: "auto" as const }}>
+                          {["5:00 PM","5:30 PM","6:00 PM","6:30 PM","7:00 PM","7:30 PM","8:00 PM","8:30 PM","9:00 PM"].map(t => <option key={t} style={{ background: C.dark }}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Party Size</label>
+                        <select className="rest-res-input" style={{ appearance: "auto" as const }}>
+                          {["1 Guest","2 Guests","3 Guests","4 Guests","5 Guests","6 Guests","7+ Guests"].map(g => <option key={g} style={{ background: C.dark }}>{g}</option>)}
+                        </select>
+                      </div>
+                      <div style={{ marginBottom: 20 }}>
+                        <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 600, letterSpacing: 2, textTransform: "uppercase" as const, color: C.textLight, marginBottom: 8 }}>Occasion</label>
+                        <select className="rest-res-input" style={{ appearance: "auto" as const }}>
+                          {["Just Dining","Birthday","Anniversary","Date Night","Business Dinner","Special Event"].map(o => <option key={o} style={{ background: C.dark }}>{o}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <button type="submit" className="rest-btn-gold" style={{ width: "100%", justifyContent: "center", marginTop: 8 }}>
+                      Request Reservation
+                    </button>
+                    <p style={{ textAlign: "center", fontSize: "0.75rem", color: C.textLight, marginTop: 16 }}>
+                      For parties of 8+, please call us directly at{" "}
+                      <a href="tel:6145550218" style={{ color: C.gold, textDecoration: "none" }}>(614) 555-0218</a>
+                    </p>
+                  </form>
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── Footer ── */}
+      <footer style={{ background: C.dark, borderTop: `1px solid ${C.darkBorder}`, padding: "60px 24px 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 40, marginBottom: 48 }}>
+            <div>
+              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.6rem", fontWeight: 600, letterSpacing: 2, color: C.white, marginBottom: 16 }}>
+                The <em style={{ fontStyle: "normal", color: C.gold, fontWeight: 400 }}>Pearl</em>
+              </div>
+              <p style={{ fontSize: "0.85rem", color: C.textLight, fontWeight: 300, lineHeight: 1.8 }}>
+                Fine seafood and waterfront dining in the heart of Maplewood. An experience crafted for those who appreciate the art of a perfect meal.
+              </p>
+            </div>
+            {[
+              { heading: "Explore", links: ["Our Story","Menu","Gallery","Reviews"] },
+              { heading: "Dining",  links: ["Reservations","Private Events","Gift Cards","Catering"] },
+              { heading: "Contact", links: ["(614) 555-0218","88 Harborview Drive","Maplewood, OH 43050","info@thepearlkitchen.com"] },
+            ].map(col => (
+              <div key={col.heading}>
+                <h4 style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" as const, color: C.gold, marginBottom: 20 }}>{col.heading}</h4>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {col.links.map(link => (
+                    <li key={link} style={{ marginBottom: 12 }}>
+                      <span className="rest-footer-link">{link}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div style={{ borderTop: `1px solid ${C.darkBorder}`, paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.75rem", color: C.textLight, flexWrap: "wrap", gap: 8 }}>
+            <span>© 2026 The Pearl Kitchen & Bar. All rights reserved.</span>
+            <span>This is a fictional demo website.</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

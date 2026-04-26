@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summit Air Pros | HVAC, Plumbing &amp; Electrical — 24/7 Service</title>
+  <meta name="description" content="Summit Air Pros — trusted HVAC, plumbing & electrical services. Licensed, bonded & insured. 24/7 emergency service. Schedule online or call (614) 555-0491.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --blue: #1B5FE3;
+      --blue-dark: #0D3B9E;
+      --blue-deeper: #0A1F4E;
+      --blue-light: #4A8AF4;
+      --blue-pale: #EBF2FF;
+      --orange: #F26522;
+      --orange-light: #FF8A4C;
+      --green: #22A84E;
+      --red: #E53935;
+      --white: #FFFFFF;
+      --off-white: #F7F9FC;
+      --gray-100: #F0F2F5;
+      --gray-200: #E1E5EB;
+      --gray-300: #C8CED8;
+      --gray-500: #6B7A90;
+      --gray-700: #3A4556;
+      --gray-900: #1A2332;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
+      --shadow-blue: 0 4px 24px rgba(27,95,227,0.25);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-pill: 50px;
+      --transition: 0.3s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--gray-900);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.15; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 100px 0; }
+
+    /* ── Utility ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 8px 18px; border-radius: var(--radius-pill);
+    }
+    .badge-blue { background: var(--blue-pale); color: var(--blue); }
+    .badge-orange { background: rgba(242,101,34,0.1); color: var(--orange); }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 12px;
+    }
+    .section-label .dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--gray-900);
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--gray-500);
+      max-width: 560px; line-height: 1.8; font-weight: 400;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem; font-weight: 700;
+      padding: 16px 32px; border-radius: var(--radius-sm);
+      border: none; cursor: pointer; transition: all var(--transition);
+    }
+    .btn-primary {
+      background: var(--orange); color: var(--white);
+      box-shadow: 0 4px 16px rgba(242,101,34,0.3);
+    }
+    .btn-primary:hover { background: #D95A1B; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(242,101,34,0.35); }
+    .btn-blue {
+      background: var(--blue); color: var(--white);
+      box-shadow: var(--shadow-blue);
+    }
+    .btn-blue:hover { background: var(--blue-dark); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--blue);
+      border: 2px solid var(--blue);
+    }
+    .btn-outline:hover { background: var(--blue); color: var(--white); }
+    .btn-white {
+      background: var(--white); color: var(--blue-deeper);
+    }
+    .btn-white:hover { background: var(--gray-100); transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      background: var(--blue-deeper);
+      color: var(--white);
+      font-size: 0.8rem;
+      padding: 10px 0;
+    }
+    .top-bar-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    }
+    .top-bar-left { display: flex; gap: 24px; align-items: center; }
+    .top-bar-left span { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.7); }
+    .top-bar-left svg { width: 14px; height: 14px; stroke: var(--orange); fill: none; stroke-width: 2; }
+    .top-bar-right a {
+      color: var(--orange-light); font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--white);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; max-width: 1200px; margin: 0 auto;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .logo-icon svg { width: 24px; height: 24px; }
+    .logo-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.3rem; font-weight: 800; color: var(--gray-900);
+    }
+    .logo-name span { color: var(--blue); }
+    .logo-sub { font-size: 0.6rem; color: var(--gray-500); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+    nav { display: flex; gap: 28px; align-items: center; }
+    nav a {
+      font-size: 0.85rem; font-weight: 600; color: var(--gray-700);
+      transition: color var(--transition);
+    }
+    nav a:hover { color: var(--blue); }
+    .header-cta-group { display: flex; align-items: center; gap: 16px; }
+    .header-phone {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 1.05rem; color: var(--blue);
+    }
+    .header-phone svg { width: 18px; height: 18px; }
+    .header-schedule { padding: 12px 24px; font-size: 0.8rem; }
+    .mobile-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 8px;
+    }
+    .mobile-toggle span { width: 24px; height: 2px; background: var(--gray-900); border-radius: 2px; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, var(--blue-deeper) 0%, #0F2D6E 50%, var(--blue-dark) 100%);
+      overflow: hidden;
+      padding: 80px 0 0;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: end;
+      max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    }
+    .hero-text { color: var(--white); padding-bottom: 80px; }
+    .hero-emergency {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(242,101,34,0.15); border: 1px solid rgba(242,101,34,0.3);
+      padding: 8px 20px; border-radius: var(--radius-pill);
+      font-size: 0.75rem; font-weight: 700; color: var(--orange-light);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 28px;
+    }
+    .hero-emergency .pulse-dot {
+      width: 8px; height: 8px; background: var(--orange);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(242,101,34,0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(242,101,34,0); }
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      margin-bottom: 20px; line-height: 1.1;
+    }
+    .hero h1 .highlight {
+      position: relative;
+      color: var(--orange);
+    }
+    .hero-desc {
+      font-size: 1.05rem; color: rgba(255,255,255,0.7);
+      margin-bottom: 32px; max-width: 480px; line-height: 1.8; font-weight: 400;
+    }
+    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+    .hero-trust {
+      display: flex; gap: 28px; padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-trust-item { display: flex; align-items: center; gap: 8px; }
+    .hero-trust-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-trust-icon svg { width: 16px; height: 16px; stroke: var(--orange-light); fill: none; stroke-width: 2; }
+    .hero-trust-text { font-size: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+    .hero-trust-text strong { color: var(--white); display: block; font-size: 0.8rem; }
+    .hero-image {
+      position: relative;
+      align-self: end;
+    }
+    .hero-image img {
+      width: 100%; max-width: 560px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      margin-left: auto;
+    }
+    .hero-float-card {
+      position: absolute; bottom: 60px; left: -40px;
+      background: var(--white); border-radius: var(--radius);
+      padding: 20px 24px; box-shadow: var(--shadow-lg);
+      display: flex; align-items: center; gap: 14px;
+      min-width: 240px;
+    }
+    .hero-float-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--blue-pale);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .hero-float-icon svg { width: 22px; height: 22px; stroke: var(--blue); fill: none; stroke-width: 2; }
+    .hero-float-card .hf-title { font-weight: 800; font-size: 0.9rem; color: var(--gray-900); }
+    .hero-float-card .hf-sub { font-size: 0.75rem; color: var(--gray-500); }
+
+    /* ── Trust Strip ── */
+    .trust-strip {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 24px 0;
+    }
+    .trust-strip-inner {
+      display: flex; justify-content: center; align-items: center;
+      gap: 48px; flex-wrap: wrap;
+    }
+    .trust-strip-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem; font-weight: 600; color: var(--gray-700);
+    }
+    .trust-strip-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tsi-blue { background: var(--blue-pale); }
+    .tsi-orange { background: rgba(242,101,34,0.1); }
+    .tsi-green { background: rgba(34,168,78,0.1); }
+    .trust-strip-icon svg { width: 20px; height: 20px; fill: none; stroke-width: 2; }
+    .tsi-blue svg { stroke: var(--blue); }
+    .tsi-orange svg { stroke: var(--orange); }
+    .tsi-green svg { stroke: var(--green); }
+
+    /* ── Services ── */
+    .services { background: var(--off-white); }
+    .services-header { text-align: center; margin-bottom: 60px; }
+    .services-header .section-sub { margin: 0 auto; }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .service-card {
+      background: var(--white); border-radius: var(--radius);
+      overflow: hidden; transition: all var(--transition);
+      border: 1px solid var(--gray-200);
+    }
+    .service-card:hover {
+      transform: translateY(-6px); box-shadow: var(--shadow-lg);
+      border-color: var(--blue-pale);
+    }
+    .service-card-img {
+      width: 100%; height: 200px; object-fit: cover;
+    }
+    .service-card-body { padding: 28px; }
+    .service-card-tag {
+      display: inline-block;
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--blue); background: var(--blue-pale);
+      padding: 4px 12px; border-radius: var(--radius-pill);
+      margin-bottom: 12px;
+    }
+    .service-card h3 {
+      font-size: 1.3rem; color: var(--gray-900); margin-bottom: 8px;
+    }
+    .service-card p {
+      font-size: 0.9rem; color: var(--gray-500); line-height: 1.7; margin-bottom: 20px;
+    }
+    .service-card-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 700; color: var(--blue);
+      transition: gap var(--transition);
+    }
+    .service-card-link:hover { gap: 12px; }
+    .service-card-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+
+    /* ── Why Us ── */
+    .why-us { background: var(--white); }
+    .why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .why-image { position: relative; }
+    .why-image img {
+      width: 100%; border-radius: var(--radius);
+    }
+    .why-badge-card {
+      position: absolute; bottom: -20px; right: -20px;
+      background: var(--blue); color: var(--white);
+      padding: 24px 28px; border-radius: var(--radius);
+      box-shadow: var(--shadow-lg); text-align: center;
+    }
+    .why-badge-card .wbc-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.5rem; font-weight: 800; line-height: 1;
+    }
+    .why-badge-card .wbc-label {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      opacity: 0.7; margin-top: 4px;
+    }
+    .why-text .section-sub { margin-bottom: 32px; }
+    .why-features { display: flex; flex-direction: column; gap: 20px; }
+    .why-feature {
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .why-feature-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-sm);
+      background: var(--blue-pale);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .why-feature-icon svg { width: 22px; height: 22px; stroke: var(--blue); fill: none; stroke-width: 2; }
+    .why-feature h4 {
+      font-family: 'Inter', sans-serif; font-size: 0.95rem;
+      font-weight: 700; color: var(--gray-900); margin-bottom: 4px;
+    }
+    .why-feature p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.6; }
+
+    /* ── Stats ── */
+    .stats {
+      background: linear-gradient(135deg, var(--blue-deeper), var(--blue-dark));
+      padding: 70px 0;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center;
+    }
+    .stat-item .stat-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 3rem; font-weight: 800; color: var(--white);
+    }
+    .stat-item .stat-label {
+      font-size: 0.8rem; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+    }
+
+    /* ── Testimonials ── */
+    .testimonials { background: var(--off-white); }
+    .test-header { text-align: center; margin-bottom: 60px; }
+    .test-header .section-sub { margin: 0 auto; }
+    .test-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;
+    }
+    .test-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 32px; border: 1px solid var(--gray-200);
+      transition: all var(--transition);
+    }
+    .test-card:hover { box-shadow: var(--shadow); transform: translateY(-4px); }
+    .test-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+    .test-stars svg { width: 16px; height: 16px; fill: var(--orange); }
+    .test-card blockquote {
+      font-size: 0.95rem; color: var(--gray-700);
+      line-height: 1.8; margin-bottom: 20px; font-style: italic;
+    }
+    .test-service-tag {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      background: var(--blue-pale); color: var(--blue);
+      padding: 4px 12px; border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+    }
+    .test-author { display: flex; align-items: center; gap: 12px; }
+    .test-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--blue); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem;
+    }
+    .test-name { font-weight: 700; font-size: 0.9rem; }
+    .test-loc { font-size: 0.75rem; color: var(--gray-500); }
+
+    /* ── CTA / Scheduling ── */
+    .schedule-cta {
+      position: relative;
+      background: url('https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=1600&q=80&fit=crop') center/cover no-repeat;
+      padding: 100px 0;
+    }
+    .schedule-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10,31,78,0.93), rgba(13,59,158,0.88));
+    }
+    .schedule-cta .container { position: relative; z-index: 1; }
+    .schedule-grid {
+      display: grid; grid-template-columns: 1fr 480px;
+      gap: 60px; align-items: center;
+    }
+    .schedule-text { color: var(--white); }
+    .schedule-text h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 16px;
+    }
+    .schedule-text h2 .highlight { color: var(--orange); }
+    .schedule-text p {
+      font-size: 1rem; color: rgba(255,255,255,0.65);
+      margin-bottom: 32px; line-height: 1.8; max-width: 480px;
+    }
+    .schedule-perks {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .schedule-perk {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem; color: rgba(255,255,255,0.8);
+    }
+    .schedule-perk svg { width: 18px; height: 18px; stroke: var(--orange-light); fill: none; stroke-width: 2.5; flex-shrink: 0; }
+    .schedule-form {
+      background: var(--white); border-radius: var(--radius);
+      padding: 40px; box-shadow: var(--shadow-lg);
+    }
+    .schedule-form h3 {
+      font-size: 1.5rem; color: var(--gray-900); margin-bottom: 4px; text-align: center;
+    }
+    .schedule-form > p {
+      font-size: 0.85rem; color: var(--gray-500); margin-bottom: 28px; text-align: center;
+    }
+    .sf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sf-group { margin-bottom: 18px; }
+    .sf-group label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      color: var(--gray-700); margin-bottom: 6px;
+    }
+    .sf-group input, .sf-group select {
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      transition: border-color var(--transition);
+    }
+    .sf-group input:focus, .sf-group select:focus {
+      outline: none; border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(27,95,227,0.1);
+    }
+    .sf-submit { width: 100%; padding: 16px; font-size: 0.9rem; border-radius: var(--radius-sm); }
+    .sf-note {
+      text-align: center; font-size: 0.75rem; color: var(--gray-500); margin-top: 14px;
+    }
+    .sf-note svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 2.5; display: inline; vertical-align: -2px; margin-right: 4px; }
+    #scheduleSuccess {
+      display: none; text-align: center; padding: 40px 0;
+    }
+    #scheduleSuccess .check-circle {
+      width: 64px; height: 64px; background: rgba(34,168,78,0.1);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    #scheduleSuccess .check-circle svg { width: 28px; height: 28px; stroke: var(--green); fill: none; stroke-width: 2.5; }
+    #scheduleSuccess h3 { font-size: 1.3rem; color: var(--gray-900); margin-bottom: 8px; }
+    #scheduleSuccess p { font-size: 0.9rem; color: var(--gray-500); line-height: 1.7; }
+
+    /* ── Service Areas ── */
+    .areas { background: var(--white); padding: 60px 0; border-top: 1px solid var(--gray-200); }
+    .areas-inner { text-align: center; }
+    .areas h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 20px; }
+    .area-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .area-tag {
+      background: var(--off-white); border: 1px solid var(--gray-200);
+      padding: 10px 22px; border-radius: var(--radius-pill);
+      font-size: 0.85rem; font-weight: 500; color: var(--gray-700);
+      transition: all var(--transition);
+    }
+    .area-tag:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-900); color: rgba(255,255,255,0.6);
+      padding: 60px 0 24px;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px;
+    }
+    .footer-brand .logo-name { color: var(--white); margin-bottom: 12px; }
+    .footer-brand .logo-name span { color: var(--blue-light); }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.8; }
+    .footer-col h4 {
+      font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--white);
+      margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a { font-size: 0.85rem; transition: color var(--transition); }
+    .footer-col a:hover { color: var(--blue-light); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px; display: flex;
+      justify-content: space-between; align-items: center;
+      font-size: 0.8rem; flex-wrap: wrap; gap: 12px;
+    }
+
+    /* ── Mobile Nav ── */
+    .mobile-nav {
+      display: none; position: fixed; inset: 0;
+      background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
+      z-index: 999; flex-direction: column;
+      align-items: center; justify-content: center; gap: 28px;
+    }
+    .mobile-nav.active { display: flex; }
+    .mobile-nav a { font-size: 1.2rem; font-weight: 700; color: var(--gray-900); }
+    .mobile-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; font-size: 2rem; color: var(--gray-900); cursor: pointer;
+    }
+
+    /* ── Sticky Mobile CTA ── */
+    .sticky-mobile {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 200; background: var(--white); padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1); border-top: 1px solid var(--gray-200);
+    }
+    .sticky-mobile-inner { display: flex; gap: 10px; max-width: 600px; margin: 0 auto; }
+    .sticky-mobile a {
+      flex: 1; text-align: center; padding: 14px;
+      border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem;
+    }
+    .sticky-call { background: var(--blue); color: var(--white); }
+    .sticky-book { background: var(--orange); color: var(--white); }
+
+    /* ── Animations ── */
+    .fade-in {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-image { display: none; }
+      .hero-text { padding-bottom: 60px; text-align: center; }
+      .hero-desc { margin: 0 auto 32px; }
+      .hero-buttons { justify-content: center; }
+      .hero-trust { justify-content: center; flex-wrap: wrap; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr; gap: 40px; }
+      .why-badge-card { right: 20px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .schedule-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .top-bar { display: none; }
+      nav, .header-phone { display: none; }
+      .header-schedule { display: none; }
+      .mobile-toggle { display: flex; }
+      .section { padding: 70px 0; }
+      .services-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .test-grid { grid-template-columns: 1fr; }
+      .sf-row { grid-template-columns: 1fr; }
+      .schedule-perks { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .sticky-mobile { display: block; }
+      footer { padding-bottom: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div class="top-bar-left">
+        <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 24/7 Emergency Service Available</span>
+        <span><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Serving Central Ohio &amp; Surrounding Areas</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="tel:6145550491"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> (614) 555-0491</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/><path d="M8 12h8M12 8v8"/></svg>
+        </div>
+        <div>
+          <div class="logo-name">Summit <span>Air Pros</span></div>
+          <div class="logo-sub">HVAC &bull; Plumbing &bull; Electrical</div>
+        </div>
+      </a>
+      <nav>
+        <a href="#services">Services</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#schedule">Contact</a>
+      </nav>
+      <div class="header-cta-group">
+        <a href="tel:6145550491" class="header-phone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          (614) 555-0491
+        </a>
+        <a href="#schedule" class="btn btn-primary header-schedule">Schedule Service</a>
+      </div>
+      <button class="mobile-toggle" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-close" onclick="toggleNav()">&times;</button>
+    <a href="#services" onclick="toggleNav()">Services</a>
+    <a href="#why-us" onclick="toggleNav()">Why Us</a>
+    <a href="#reviews" onclick="toggleNav()">Reviews</a>
+    <a href="#schedule" onclick="toggleNav()">Schedule</a>
+    <a href="tel:6145550491" style="color:var(--blue); font-weight:800;">(614) 555-0491</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-emergency"><span class="pulse-dot"></span> 24/7 Emergency Service</div>
+        <h1>Your Home's Comfort is Our <span class="highlight">Mission.</span></h1>
+        <p class="hero-desc">Licensed, bonded &amp; insured HVAC, plumbing, and electrical pros. Same-day service, upfront pricing, and a 100% satisfaction guarantee on every job.</p>
+        <div class="hero-buttons">
+          <a href="#schedule" class="btn btn-primary">Schedule Service &rarr;</a>
+          <a href="tel:6145550491" class="btn btn-white">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Call (614) 555-0491
+          </a>
+        </div>
+        <div class="hero-trust">
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div class="hero-trust-text"><strong>Licensed &amp; Insured</strong>All technicians certified</div>
+          </div>
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="hero-trust-text"><strong>100% Guarantee</strong>Satisfaction or it's free</div>
+          </div>
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="hero-trust-text"><strong>Upfront Pricing</strong>No surprises, ever</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80&fit=crop" alt="HVAC technician servicing unit">
+        <div class="hero-float-card">
+          <div class="hero-float-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          <div>
+            <div class="hf-title">4.9 Stars &bull; 2,400+ Reviews</div>
+            <div class="hf-sub">Trusted by homeowners since 2008</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <div class="trust-strip">
+    <div class="container">
+      <div class="trust-strip-inner">
+        <div class="trust-strip-item"><div class="trust-strip-icon tsi-blue"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div> Licensed, Bonded &amp; Insured</div>
+        <div class="trust-strip-item"><div class="trust-strip-icon tsi-orange"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div> Same-Day Service Available</div>
+        <div class="trust-strip-item"><div class="trust-strip-icon tsi-green"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div> 100% Satisfaction Guarantee</div>
+        <div class="trust-strip-item"><div class="trust-strip-icon tsi-blue"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div> Flexible Financing Options</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <section class="services section" id="services">
+    <div class="container">
+      <div class="services-header fade-in">
+        <div class="section-label"><span class="dot"></span> Our Services</div>
+        <h2 class="section-title">Complete Home Service Solutions</h2>
+        <p class="section-sub">From emergency AC repair to full system installations, our certified technicians handle it all — fast, fair, and guaranteed.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-in">
+          <img class="service-card-img" src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80&fit=crop" alt="Air conditioning unit">
+          <div class="service-card-body">
+            <span class="service-card-tag">HVAC</span>
+            <h3>Heating &amp; Cooling</h3>
+            <p>AC repair, furnace installation, heat pump service, duct cleaning, and full system replacements with industry-leading warranties.</p>
+            <a href="#schedule" class="service-card-link">Schedule Service <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
+        </div>
+        <div class="service-card fade-in">
+          <img class="service-card-img" src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&q=80&fit=crop" alt="Plumbing work">
+          <div class="service-card-body">
+            <span class="service-card-tag">Plumbing</span>
+            <h3>Plumbing Services</h3>
+            <p>Leak detection, water heater repair &amp; replacement, drain cleaning, pipe repair, and bathroom/kitchen repiping.</p>
+            <a href="#schedule" class="service-card-link">Schedule Service <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
+        </div>
+        <div class="service-card fade-in">
+          <img class="service-card-img" src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80&fit=crop" alt="Electrical panel work">
+          <div class="service-card-body">
+            <span class="service-card-tag">Electrical</span>
+            <h3>Electrical Services</h3>
+            <p>Panel upgrades, outlet installation, EV charger setup, ceiling fan wiring, whole-home surge protection, and code corrections.</p>
+            <a href="#schedule" class="service-card-link">Schedule Service <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Us -->
+  <section class="why-us section" id="why-us">
+    <div class="container">
+      <div class="why-grid">
+        <div class="why-image fade-in">
+          <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&q=80&fit=crop" alt="Summit Air Pros technician at work">
+          <div class="why-badge-card">
+            <div class="wbc-num">17+</div>
+            <div class="wbc-label">Years in Business</div>
+          </div>
+        </div>
+        <div class="why-text fade-in">
+          <div class="section-label"><span class="dot"></span> Why Choose Us</div>
+          <h2 class="section-title">The Summit Air Pros Difference</h2>
+          <p class="section-sub">We're not just another HVAC company. We've built our reputation on doing things right the first time — and treating every home like it's our own.</p>
+          <div class="why-features">
+            <div class="why-feature">
+              <div class="why-feature-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+              <div>
+                <h4>Certified &amp; Background-Checked Techs</h4>
+                <p>Every technician passes rigorous certification exams and a full background check before entering your home.</p>
+              </div>
+            </div>
+            <div class="why-feature">
+              <div class="why-feature-icon"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+              <div>
+                <h4>Upfront, Flat-Rate Pricing</h4>
+                <p>You approve the price before we start. No hourly billing surprises, no hidden fees, no upselling.</p>
+              </div>
+            </div>
+            <div class="why-feature">
+              <div class="why-feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+              <div>
+                <h4>Same-Day &amp; Emergency Service</h4>
+                <p>We show up when you need us — including nights, weekends, and holidays. No extra charge for emergency calls.</p>
+              </div>
+            </div>
+            <div class="why-feature">
+              <div class="why-feature-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+              <div>
+                <h4>100% Satisfaction Guarantee</h4>
+                <p>If you're not completely happy with our work, we'll make it right — free of charge. That's our promise.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid fade-in">
+        <div class="stat-item">
+          <div class="stat-num">17+</div>
+          <div class="stat-label">Years in Business</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">50K+</div>
+          <div class="stat-label">Jobs Completed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4.9</div>
+          <div class="stat-label">Star Rating</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">2,400+</div>
+          <div class="stat-label">5-Star Reviews</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials section" id="reviews">
+    <div class="container">
+      <div class="test-header fade-in">
+        <div class="section-label"><span class="dot"></span> Customer Reviews</div>
+        <h2 class="section-title">What Homeowners Are Saying</h2>
+        <p class="section-sub">Don't just take our word for it. Here's what real customers across Central Ohio have to say about Summit Air Pros.</p>
+      </div>
+      <div class="test-grid">
+        <div class="test-card fade-in">
+          <div class="test-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          <span class="test-service-tag">AC Repair</span>
+          <blockquote>"Our AC died on the hottest day of the year. Summit had a tech at our house in under two hours. He diagnosed the problem, showed me the price upfront, and had cold air blowing before dinner. Can't beat that."</blockquote>
+          <div class="test-author"><div class="test-avatar">MR</div><div><div class="test-name">M. Rivera</div><div class="test-loc">Maplewood, OH &bull; Google Review</div></div></div>
+        </div>
+        <div class="test-card fade-in">
+          <div class="test-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          <span class="test-service-tag">Furnace Install</span>
+          <blockquote>"We needed a full furnace replacement and got three quotes. Summit was the most transparent — they explained every option without pushing the most expensive one. Installation was clean and professional. Highly recommend."</blockquote>
+          <div class="test-author"><div class="test-avatar">KD</div><div><div class="test-name">K. Dawson</div><div class="test-loc">Oakdale, OH &bull; Yelp Review</div></div></div>
+        </div>
+        <div class="test-card fade-in">
+          <div class="test-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+          <span class="test-service-tag">Plumbing</span>
+          <blockquote>"Woke up to a flooded basement at 3 AM. Called Summit and they actually answered. A plumber was at my door within 45 minutes, fixed the burst pipe, and even helped clean up. These guys are the real deal."</blockquote>
+          <div class="test-author"><div class="test-avatar">TN</div><div><div class="test-name">T. Nguyen</div><div class="test-loc">Cedar Hills, OH &bull; Google Review</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule CTA -->
+  <section class="schedule-cta section" id="schedule">
+    <div class="container">
+      <div class="schedule-grid">
+        <div class="schedule-text fade-in">
+          <div class="section-label" style="color:var(--orange-light);"><span class="dot"></span> Schedule Service</div>
+          <h2>Ready to Get Your Home <span class="highlight">Comfortable?</span></h2>
+          <p>Book online in under 60 seconds or call us any time — day or night. A real person always answers the phone.</p>
+          <div class="schedule-perks">
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No overtime charges</div>
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Same-day appointments</div>
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Upfront pricing always</div>
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 100% satisfaction guarantee</div>
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Financing available</div>
+            <div class="schedule-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Background-checked techs</div>
+          </div>
+        </div>
+        <div class="schedule-form fade-in">
+          <h3>Book Your Appointment</h3>
+          <p>We'll confirm within 30 minutes.</p>
+          <form onsubmit="handleSchedule(event)" id="scheduleForm">
+            <div class="sf-row">
+              <div class="sf-group"><label>Full Name *</label><input type="text" placeholder="Jane Smith" required></div>
+              <div class="sf-group"><label>Phone *</label><input type="tel" placeholder="(614) 555-0000" required></div>
+            </div>
+            <div class="sf-group"><label>Email</label><input type="email" placeholder="jane@example.com"></div>
+            <div class="sf-row">
+              <div class="sf-group"><label>Service Needed</label>
+                <select>
+                  <option value="">Select a service...</option>
+                  <option>AC Repair / Maintenance</option>
+                  <option>Heating / Furnace Repair</option>
+                  <option>New HVAC System Install</option>
+                  <option>Plumbing Repair</option>
+                  <option>Water Heater Service</option>
+                  <option>Electrical Repair</option>
+                  <option>Panel Upgrade</option>
+                  <option>Other / Not Sure</option>
+                </select>
+              </div>
+              <div class="sf-group"><label>Preferred Date</label><input type="date"></div>
+            </div>
+            <button type="submit" class="btn btn-primary sf-submit">Schedule My Service &rarr;</button>
+          </form>
+          <p class="sf-note"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Your info is secure and never shared.</p>
+          <div id="scheduleSuccess">
+            <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <h3>You're All Set!</h3>
+            <p>We'll confirm your appointment within 30 minutes. If this is urgent, call us now at <a href="tel:6145550491" style="color:var(--blue); font-weight:700;">(614) 555-0491</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Areas -->
+  <section class="areas">
+    <div class="container areas-inner">
+      <h3>Proudly Serving Central Ohio</h3>
+      <div class="area-tags">
+        <span class="area-tag">Maplewood</span>
+        <span class="area-tag">Oakdale</span>
+        <span class="area-tag">Cedar Hills</span>
+        <span class="area-tag">Willowbrook</span>
+        <span class="area-tag">Linden Park</span>
+        <span class="area-tag">Elm Ridge</span>
+        <span class="area-tag">Stonecreek</span>
+        <span class="area-tag">Briarfield</span>
+        <span class="area-tag">Hawthorne</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo-name">Summit <span>Air Pros</span></div>
+          <p>Licensed, bonded, and insured HVAC, plumbing, and electrical services. Serving Central Ohio homeowners since 2008 with honest pricing and guaranteed workmanship.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">Heating &amp; Cooling</a></li>
+            <li><a href="#services">Plumbing</a></li>
+            <li><a href="#services">Electrical</a></li>
+            <li><a href="#">Maintenance Plans</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#why-us">Why Choose Us</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Financing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:6145550491">(614) 555-0491</a></li>
+            <li>310 Commerce Pkwy, Ste 200</li>
+            <li>Maplewood, OH 43050</li>
+            <li>Available 24/7</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Summit Air Pros. All rights reserved. This is a fictional demo website.</span>
+        <span>OH License #HVAC-2008-4491</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky Mobile CTA -->
+  <div class="sticky-mobile">
+    <div class="sticky-mobile-inner">
+      <a href="tel:6145550491" class="sticky-call">&#9742; Call Now</a>
+      <a href="#schedule" class="sticky-book">Schedule Service</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleNav() { document.getElementById('mobileNav').classList.toggle('active'); }
+
+    function handleSchedule(e) {
+      e.preventDefault();
+      document.getElementById('scheduleForm').style.display = 'none';
+      document.querySelector('.schedule-form h3').style.display = 'none';
+      document.querySelector('.schedule-form > p').style.display = 'none';
+      document.querySelector('.sf-note').style.display = 'none';
+      document.getElementById('scheduleSuccess').style.display = 'block';
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

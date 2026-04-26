@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArcticBreeze HVAC – Heating, Cooling & Air Quality</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #1a6fc4;
+      --blue-dk: #0f4f90;
+      --blue-lt: #e8f2fc;
+      --orange:  #e85d04;
+      --gray:    #4a4a4a;
+      --light:   #f7f9fc;
+      --white:   #ffffff;
+      --radius:  10px;
+    }
+
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: var(--gray); background: var(--white); }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 68px;
+      background: var(--blue-dk); position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .logo { font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: .5px; }
+    .logo span { color: #7ec8f7; }
+    nav ul { list-style: none; display: flex; gap: 28px; }
+    nav ul a { color: #d0e8ff; text-decoration: none; font-size: .95rem; transition: color .2s; }
+    nav ul a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--orange); color: var(--white) !important;
+      padding: 8px 20px; border-radius: 6px; font-weight: 600;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: #c94d00 !important; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--blue-dk) 0%, #1e88e5 60%, #42a5f5 100%);
+      color: var(--white); padding: 90px 5% 80px; display: flex;
+      align-items: center; gap: 60px; min-height: 520px;
+    }
+    .hero-text { flex: 1; }
+    .hero-text h1 { font-size: 3rem; line-height: 1.15; margin-bottom: 18px; }
+    .hero-text h1 span { color: #7ec8f7; }
+    .hero-text p { font-size: 1.15rem; opacity: .9; max-width: 480px; margin-bottom: 36px; line-height: 1.7; }
+    .btn-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange); color: var(--white);
+      padding: 14px 32px; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      text-decoration: none; transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: #c94d00; transform: translateY(-2px); }
+    .btn-outline {
+      border: 2px solid rgba(255,255,255,.7); color: var(--white);
+      padding: 14px 32px; border-radius: 8px; font-size: 1rem; font-weight: 600;
+      text-decoration: none; transition: background .2s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.15); }
+    .hero-badge {
+      flex: 0 0 auto; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+      border-radius: var(--radius); padding: 32px 40px; text-align: center;
+    }
+    .hero-badge .number { font-size: 3.5rem; font-weight: 800; color: #7ec8f7; line-height: 1; }
+    .hero-badge .label { font-size: .95rem; opacity: .85; margin-top: 6px; }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--blue-lt); padding: 18px 5%;
+      display: flex; justify-content: center; gap: 50px; flex-wrap: wrap;
+    }
+    .trust-item { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--blue-dk); font-size: .92rem; }
+    .trust-icon { font-size: 1.4rem; }
+
+    /* ── SECTION SHELL ── */
+    section { padding: 80px 5%; }
+    .section-label { text-transform: uppercase; letter-spacing: 2px; font-size: .78rem; color: var(--blue); font-weight: 700; margin-bottom: 8px; }
+    h2 { font-size: 2.1rem; color: #1a1a2e; margin-bottom: 14px; }
+    .section-intro { max-width: 560px; font-size: 1.05rem; line-height: 1.8; color: #666; margin-bottom: 48px; }
+
+    /* ── SERVICES ── */
+    .services { background: var(--white); }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; }
+    .card {
+      background: var(--light); border-radius: var(--radius);
+      padding: 32px 28px; border: 1px solid #e2eaf4;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(26,111,196,.12); }
+    .card-icon { font-size: 2.4rem; margin-bottom: 16px; }
+    .card h3 { font-size: 1.15rem; color: #1a1a2e; margin-bottom: 10px; }
+    .card p { font-size: .92rem; line-height: 1.7; color: #666; }
+
+    /* ── WHY US ── */
+    .why { background: var(--blue-dk); color: var(--white); }
+    .why h2 { color: var(--white); }
+    .why .section-intro { color: rgba(255,255,255,.75); }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; }
+    .why-item { text-align: center; }
+    .why-num { font-size: 2.8rem; font-weight: 800; color: #7ec8f7; line-height: 1; }
+    .why-desc { font-size: .95rem; opacity: .85; margin-top: 8px; line-height: 1.5; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--light); }
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+    .testi-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 28px; border-left: 4px solid var(--blue);
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .stars { color: #f5a623; font-size: 1.1rem; margin-bottom: 14px; }
+    .testi-card p { font-size: .95rem; line-height: 1.75; color: #555; font-style: italic; margin-bottom: 18px; }
+    .testi-author { font-weight: 700; color: #1a1a2e; font-size: .9rem; }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(90deg, var(--orange) 0%, #ff8c38 100%);
+      color: var(--white); text-align: center; padding: 70px 5%;
+    }
+    .cta-band h2 { color: var(--white); font-size: 2rem; margin-bottom: 14px; }
+    .cta-band p { font-size: 1.05rem; opacity: .9; margin-bottom: 36px; }
+    .btn-white {
+      background: var(--white); color: var(--orange);
+      padding: 16px 40px; border-radius: 8px; font-size: 1rem; font-weight: 800;
+      text-decoration: none; display: inline-block; transition: transform .15s, box-shadow .15s;
+    }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.2); }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--white); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+    .contact-info h3 { font-size: 1.3rem; color: #1a1a2e; margin-bottom: 20px; }
+    .contact-info p { line-height: 1.8; color: #666; margin-bottom: 12px; }
+    .contact-info strong { color: var(--blue-dk); }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .contact-form input, .contact-form select, .contact-form textarea {
+      padding: 12px 16px; border: 1px solid #d0d9e8; border-radius: 8px;
+      font-size: .95rem; color: var(--gray); outline: none;
+      transition: border-color .2s;
+    }
+    .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--blue); }
+    .contact-form textarea { resize: vertical; min-height: 110px; }
+    .contact-form button {
+      background: var(--blue); color: var(--white); border: none;
+      padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .contact-form button:hover { background: var(--blue-dk); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0d1b2e; color: rgba(255,255,255,.6);
+      padding: 40px 5%; text-align: center; font-size: .88rem;
+    }
+    footer a { color: #7ec8f7; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .hero { flex-direction: column; padding: 60px 5%; }
+      .hero-text h1 { font-size: 2.1rem; }
+      .hero-badge { width: 100%; }
+      nav ul { display: none; }
+      .contact-wrap { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Arctic<span>Breeze</span> HVAC</div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Free Quote</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Stay Comfortable <span>Year-Round</span> with Expert HVAC</h1>
+    <p>From emergency repairs to full system installations, ArcticBreeze keeps your home or business at the perfect temperature — guaranteed.</p>
+    <div class="btn-group">
+      <a href="#contact" class="btn-primary">Get a Free Quote</a>
+      <a href="tel:+15551234567" class="btn-outline">📞 (555) 123-4567</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="number">24/7</div>
+    <div class="label">Emergency<br>Service</div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><span class="trust-icon">✅</span> Licensed &amp; Insured</div>
+  <div class="trust-item"><span class="trust-icon">⭐</span> 4.9-Star Rated</div>
+  <div class="trust-item"><span class="trust-icon">🏆</span> 20+ Years Experience</div>
+  <div class="trust-item"><span class="trust-icon">💰</span> No Hidden Fees</div>
+  <div class="trust-item"><span class="trust-icon">🔧</span> All Brands Serviced</div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">What We Do</div>
+  <h2>Comprehensive HVAC Services</h2>
+  <p class="section-intro">Whether you need routine maintenance or an urgent fix, our certified technicians have you covered.</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">❄️</div>
+      <h3>AC Installation &amp; Repair</h3>
+      <p>New system installs, refrigerant recharges, compressor replacements, and same-day AC repairs to beat the heat.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔥</div>
+      <h3>Heating &amp; Furnace</h3>
+      <p>Gas, electric, and heat-pump furnace service. We diagnose and fix heating problems fast before cold nights hit.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌬️</div>
+      <h3>Air Quality &amp; Filtration</h3>
+      <p>Whole-home air purifiers, UV light systems, humidity control, and HEPA filter upgrades for healthier indoor air.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛠️</div>
+      <h3>Preventive Maintenance</h3>
+      <p>Bi-annual tune-up plans that extend equipment life, cut energy bills, and prevent expensive breakdowns.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌡️</div>
+      <h3>Smart Thermostat Setup</h3>
+      <p>Nest, Ecobee, and Honeywell smart thermostat installation and programming for effortless climate control.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏗️</div>
+      <h3>Commercial HVAC</h3>
+      <p>Rooftop units, ductless mini-splits, and full commercial HVAC design-build for offices, restaurants, and retail.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="section-label" style="color:#7ec8f7">Why ArcticBreeze</div>
+  <h2>Numbers That Speak for Themselves</h2>
+  <p class="section-intro">Over two decades serving homeowners and businesses with honest pricing and lasting results.</p>
+  <div class="why-grid">
+    <div class="why-item">
+      <div class="why-num">5,200+</div>
+      <div class="why-desc">Systems Installed</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">4.9 ★</div>
+      <div class="why-desc">Average Google Rating</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">2 hr</div>
+      <div class="why-desc">Average Response Time</div>
+    </div>
+    <div class="why-item">
+      <div class="why-num">100%</div>
+      <div class="why-desc">Satisfaction Guarantee</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="section-label">Customer Reviews</div>
+  <h2>What Our Customers Say</h2>
+  <p class="section-intro">Real stories from real homeowners and businesses we've helped stay comfortable.</p>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"AC died on the hottest day of July. ArcticBreeze had a tech at my door within 90 minutes and it was fixed before dinner. Incredible service!"</p>
+      <div class="testi-author">— Jennifer M., Homeowner</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"Replaced our ancient furnace last fall. The crew was professional, cleaned up completely, and the new system cut our heating bill by 30%. Highly recommend."</p>
+      <div class="testi-author">— David R., Homeowner</div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p>"We use ArcticBreeze for all three of our restaurant locations. Fast, reliable, and their maintenance plan means we've had zero emergency closures. Worth every penny."</p>
+      <div class="testi-author">— Sandra K., Restaurant Owner</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Don't Wait Until It Breaks</h2>
+  <p>Schedule your seasonal tune-up today and get 15% off your first maintenance visit.</p>
+  <a href="#contact" class="btn-white">Book My Tune-Up</a>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-label">Get In Touch</div>
+  <h2>Request a Free Quote</h2>
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h3>We're Here to Help</h3>
+      <p><strong>Phone:</strong> (555) 123-4567</p>
+      <p><strong>Email:</strong> info@arcticbreezehhvac.com</p>
+      <p><strong>Hours:</strong> Mon–Fri 7am–8pm · Sat 8am–5pm<br>24/7 Emergency Line Always Available</p>
+      <p><strong>Service Area:</strong> Metro City and surrounding communities within 50 miles.</p>
+      <br>
+      <p>Our team will respond within 1 business hour. For emergencies, call us directly for immediate dispatch.</p>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <input type="text" placeholder="Your Name" required />
+      <input type="tel" placeholder="Phone Number" required />
+      <input type="email" placeholder="Email Address" />
+      <select>
+        <option value="">Select Service Needed</option>
+        <option>AC Repair or Installation</option>
+        <option>Heating / Furnace Service</option>
+        <option>Preventive Maintenance</option>
+        <option>Air Quality / Filtration</option>
+        <option>Smart Thermostat</option>
+        <option>Commercial HVAC</option>
+        <option>Emergency Service</option>
+      </select>
+      <textarea placeholder="Describe your issue or request…"></textarea>
+      <button type="submit">Send My Request →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 ArcticBreeze HVAC. All rights reserved. · <a href="#">Privacy Policy</a> · <a href="#">License #HV-20485</a></p>
+</footer>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = '✅ Request Sent! We\'ll call you soon.';
+    btn.style.background = '#2e7d32';
+    btn.disabled = true;
+  }
+</script>
+</body>
+</html>

@@ -5,23 +5,16 @@ import Button from "./Button";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-type ContactFormProps = {
-  /**
-   * `marketing` — dark Macrolight /contact page (html has .dark).
-   * `preview` — light "site in site" industry embed (explicit light fields).
-   */
-  variant?: "marketing" | "preview";
-};
+// variant prop kept for backwards-compat with industry showcase pages
+interface ContactFormProps {
+  variant?: "default" | "preview";
+}
 
-const inputMarketing =
-  "block w-full rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm transition placeholder:text-zinc-400 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/[0.03] dark:text-white";
-const inputPreview =
-  "block w-full rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 shadow-sm transition placeholder:text-zinc-400 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20";
+const inputCls =
+  "block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20";
 
-export default function ContactForm({
-  variant = "marketing",
-}: ContactFormProps) {
-  const isPreview = variant === "preview";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function ContactForm(_props: ContactFormProps = {}) {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [form, setForm] = useState({
     name: "",
@@ -50,55 +43,20 @@ export default function ContactForm({
 
   if (status === "success") {
     return (
-      <div
-        className={
-          isPreview
-            ? "rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm animate-scale-in"
-            : "surface rounded-2xl p-8 text-center animate-scale-in"
-        }
-      >
-        <div className="mx-auto mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-md dark:shadow-glow-cyan">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            className="h-6 w-6 text-white"
-            aria-hidden
-          >
-            <path
-              d="M5 13l4 4L19 7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+      <div className="surface rounded-2xl p-8 text-center animate-scale-in">
+        <div className="mx-auto mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-md">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-6 w-6 text-white" aria-hidden>
+            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <h3
-          className={
-            isPreview
-              ? "text-2xl font-bold text-zinc-900"
-              : "text-2xl font-bold text-zinc-900 dark:text-white"
-          }
-        >
-          Request received
-        </h3>
-        <p
-          className={
-            isPreview
-              ? "mt-2 text-zinc-600"
-              : "mt-2 text-zinc-600 dark:text-white/70"
-          }
-        >
+        <h3 className="text-2xl font-bold text-gray-900">Request received</h3>
+        <p className="mt-2 text-gray-500">
           We&apos;ll review your site and send your free audit within 24 hours.
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className={
-            isPreview
-              ? "mt-6 text-sm text-zinc-500 hover:text-zinc-800 underline underline-offset-4"
-              : "mt-6 text-sm text-zinc-500 dark:text-white/60 hover:text-zinc-800 dark:hover:text-white underline underline-offset-4"
-          }
+          className="mt-6 text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4 transition-colors"
         >
           Send another request
         </button>
@@ -109,53 +67,17 @@ export default function ContactForm({
   return (
     <form
       onSubmit={onSubmit}
-      className={
-        isPreview
-          ? "space-y-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8"
-          : "surface space-y-5 rounded-2xl p-6 sm:p-8"
-      }
+      className="surface space-y-5 rounded-2xl p-6 sm:p-8"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field
-          label="Name"
-          name="name"
-          required
-          value={form.name}
-          onChange={onChange}
-          placeholder="Jane Doe"
-          isPreview={isPreview}
-        />
-        <Field
-          label="Business Name"
-          name="business"
-          required
-          value={form.business}
-          onChange={onChange}
-          placeholder="Acme Plumbing"
-          isPreview={isPreview}
-        />
+        <Field label="Name" name="name" required value={form.name} onChange={onChange} placeholder="Jane Doe" />
+        <Field label="Business Name" name="business" required value={form.business} onChange={onChange} placeholder="Acme Plumbing" />
       </div>
 
-      <Field
-        label="Email"
-        name="email"
-        type="email"
-        required
-        value={form.email}
-        onChange={onChange}
-        placeholder="you@business.com"
-        isPreview={isPreview}
-      />
+      <Field label="Email" name="email" type="email" required value={form.email} onChange={onChange} placeholder="you@business.com" />
 
       <div>
-        <label
-          htmlFor="message"
-          className={
-            isPreview
-              ? "mb-2 block text-sm font-medium text-zinc-700"
-              : "mb-2 block text-sm font-medium text-zinc-700 dark:text-white/80"
-          }
-        >
+        <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700">
           Message
         </label>
         <textarea
@@ -166,40 +88,21 @@ export default function ContactForm({
           onChange={onChange}
           placeholder="Tell us about your business, current website, and what you're hoping to achieve..."
           rows={5}
-          className={isPreview ? inputPreview : inputMarketing}
+          className={inputCls}
         />
       </div>
 
-      <Button
-        type="submit"
-        variant="primary"
-        size="lg"
-        fullWidth
-        disabled={status === "submitting"}
-        onLight={isPreview}
-      >
+      <Button type="submit" variant="primary" size="lg" fullWidth disabled={status === "submitting"}>
         {status === "submitting" ? "Sending..." : "Request Free Website Audit"}
       </Button>
 
       {status === "error" && (
-        <p
-          className={
-            isPreview
-              ? "text-center text-sm text-red-600"
-              : "text-center text-sm text-red-600 dark:text-red-400"
-          }
-        >
+        <p className="text-center text-sm text-red-600">
           Something went wrong. Please try again or email us directly.
         </p>
       )}
 
-      <p
-        className={
-          isPreview
-            ? "text-center text-xs text-zinc-500"
-            : "text-center text-xs text-zinc-500 dark:text-white/40"
-        }
-      >
+      <p className="text-center text-xs text-gray-400">
         We respond within one business day. No spam, ever.
       </p>
     </form>
@@ -214,29 +117,12 @@ interface FieldProps {
   required?: boolean;
   placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  isPreview?: boolean;
 }
 
-function Field({
-  label,
-  name,
-  type = "text",
-  value,
-  required,
-  placeholder,
-  onChange,
-  isPreview = false,
-}: FieldProps) {
+function Field({ label, name, type = "text", value, required, placeholder, onChange }: FieldProps) {
   return (
     <div>
-      <label
-        htmlFor={name}
-        className={
-          isPreview
-            ? "mb-2 block text-sm font-medium text-zinc-700"
-            : "mb-2 block text-sm font-medium text-zinc-700 dark:text-white/80"
-        }
-      >
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-gray-700">
         {label}
       </label>
       <input
@@ -247,7 +133,7 @@ function Field({
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        className={isPreview ? inputPreview : inputMarketing}
+        className={inputCls}
       />
     </div>
   );

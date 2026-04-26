@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Section from "@/components/Section";
 import ContactForm from "@/components/ContactForm";
 
@@ -31,28 +30,20 @@ const bullets = [
 export default function ContactPage() {
   return (
     <>
-      <section className="relative overflow-hidden pt-20 pb-10 sm:pt-28">
-        <div
-          className="absolute inset-0 grid-bg pointer-events-none"
-          aria-hidden
-        />
-        <div
-          className="orb bg-violet-600 h-80 w-80 -top-20 -left-20"
-          aria-hidden
-        />
-        <div
-          className="orb bg-cyan-500 h-80 w-80 top-10 -right-20"
-          aria-hidden
-        />
+      {/* Page header */}
+      <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
+        <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />
+        <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-violet-100 opacity-50 blur-3xl pointer-events-none" aria-hidden />
 
         <div className="relative mx-auto max-w-4xl px-5 sm:px-8 text-center">
-          <p className="text-sm font-semibold uppercase tracking-wider text-cyan-400 animate-fade-in">
+          <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 animate-fade-in">
             Free audit
           </p>
-          <h1 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.05] animate-fade-in-up">
-            Request Free <span className="gradient-text">Website Audit</span>
+          <h1 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.05] animate-fade-in-up">
+            Request Free{" "}
+            <span className="gradient-text">Website Audit</span>
           </h1>
-          <p className="mt-5 text-lg text-white/70 max-w-2xl mx-auto animate-fade-in-up">
+          <p className="mt-5 text-lg text-gray-500 max-w-2xl mx-auto animate-fade-in-up">
             Tell us about your business. We&apos;ll review your current
             website and send a prioritized conversion plan within 24 hours —
             no cost, no pitch.
@@ -60,49 +51,60 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <Section padding="lg" className="border-t border-white/5">
+      {/* Content */}
+      <Section padding="lg" className="bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+          {/* Left: what you get */}
           <div className="lg:col-span-2 space-y-5">
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-6">
+              What's included
+            </p>
             {bullets.map((b, i) => (
               <div key={b.title} className="flex gap-4">
-                <div className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500/30 to-cyan-500/30 ring-1 ring-inset ring-white/10 text-white font-semibold text-sm">
+                <div className="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-violet-50 border border-violet-100 text-violet-600 font-semibold text-sm">
                   {i + 1}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-white">
+                  <h3 className="text-base font-semibold text-gray-900">
                     {b.title}
                   </h3>
-                  <p className="mt-1 text-sm text-white/60 leading-relaxed">
+                  <p className="mt-1 text-sm text-gray-500 leading-relaxed">
                     {b.body}
                   </p>
                 </div>
               </div>
             ))}
 
-            <div className="surface rounded-2xl p-5 mt-8">
-              <div className="text-xs text-white/40 uppercase tracking-wider">
+            {/* Email fallback */}
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 mt-8">
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Prefer email?
               </div>
               <a
                 href="mailto:hello@macrolight.co"
-                className="mt-1 block text-white font-medium hover:text-cyan-300 transition-colors"
+                className="mt-1 block text-gray-900 font-medium hover:text-violet-600 transition-colors"
               >
                 hello@macrolight.co
               </a>
             </div>
 
-            <div className="relative mt-6 overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/40 p-4">
-              <Image
-                src="/images/placeholders/audit-illustration.svg"
-                alt="Stylized document and checklist representing your audit report"
-                width={400}
-                height={360}
-                className="h-auto w-full opacity-90"
-                unoptimized
-              />
+            {/* Trust signals */}
+            <div className="bg-violet-50 rounded-2xl border border-violet-100 p-5 mt-4">
+              <div className="flex gap-3 mb-3">
+                {["★","★","★","★","★"].map((s, i) => (
+                  <span key={i} className="text-amber-400 text-sm">{s}</span>
+                ))}
+              </div>
+              <p className="text-sm text-gray-700 font-medium">
+                "Our leads doubled in the first two months. Best investment we made."
+              </p>
+              <p className="mt-2 text-xs text-gray-500">
+                — Mike T., Roofing contractor, Columbus OH
+              </p>
             </div>
           </div>
 
+          {/* Right: form */}
           <div className="lg:col-span-3">
             <ContactForm />
           </div>

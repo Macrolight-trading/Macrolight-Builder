@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/next";
+import ChatWidget from "@/components/ChatWidget";
+import SiteShell from "@/components/SiteShell";
 
 export const metadata: Metadata = {
   title: {
@@ -31,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -40,14 +43,19 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-zinc-950 text-white">
-        <Navbar />
-        <main className="flex-1 relative">{children}</main>
-        <Footer />
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-white text-gray-900">
+        <SiteShell
+          navbar={<Navbar />}
+          footer={<Footer />}
+          chatWidget={<ChatWidget />}
+        >
+          {children}
+        </SiteShell>
+        <Analytics />
       </body>
     </html>
   );
