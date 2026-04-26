@@ -23,7 +23,7 @@ export default async function AnalyticsPage() {
 
   // Group by day
   const dailyMap = new Map<string, number>();
-  recentViews.forEach((v) => {
+  recentViews.forEach((v: { createdAt: Date }) => {
     const day = v.createdAt.toISOString().split("T")[0];
     dailyMap.set(day, (dailyMap.get(day) || 0) + 1);
   });
@@ -118,7 +118,7 @@ export default async function AnalyticsPage() {
                 No data.
               </p>
             ) : (
-              pageViewsByPath.map((p) => (
+              pageViewsByPath.map((p: { path: string; _count: number }) => (
                 <div
                   key={p.path}
                   className="px-5 py-2.5 flex items-center justify-between"
@@ -148,7 +148,7 @@ export default async function AnalyticsPage() {
                 No data.
               </p>
             ) : (
-              referrers.map((r) => (
+              referrers.map((r: { referrer: string | null; _count: number }) => (
                 <div
                   key={r.referrer || "direct"}
                   className="px-5 py-2.5 flex items-center justify-between"
@@ -178,7 +178,7 @@ export default async function AnalyticsPage() {
                 No data.
               </p>
             ) : (
-              countries.map((c) => (
+              countries.map((c: { country: string | null; _count: number }) => (
                 <div
                   key={c.country || "unknown"}
                   className="px-5 py-2.5 flex items-center justify-between"

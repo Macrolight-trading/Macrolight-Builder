@@ -20,7 +20,7 @@ export default async function ContactsPage() {
   };
 
   const newCount =
-    statusCounts.find((s) => s.status === "NEW")?._count || 0;
+    statusCounts.find((s: { status: string; _count: number }) => s.status === "NEW")?._count || 0;
 
   return (
     <>
@@ -44,7 +44,7 @@ export default async function ContactsPage() {
       <div className="flex gap-2 mb-6">
         {(["NEW", "READ", "REPLIED", "ARCHIVED"] as const).map((status) => {
           const count =
-            statusCounts.find((s) => s.status === status)?._count || 0;
+            statusCounts.find((s: { status: string; _count: number }) => s.status === status)?._count || 0;
           return (
             <span
               key={status}
@@ -65,7 +65,17 @@ export default async function ContactsPage() {
             </p>
           </div>
         ) : (
-          contacts.map((c) => (
+          contacts.map((c: {
+            id: string;
+            name: string;
+            email: string;
+            phone: string | null;
+            company: string | null;
+            industry: string | null;
+            message: string;
+            status: string;
+            createdAt: Date;
+          }) => (
             <div
               key={c.id}
               className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow"

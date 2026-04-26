@@ -116,7 +116,14 @@ export default async function AdminOverviewPage() {
                 No payments yet.
               </p>
             ) : (
-              stats.recentPayments.map((p) => (
+              stats.recentPayments.map((p: {
+                id: string;
+                amount: number;
+                status: string;
+                description: string | null;
+                createdAt: Date;
+                user: { name: string | null; email: string };
+              }) => (
                 <div key={p.id} className="px-5 py-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
@@ -163,7 +170,15 @@ export default async function AdminOverviewPage() {
                 No contacts yet.
               </p>
             ) : (
-              stats.recentContacts.map((c) => (
+              stats.recentContacts.map((c: {
+                id: string;
+                name: string;
+                email: string;
+                company: string | null;
+                industry: string | null;
+                status: string;
+                createdAt: Date;
+              }) => (
                 <div key={c.id} className="px-5 py-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-900">{c.name}</p>

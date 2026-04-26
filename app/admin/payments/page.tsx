@@ -14,7 +14,10 @@ export default async function PaymentsPage() {
     _count: true,
   });
 
-  const succeeded = totals.find((t) => t.status === "SUCCEEDED");
+  const succeeded = totals.find(
+    (t: { status: string; _sum: { amount: number | null }; _count: number }) =>
+      t.status === "SUCCEEDED"
+  );
   const totalRevenue = (succeeded?._sum.amount || 0) / 100;
   const totalCount = payments.length;
 
@@ -42,7 +45,10 @@ export default async function PaymentsPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {(["SUCCEEDED", "PENDING", "FAILED", "REFUNDED"] as const).map(
           (status) => {
-            const t = totals.find((t) => t.status === status);
+            const t = totals.find(
+              (t: { status: string; _sum: { amount: number | null }; _count: number }) =>
+                t.status === status
+            );
             return (
               <div
                 key={status}
@@ -88,7 +94,14 @@ export default async function PaymentsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {payments.map((p) => (
+              {payments.map((p: {
+                id: string;
+                amount: number;
+                status: string;
+                description: string | null;
+                createdAt: Date;
+                user: { name: string | null; email: string };
+              }) => (
                 <tr key={p.id} className="hover:bg-gray-50/40 transition-colors">
                   <td className="px-5 py-3.5">
                     <p className="font-medium text-gray-900">

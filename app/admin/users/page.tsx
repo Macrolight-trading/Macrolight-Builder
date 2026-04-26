@@ -42,7 +42,15 @@ export default async function UsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {users.map((user) => (
+              {users.map((user: {
+                id: string;
+                name: string | null;
+                email: string;
+                role: string;
+                plan: string;
+                createdAt: Date;
+                _count: { payments: number };
+              }) => (
                 <tr key={user.id} className="hover:bg-gray-50/40 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
