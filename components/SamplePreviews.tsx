@@ -469,6 +469,12 @@ export default function SamplePreviews() {
           animation: carousel-progress ${SLIDE_INTERVAL}ms linear forwards;
         }
         .carousel-progress-bar.paused { animation-play-state: paused; }
+        @media (max-width: 480px) {
+          .slide-preview-content { zoom: 0.72; }
+        }
+        @media (min-width: 481px) and (max-width: 767px) {
+          .slide-preview-content { zoom: 0.88; }
+        }
       `}</style>
 
       {/* Section header */}
@@ -511,6 +517,7 @@ export default function SamplePreviews() {
             onTouchEnd={handleTouchEnd}
             style={{
               display: "flex",
+              width: "100%",
               transform: `translateX(calc(-${current * 100}% + ${dragDelta}px))`,
               transition: isDragging ? "none" : "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
               willChange: "transform",
@@ -521,7 +528,7 @@ export default function SamplePreviews() {
             {SLIDES.map((s, i) => {
               const SlideComponent = SLIDE_COMPONENTS[i];
               return (
-                <div key={s.href} style={{ minWidth: "100%", flexShrink: 0 }}>
+                <div key={s.href} style={{ flex: "0 0 100%", minWidth: 0, overflow: "hidden" }}>
                   <Link
                     href={s.href}
                     className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-inset"
@@ -529,6 +536,7 @@ export default function SamplePreviews() {
                     tabIndex={i === current ? 0 : -1}
                     onClick={(e) => { if (swipedRef.current) e.preventDefault(); }}
                   >
+                    <div className="slide-preview-content">
                     {/* Browser chrome */}
                     <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50 px-3 py-2">
                       <span className="h-2.5 w-2.5 rounded-full bg-red-400" aria-hidden />
@@ -559,6 +567,7 @@ export default function SamplePreviews() {
                         </svg>
                       </span>
                     </div>
+                    </div>{/* end slide-preview-content */}
                   </Link>
                 </div>
               );
