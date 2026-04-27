@@ -38,6 +38,12 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: `Websites That Get More ${industry.clientsLabel}`,
     description: `${industry.heroTagline} Macrolight Builders installs a full client acquisition system for ${industry.name.toLowerCase()} businesses.`,
+    alternates: { canonical: `/${params.industry}` },
+    openGraph: {
+      title: `${industry.name} Websites — Macrolight Builders`,
+      description: `${industry.heroTagline} See how our client acquisition system works for ${industry.name.toLowerCase()} businesses.`,
+      url: `https://macrolightbuilders.com/${params.industry}`,
+    },
   };
 }
 

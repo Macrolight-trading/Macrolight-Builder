@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { IndustryProfile } from "@/lib/industries";
+import RelatedIndustries from "./RelatedIndustries";
 
 /**
  * Full-page wrapper for industry showcase sites.
@@ -33,6 +34,7 @@ export default function IndustryPreviewFrame({
       {/* ── Full-page showcase content ── */}
       <div className="industry-site-light text-zinc-900 antialiased">
         {children}
+        <RelatedIndustries current={industry} />
       </div>
     </div>
   );

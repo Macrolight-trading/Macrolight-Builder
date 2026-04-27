@@ -2,12 +2,20 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import PricingCard from "@/components/PricingCard";
 import CTASection from "@/components/CTASection";
+import JsonLd from "@/components/JsonLd";
 import { pricingTiers } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Pricing",
   description:
     "Transparent pricing for Macrolight Builders client acquisition systems. Starter, Growth, and Pro tiers — one build fee plus a monthly subscription.",
+  alternates: { canonical: "/pricing" },
+  openGraph: {
+    title: "Pricing — Macrolight Builders",
+    description:
+      "One build fee. One monthly subscription. Everything included to turn your website into a lead machine.",
+    url: "https://macrolightbuilders.com/pricing",
+  },
 };
 
 const faqs = [
@@ -29,9 +37,23 @@ const faqs = [
   },
 ];
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: f.a,
+    },
+  })),
+};
+
 export default function PricingPage() {
   return (
     <>
+      <JsonLd data={faqSchema} />
       {/* Page header */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />

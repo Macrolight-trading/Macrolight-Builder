@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: "Request a Free Website Audit",
   description:
     "Tell us about your business. We'll analyze your current website and send you a prioritized conversion plan within 24 hours.",
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Request a Free Website Audit — Macrolight Builders",
+    description:
+      "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
+    url: "https://macrolightbuilders.com/contact",
+  },
 };
 
 const bullets = [

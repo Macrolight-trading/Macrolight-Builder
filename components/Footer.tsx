@@ -11,21 +11,32 @@ const columns: Array<{
       { label: "Features", href: "/#features" },
       { label: "How it works", href: "/#how-it-works" },
       { label: "Pricing", href: "/pricing" },
+      { label: "How we build", href: "/how-we-build" },
       { label: "Free audit", href: "/contact" },
     ],
   },
   {
     title: "Industries",
     links: [
+      { label: "Roofing", href: "/roofing" },
       { label: "Restaurants", href: "/restaurants" },
       { label: "Law Firms", href: "/law-firms" },
       { label: "HVAC", href: "/hvac" },
       { label: "Dentists", href: "/dentists" },
+      { label: "Lawn Care", href: "/lawn-care" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Blog", href: "/blog" },
+      { label: "Case Studies", href: "/case-studies" },
     ],
   },
   {
     title: "Company",
     links: [
+      { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy", href: "#" },
       { label: "Terms", href: "#" },
@@ -38,7 +49,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 mt-auto">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
           <div className="col-span-2">
             <Logo onDark />
             <p className="mt-4 text-sm text-white/50 max-w-xs leading-relaxed">
