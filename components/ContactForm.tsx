@@ -33,7 +33,18 @@ export default function ContactForm(_props: ContactFormProps = {}) {
     e.preventDefault();
     setStatus("submitting");
     try {
-      await new Promise((r) => setTimeout(r, 900));
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          company: form.business,
+          business: form.business,
+          message: form.message,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to submit");
       setStatus("success");
       setForm({ name: "", business: "", email: "", message: "" });
     } catch {

@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import ContactActions from "@/components/admin/ContactActions";
 
 export const dynamic = "force-dynamic";
 
@@ -95,7 +96,7 @@ export default async function ContactsPage() {
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-400 mb-3">
-                    <span>{c.email}</span>
+                    <a href={`mailto:${c.email}`} className="text-blue-600 hover:underline">{c.email}</a>
                     {c.phone && <span>{c.phone}</span>}
                     {c.company && <span>{c.company}</span>}
                     {c.industry && (
@@ -105,6 +106,7 @@ export default async function ContactsPage() {
                   <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
                     {c.message}
                   </p>
+                  <ContactActions contactId={c.id} currentStatus={c.status} />
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="text-xs text-gray-400">
