@@ -53,6 +53,9 @@ export const metadata: Metadata = {
       "Websites that turn visitors into paying customers. Built for local businesses.",
     images: ["/og-default.png"],
   },
+  verification: {
+    google: "91PGka_W_3DW5thpt2jpl7vKQ8tf5MxsLbx_ptC5B4s",
+  },
   robots: {
     index: true,
     follow: true,
