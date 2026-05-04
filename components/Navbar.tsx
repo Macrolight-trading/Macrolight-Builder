@@ -31,7 +31,7 @@ export default function Navbar() {
         <div className="relative flex items-center justify-center gap-3 bg-violet-600 px-5 py-2 text-center animate-fade-in-down">
           <span className="h-1.5 w-1.5 rounded-full bg-violet-200 animate-pulse shrink-0" aria-hidden />
           <p className="text-[0.65rem] font-semibold text-violet-100 uppercase tracking-[0.18em]">
-            Limited spots — only 4 new clients accepted per month.{" "}
+            Founding client offer — 3 spots remaining at launch pricing.{" "}
             <Link href="/contact" className="text-white underline underline-offset-2 hover:no-underline transition-all">
               Reserve yours →
             </Link>

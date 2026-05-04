@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/admin/", "/api/"],
       },
     ],
-    sitemap: "https://macrolightbuilders.com/sitemap.xml",
+    sitemap: "https://macrolight-builder.com/sitemap.xml",
   };
 }

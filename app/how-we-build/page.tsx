@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "How We Build — Macrolight Builders",
     description:
       "Discover the process and technology behind every Macrolight Builders website. Built for speed, SEO, and real business results.",
-    url: "https://macrolightbuilders.com/how-we-build",
+    url: "https://macrolight-builder.com/how-we-build",
   },
 };
 
@@ -22,7 +22,7 @@ const howWeBuildSchema = {
   name: "How We Build — Macrolight Builders",
   description:
     "Our five-step process and modern tech stack for building high-converting local business websites.",
-  url: "https://macrolightbuilders.com/how-we-build",
+  url: "https://macrolight-builder.com/how-we-build",
 };
 
 const steps = [

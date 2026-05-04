@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "Blog — Macrolight Builders",
     description:
       "Actionable insights on web design, lead generation, and online growth for local businesses.",
-    url: "https://macrolightbuilders.com/blog",
+    url: "https://macrolight-builder.com/blog",
   },
 };
 

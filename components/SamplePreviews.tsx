@@ -1,5 +1,7 @@
 "use client";
 
+// TODO(credibility-review): Preview mockups intentionally include fictional ratings/results for design demonstration and should remain clearly marked as demo content.
+
 import Link from "next/link";
 import Section from "./Section";
 import { useState, useEffect, useCallback, useRef } from "react";

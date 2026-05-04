@@ -42,7 +42,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
     openGraph: {
       title: `${industry.name} Websites — Macrolight Builders`,
       description: `${industry.heroTagline} See how our client acquisition system works for ${industry.name.toLowerCase()} businesses.`,
-      url: `https://macrolightbuilders.com/${params.industry}`,
+      url: `https://macrolight-builder.com/${params.industry}`,
     },
   };
 }

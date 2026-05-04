@@ -18,19 +18,29 @@ function LoginForm() {
     setError("");
     setLoading(true);
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError("Invalid email or password.");
+      if (!result || result.error || !result.ok) {
+        setError("Invalid email or password.");
+        return;
+      }
+
+      const safeCallbackUrl =
+        callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+          ? callbackUrl
+          : "/admin";
+      router.push(safeCallbackUrl);
+      router.refresh();
+    } catch {
+      setError("Sign in failed. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push(callbackUrl);
   }
 
   return (
@@ -76,7 +86,7 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm"
-                placeholder="admin@macrolight.co"
+                placeholder="you@yourcompany.com"
               />
             </div>
 

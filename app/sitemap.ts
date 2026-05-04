@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { getAllCaseStudies } from "@/lib/case-studies";
 
-const BASE = "https://macrolightbuilders.com";
+const BASE = "https://macrolight-builder.com";
 
 const industries = [
   "roofing",

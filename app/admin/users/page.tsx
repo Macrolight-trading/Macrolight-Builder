@@ -107,7 +107,7 @@ export default async function UsersPage() {
 
         {users.length === 0 && (
           <p className="px-5 py-12 text-center text-sm text-gray-400">
-            No users found. Run the seed script to populate demo data.
+            No users found yet.
           </p>
         )}
       </div>

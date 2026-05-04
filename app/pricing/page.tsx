@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Pricing — Macrolight Builders",
     description:
       "One build fee. One monthly subscription. Everything included to turn your website into a lead machine.",
-    url: "https://macrolightbuilders.com/pricing",
+    url: "https://macrolight-builder.com/pricing",
   },
 };
 

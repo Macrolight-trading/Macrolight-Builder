@@ -5,20 +5,20 @@ import Button from "./Button";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-// variant prop kept for backwards-compat with industry showcase pages
 interface ContactFormProps {
   variant?: "default" | "preview";
+  industry?: string;
 }
 
 const inputCls =
   "block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 transition focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ContactForm(_props: ContactFormProps = {}) {
+export default function ContactForm({ industry }: ContactFormProps = {}) {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [form, setForm] = useState({
     name: "",
-    business: "",
+    company: "",
     email: "",
     message: "",
   });
@@ -39,14 +39,14 @@ export default function ContactForm(_props: ContactFormProps = {}) {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
-          company: form.business,
-          business: form.business,
+          company: form.company,
           message: form.message,
+          industry: industry ?? "",
         }),
       });
       if (!res.ok) throw new Error("Failed to submit");
       setStatus("success");
-      setForm({ name: "", business: "", email: "", message: "" });
+      setForm({ name: "", company: "", email: "", message: "" });
     } catch {
       setStatus("error");
     }
@@ -82,7 +82,7 @@ export default function ContactForm(_props: ContactFormProps = {}) {
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <Field label="Name" name="name" required value={form.name} onChange={onChange} placeholder="Jane Doe" />
-        <Field label="Business Name" name="business" required value={form.business} onChange={onChange} placeholder="Acme Plumbing" />
+        <Field label="Business Name" name="company" required value={form.company} onChange={onChange} placeholder="Acme Plumbing" />
       </div>
 
       <Field label="Email" name="email" type="email" required value={form.email} onChange={onChange} placeholder="you@business.com" />

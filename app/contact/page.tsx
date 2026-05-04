@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Request a Free Website Audit — Macrolight Builders",
     description:
       "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
-    url: "https://macrolightbuilders.com/contact",
+    url: "https://macrolight-builder.com/contact",
   },
 };
 

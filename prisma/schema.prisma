@@ -81,15 +81,16 @@ model Payment {
 }
 
 model Contact {
-  id        String        @id @default(cuid())
-  name      String
-  email     String
-  phone     String?
-  company   String?
-  industry  String?
-  message   String        @db.Text
-  status    ContactStatus @default(NEW)
-  createdAt DateTime      @default(now())
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  company      String?
+  industry     String?
+  message      String        @db.Text
+  status       ContactStatus @default(NEW)
+  emailSentAt  DateTime?
+  createdAt    DateTime      @default(now())
 
   @@map("contacts")
 }

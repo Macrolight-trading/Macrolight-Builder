@@ -1,3 +1,4 @@
+// TODO(credibility-review): Demo mockup content below includes fictional review/rating snippets for design showcase purposes.
 "use client";
 
 import { useState, useEffect, useRef } from "react";

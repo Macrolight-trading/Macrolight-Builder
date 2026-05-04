@@ -21,19 +21,19 @@ const COLLAGE = [
     src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&fit=crop",
     alt: "Thriving restaurant dining room with warm lighting",
     label: "Restaurant · Cleveland, OH",
-    stat: "4.9★ client rating",
+    stat: "Designed to turn traffic into leads",
   },
   {
     src: "https://images.unsplash.com/photo-1632759145351-1d592919f522?w=600&q=80&fit=crop",
     alt: "Roofer installing shingles on a residential roof",
     label: "Roofing · Columbus, OH",
-    stat: "+340% more leads",
+    stat: "Example conversion-focused build",
   },
   {
     src: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop&crop=center",
     alt: "HVAC technician working on an air conditioning system",
     label: "HVAC · Cincinnati, OH",
-    stat: "21 days to launch",
+    stat: "Founding client launch queue now open",
   },
 ];
 
@@ -50,19 +50,15 @@ export default function Hero() {
             {/* Social proof pill */}
             <div className="flex flex-wrap items-center gap-3 mb-8 animate-fade-in">
               <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-1.5 shadow-sm">
-                <span className="flex">
-                  {["★","★","★","★","★"].map((s, i) => (
-                    <span key={i} className="text-amber-400 text-[0.6rem]">{s}</span>
-                  ))}
-                </span>
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-500" aria-hidden />
                 <span className="text-xs font-medium text-gray-600">
-                  4.9 · 127 sites launched
+                  New agency. Full attention.
                 </span>
               </div>
               <div className="inline-flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden />
                 <span className="text-xs font-medium text-gray-500">
-                  3 build slots open — next start May 18
+                  Founding client offer — 3 launch pricing spots remaining
                 </span>
               </div>
             </div>
@@ -143,9 +139,9 @@ export default function Hero() {
               style={{ animationDelay: "0.38s" }}
             >
               {[
-                ["127",     "Sites built"],
-                ["21 days", "Avg. to launch"],
-                ["4.9★",    "Client rating"],
+                ["May 2026", "Launch window"],
+                ["Lead-first", "Build approach"],
+                ["Founding", "Client cohort"],
               ].map(([num, label]) => (
                 <div key={label}>
                   <div className="font-display text-2xl font-bold text-gray-900 leading-none">{num}</div>

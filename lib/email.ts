@@ -4,14 +4,10 @@ interface EmailOptions {
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
 }
 
-export async function sendEmail({ to, subject, html }: EmailOptions) {
-  if (!RESEND_API_KEY) {
-    console.warn("RESEND_API_KEY not set — skipping email send");
-    return null;
-  }
-
+async function sendOnce({ to, subject, html, replyTo }: EmailOptions): Promise<unknown | null> {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -19,10 +15,11 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Macrolight <notifications@macrolightbuilders.com>",
+      from: "Macrolight <notifications@macrolight-builder.com>",
       to,
       subject,
       html,
+      ...(replyTo ? { replyTo } : {}),
     }),
   });
 
@@ -33,4 +30,18 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
   }
 
   return res.json();
+}
+
+export async function sendEmail(options: EmailOptions): Promise<unknown | null> {
+  if (!RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY not set — skipping email send");
+    return null;
+  }
+
+  const result = await sendOnce(options);
+  if (result !== null) return result;
+
+  // One retry on failure
+  console.warn("Retrying email send…");
+  return sendOnce(options);
 }

@@ -8,19 +8,19 @@ const COLLAGE = [
     src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&fit=crop",
     alt: "Thriving restaurant dining room with warm lighting",
     label: "Restaurant · Cleveland, OH",
-    stat: "4.9★ client rating",
+    stat: "Designed to turn traffic into leads",
   },
   {
     src: "https://images.unsplash.com/photo-1632759145351-1d592919f522?w=600&q=80&fit=crop",
     alt: "Roofer installing shingles on a residential roof",
     label: "Roofing · Columbus, OH",
-    stat: "+340% more leads",
+    stat: "Example conversion-focused build",
   },
   {
     src: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop&crop=center",
     alt: "HVAC technician working on an air conditioning system",
     label: "HVAC · Cincinnati, OH",
-    stat: "21 days to launch",
+    stat: "Founding client launch queue now open",
   },
 ];
 

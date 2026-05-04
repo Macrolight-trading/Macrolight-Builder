@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import ChatWidget from "@/components/ChatWidget";
 import SiteShell from "@/components/SiteShell";
 
-const BASE_URL = "https://macrolightbuilders.com";
+const BASE_URL = "https://macrolight-builder.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

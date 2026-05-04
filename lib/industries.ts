@@ -56,9 +56,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "We booked 23 inspection appointments in our first month. The ROI paid for the whole year of hosting in week two.",
-        author: "Daryl M.",
-        role: "Owner, Crestline Roofing Co.",
+          "We're a new agency, but the process was clear and focused on getting more qualified roofing calls instead of just making the site look pretty.",
+        author: "Founding client statement",
+        role: "Roofing business owner",
       },
     ],
     accent: { from: "from-orange-500", to: "to-red-500" },
@@ -97,9 +97,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "Tuesday covers are up 41%. Our site now converts better than the reservation platform we used to rely on.",
-        author: "Priya S.",
-        role: "GM, Noor Kitchen",
+          "The build plan made it obvious how online visitors move from menu browsing to bookings. That's exactly the clarity we wanted.",
+        author: "Founding client statement",
+        role: "Restaurant operator",
       },
     ],
     accent: { from: "from-amber-500", to: "to-pink-500" },
@@ -138,9 +138,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "Consult bookings tripled within 60 days and the intake is now 80% qualified before we even pick up the phone.",
-        author: "Michael R., Esq.",
-        role: "Partner, Reed & Associates",
+          "We liked the intake strategy and case-fit flow. It's built to attract better legal inquiries, not just more traffic.",
+        author: "Founding client statement",
+        role: "Law firm partner",
       },
     ],
     accent: { from: "from-blue-500", to: "to-indigo-500" },
@@ -179,9 +179,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "Our membership program went from 40 to 280 subscribers in four months. The site basically sells it for us now.",
-        author: "Tomás L.",
-        role: "Owner, Cooltech HVAC",
+          "The emergency-first layout and service-page structure fit how HVAC customers actually search and call.",
+        author: "Founding client statement",
+        role: "HVAC business owner",
       },
     ],
     accent: { from: "from-cyan-500", to: "to-blue-500" },
@@ -220,9 +220,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "We've added 60+ new patients a month since launch. Online booking alone changed the economics of the practice.",
-        author: "Dr. Alisha K.",
-        role: "Owner, Bright Smile Dental",
+          "The online booking and insurance visibility strategy is exactly what a modern dental site should prioritize.",
+        author: "Founding client statement",
+        role: "Dental practice owner",
       },
     ],
     accent: { from: "from-teal-500", to: "to-emerald-500" },
@@ -262,9 +262,9 @@ export const industries: Record<string, IndustryProfile> = {
     testimonials: [
       {
         quote:
-          "We went from 3 estimate requests a week to over 20 — all from the new site. The online form alone paid for the whole thing in the first month.",
-        author: "Derek M.",
-        role: "Owner, Greenfield Lawn Co.",
+          "The estimate flow and gallery-first layout are practical for lawn-care buyers comparing multiple providers.",
+        author: "Founding client statement",
+        role: "Lawn care business owner",
       },
     ],
     accent: { from: "from-green-600", to: "to-emerald-500" },

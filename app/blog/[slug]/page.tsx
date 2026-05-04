@@ -33,7 +33,7 @@ export function generateMetadata({
     openGraph: {
       title: `${post.title} — Macrolight Builders`,
       description: post.description,
-      url: `https://macrolightbuilders.com/blog/${post.slug}`,
+      url: `https://macrolight-builder.com/blog/${post.slug}`,
       type: "article",
       publishedTime: post.date,
       authors: [post.author],
@@ -144,26 +144,26 @@ export default function BlogPostPage({
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    image: `https://macrolightbuilders.com${post.ogImage}`,
+    image: `https://macrolight-builder.com${post.ogImage}`,
     datePublished: post.date,
     dateModified: post.date,
     author: {
       "@type": "Organization",
       name: post.author,
-      url: "https://macrolightbuilders.com",
+      url: "https://macrolight-builder.com",
     },
     publisher: {
       "@type": "Organization",
       name: "Macrolight Builders",
-      url: "https://macrolightbuilders.com",
+      url: "https://macrolight-builder.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://macrolightbuilders.com/logo.png",
+        url: "https://macrolight-builder.com/logo.png",
       },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://macrolightbuilders.com/blog/${post.slug}`,
+      "@id": `https://macrolight-builder.com/blog/${post.slug}`,
     },
     wordCount: post.content.split(/\s+/).length,
   };

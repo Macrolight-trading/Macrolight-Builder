@@ -12,8 +12,8 @@ interface CTASectionProps {
 }
 
 const TRUST_SIGNALS = [
-  { value: "120+", label: "Businesses helped" },
-  { value: "4.9★", label: "Average rating" },
+  { value: "Founding", label: "Client cohort" },
+  { value: "Lead-first", label: "Build philosophy" },
   { value: "< 24 hrs", label: "Avg. response" },
   { value: "0", label: "Long-term contracts" },
 ];
@@ -115,21 +115,16 @@ export default function CTASection({
 
             {/* Floating review card */}
             <div className="absolute bottom-12 left-8 right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-5 shadow-2xl">
-              <div className="flex gap-1 mb-2">
-                {["★","★","★","★","★"].map((s, i) => (
-                  <span key={i} className="text-amber-400 text-sm">{s}</span>
-                ))}
-              </div>
               <p className="text-sm font-medium text-gray-800 leading-snug mb-3">
-                "We went from 2 leads a week to 14 leads a week in the first month."
+                "Launching May 2026 with limited founding client spots for local businesses focused on lead growth."
               </p>
               <div className="flex items-center gap-2.5">
                 <div className="h-7 w-7 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xs">
-                  R
+                  M
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-900">Rachel D.</p>
-                  <p className="text-[0.6rem] text-gray-400">HVAC Company · Dayton, OH</p>
+                  <p className="text-xs font-semibold text-gray-900">Macrolight Builders</p>
+                  <p className="text-[0.6rem] text-gray-400">Founding team statement</p>
                 </div>
               </div>
             </div>

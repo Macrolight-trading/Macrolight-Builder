@@ -3,6 +3,8 @@ import Section from "@/components/Section";
 import ContactForm from "@/components/ContactForm";
 import type { IndustryProfile } from "@/lib/industries";
 
+// TODO(credibility-review): Demo mockup content below includes fictional rating/review snippets for visual showcase purposes.
+
 /**
  * Roofing — dark slate palette with amber/orange/red storm-response accents.
  * Hero frames the business around emergency storm response; example-site
@@ -401,7 +403,7 @@ export default function RoofingShowcase({
               commitment.
             </p>
           </div>
-          <ContactForm variant="preview" />
+          <ContactForm variant="preview" industry={industry.slug} />
         </div>
       </Section>
 

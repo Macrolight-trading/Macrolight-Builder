@@ -1,10 +1,10 @@
 import Image from "next/image";
 
 const STATS = [
-  { value: "127", label: "Local businesses launched" },
-  { value: "$2.4M", label: "Tracked client revenue (2025)" },
-  { value: "21 days", label: "Average time to launch" },
-  { value: "4.9 / 5", label: "Average client rating" },
+  { value: "New agency", label: "Full attention on every launch" },
+  { value: "Lead-first", label: "Built for calls, forms, and booked jobs" },
+  { value: "May 2026", label: "Launching with limited founding spots" },
+  { value: "No fluff", label: "Clear positioning, transparent execution" },
 ];
 
 export default function SocialProofBand() {
@@ -30,24 +30,22 @@ export default function SocialProofBand() {
 
           {/* Left: quote */}
           <div>
-            <div className="flex gap-1 mb-6">
-              {["★","★","★","★","★"].map((s, i) => (
-                <span key={i} className="text-amber-400 text-lg">{s}</span>
-              ))}
-            </div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-6">
+              Founder statement
+            </p>
             <blockquote
               className="font-display font-bold italic text-white leading-[1.15] tracking-tight mb-8"
               style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)" }}
             >
-              "We were getting maybe 6 form fills a month. After the rebuild we hit 14 in week eight, and they actually answer the phone now. Best money I've spent on the business in ten years."
+              "We built Macrolight because we kept watching great local businesses lose customers to worse competitors with better websites. We're here to fix that."
             </blockquote>
             <div className="flex items-center gap-4">
               <div className="h-12 w-12 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-lg">
-                MF
+                MB
               </div>
               <div>
-                <p className="text-white font-semibold">Mike Ferraro</p>
-                <p className="text-white/50 text-sm">Owner, Buckeye Roofing &amp; Exteriors · Columbus, OH</p>
+                <p className="text-white font-semibold">Macrolight Founding Team</p>
+                <p className="text-white/50 text-sm">Building lead-generating sites for local businesses</p>
               </div>
             </div>
           </div>

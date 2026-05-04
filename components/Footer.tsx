@@ -18,7 +18,6 @@ const columns: Array<{
   {
     title: "Industries",
     links: [
-      { label: "Roofing", href: "/roofing" },
       { label: "Restaurants", href: "/restaurants" },
       { label: "Law Firms", href: "/law-firms" },
       { label: "HVAC", href: "/hvac" },

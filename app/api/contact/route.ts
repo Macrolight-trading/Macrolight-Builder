@@ -6,7 +6,7 @@ import { newLeadEmailHtml } from "@/lib/email-templates";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, message, business } = body;
+    const { name, email, message, company, industry } = body;
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -21,16 +21,31 @@ export async function POST(request: Request) {
         name,
         email,
         message,
-        company: business || null,
+        company: company || null,
+        industry: industry || null,
       },
     });
 
-    // Send notification email (non-blocking)
-    sendEmail({
-      to: "bbayley50@gmail.com",
-      subject: `New lead: ${name} from ${business || "Unknown"}`,
-      html: newLeadEmailHtml({ name, email, company: business, message, industry: "" }),
-    }).catch(console.error);
+    // Send notification email and track delivery
+    const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL;
+    if (notificationEmail) {
+      try {
+        const result = await sendEmail({
+          to: notificationEmail,
+          subject: `New lead: ${name} from ${company || "Unknown"}`,
+          html: newLeadEmailHtml({ name, email, company, message, industry: industry || "" }),
+          replyTo: email,
+        });
+        if (result) {
+          await prisma.contact.update({
+            where: { id: contact.id },
+            data: { emailSentAt: new Date() },
+          });
+        }
+      } catch (err) {
+        console.error("Failed to send lead notification email:", err);
+      }
+    }
 
     return NextResponse.json(contact, { status: 201 });
   } catch {

@@ -121,7 +121,7 @@ export default function GenericIndustryShowcase({
               prioritized list of what&apos;s costing you leads.
             </p>
           </div>
-          <ContactForm variant="preview" />
+          <ContactForm variant="preview" industry={industry.slug} />
         </div>
       </Section>
 

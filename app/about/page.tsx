@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "About — Macrolight Builders",
     description:
       "Meet the team behind Macrolight Builders. Conversion-first websites for local businesses.",
-    url: "https://macrolightbuilders.com/about",
+    url: "https://macrolight-builder.com/about",
   },
 };
 
@@ -22,11 +22,11 @@ const aboutSchema = {
   name: "About Macrolight Builders",
   description:
     "Learn about the team, mission, and values behind Macrolight Builders — a web design agency for local businesses.",
-  url: "https://macrolightbuilders.com/about",
+  url: "https://macrolight-builder.com/about",
   mainEntity: {
     "@type": "Organization",
     name: "Macrolight Builders",
-    url: "https://macrolightbuilders.com",
+    url: "https://macrolight-builder.com",
   },
 };
 

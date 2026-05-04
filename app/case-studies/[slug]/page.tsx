@@ -26,7 +26,7 @@ export function generateMetadata({
   if (!cs) return {};
 
   const title = `${cs.company} Case Study`;
-  const description = `How ${cs.company} in ${cs.location} transformed their online presence with Macrolight Builders. ${cs.results[0].value} ${cs.results[0].metric.toLowerCase()}.`;
+  const description = `A transparent sample scenario showing how Macrolight Builders would approach a ${cs.industry.toLowerCase()} lead-generation website in ${cs.location}.`;
 
   return {
     title,
@@ -35,7 +35,7 @@ export function generateMetadata({
     openGraph: {
       title: `${title} — Macrolight Builders`,
       description,
-      url: `https://macrolightbuilders.com/case-studies/${cs.slug}`,
+      url: `https://macrolight-builder.com/case-studies/${cs.slug}`,
       type: "article",
       images: [
         {
@@ -71,24 +71,24 @@ export default function CaseStudyPage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: `${cs.company} Case Study — Macrolight Builders`,
-    description: `How ${cs.company} in ${cs.location} transformed their online presence.`,
+    description: `Sample build scenario for a ${cs.industry.toLowerCase()} website in ${cs.location}.`,
     author: {
       "@type": "Organization",
       name: "Macrolight Builders",
-      url: "https://macrolightbuilders.com",
+      url: "https://macrolight-builder.com",
     },
     publisher: {
       "@type": "Organization",
       name: "Macrolight Builders",
-      url: "https://macrolightbuilders.com",
+      url: "https://macrolight-builder.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://macrolightbuilders.com/logo.png",
+        url: "https://macrolight-builder.com/logo.png",
       },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://macrolightbuilders.com/case-studies/${cs.slug}`,
+      "@id": `https://macrolight-builder.com/case-studies/${cs.slug}`,
     },
   };
 
@@ -147,8 +147,7 @@ export default function CaseStudyPage({
           </h1>
 
           <p className="mt-4 text-lg text-gray-500 animate-fade-in-up">
-            How a {cs.industry.toLowerCase()} company in {cs.location}{" "}
-            transformed their online presence with Macrolight Builders.
+            A transparent sample scenario for a {cs.industry.toLowerCase()} business in {cs.location}, showing how we structure lead-generation websites during our founding phase.
           </p>
         </div>
       </section>
@@ -184,10 +183,10 @@ export default function CaseStudyPage({
         <div className="mx-auto max-w-4xl px-5 sm:px-8">
           <div className="text-center mb-12">
             <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
-              The Results
+              Outcome Framework
             </p>
             <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900">
-              Numbers that speak for themselves
+              What this sample build is designed to deliver
             </h2>
           </div>
 
@@ -252,7 +251,7 @@ export default function CaseStudyPage({
       {/* ── Bottom CTA ── */}
       <CTASection
         eyebrow="Your turn"
-        headline="Ready for results like these?"
+        headline="Ready to build your lead machine?"
         subhead="Get a free, no-obligation website audit. We'll show you exactly where you're leaving leads on the table and how to fix it."
       />
     </>
