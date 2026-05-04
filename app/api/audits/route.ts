@@ -33,7 +33,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: guard.error }, { status: guard.status });
   }
 
-  let body: { url?: string; clientName?: string; crawlLimit?: number };
+  let body: {
+    url?: string;
+    clientName?: string;
+    crawlLimit?: number;
+    serviceKeywords?: string[] | string;
+  };
   try {
     body = await request.json();
   } catch {
@@ -45,6 +50,10 @@ export async function POST(request: Request) {
 
   const url = (body.url ?? "").trim();
   const clientName = (body.clientName ?? "").trim();
+
+  // serviceKeywords accepted as either an array (preferred) or a comma-
+  // separated string (form-friendly fallback).
+  const serviceKeywords = parseServiceKeywords(body.serviceKeywords);
 
   if (!url || !clientName) {
     return NextResponse.json(
@@ -81,6 +90,7 @@ export async function POST(request: Request) {
       url,
       clientName,
       crawlLimit: body.crawlLimit,
+      serviceKeywords,
     });
   } catch (err) {
     // The runner already marked the job FAILED. Surface the error to the
@@ -136,4 +146,20 @@ function isValidHttpUrl(value: string): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Normalise serviceKeywords from either a string[] or a comma-separated
+ * string into a clean string[] capped at 5 entries. Empty strings dropped.
+ */
+function parseServiceKeywords(
+  input: string[] | string | undefined
+): string[] | undefined {
+  if (input == null) return undefined;
+  const arr = Array.isArray(input) ? input : input.split(",");
+  const cleaned = arr
+    .map((s) => (typeof s === "string" ? s.trim() : ""))
+    .filter((s) => s.length > 0)
+    .slice(0, 5);
+  return cleaned.length > 0 ? cleaned : undefined;
 }

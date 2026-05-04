@@ -1,61 +1,134 @@
+import puppeteer, { type Browser } from "puppeteer-core";
+import chromium from "@sparticuz/chromium-min";
 import type { AuditRunResult } from "./types";
+import { buildReportHtml } from "./pdf-template";
 
 /**
  * PDF report generator.
  *
- * STATUS: Scaffolding stub.
+ * Uses puppeteer-core + @sparticuz/chromium-min for serverless deployment
+ * (Vercel functions, Lambda, etc.) and falls back to a local Chrome install
+ * during development. Returns a Uint8Array buffer that the API route streams
+ * directly to the browser — no blob storage involved (regenerates on every
+ * download).
  *
- * Production implementation (per plan section 8) will:
- *   - Render the printable report at /admin/audits/[id]/report
- *   - Use Puppeteer (or `@sparticuz/chromium` for Vercel) to convert that
- *     route to PDF — keeps the report's HTML/CSS as the single source of
- *     truth for design
- *   - Upload the resulting PDF to Vercel Blob (or S3) and return its public URL
- *   - Persist the URL to AuditResult.pdfUrl
- *
- * The branded PDF includes:
- *   1. Cover page (logo, client, URL, date, overall score)
- *   2. Executive summary + score chart
- *   3. Top 3-5 critical issues
- *   4. Module sections
- *   5. "What's working" positives
- *   6. Next-steps / CTA pitching Macrolight
+ * If you want to add caching later, swap to:
+ *   1. Upload buffer to Vercel Blob (or S3)
+ *   2. Persist URL to AuditResult.pdfUrl
+ *   3. Have the route redirect to that URL when present
  */
 
+const CHROMIUM_PACK_URL =
+  "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar";
+
 export interface GeneratePdfOptions {
-  /** Audit job ID — used to construct the report URL Puppeteer will render. */
-  jobId: string;
   result: AuditRunResult;
   clientName: string;
   url: string;
-  /**
-   * Base URL of the running app (e.g. https://macrolightbuilders.com).
-   * Required because Puppeteer needs to load the report page over HTTP.
-   */
-  appBaseUrl: string;
+  positives?: {
+    technical?: string[];
+    onpage?: string[];
+    backlinks?: string[];
+    localSeo?: string[];
+  };
+  /** Date the audit was run; defaults to now. */
+  auditDate?: Date;
 }
 
-export interface GeneratePdfResult {
-  /** Public URL of the uploaded PDF. */
-  pdfUrl: string;
-  /** Size in bytes (for logging / display). */
-  sizeBytes: number;
+export async function generateAuditPdf(
+  options: GeneratePdfOptions
+): Promise<Uint8Array> {
+  const html = buildReportHtml({
+    clientName: options.clientName,
+    url: options.url,
+    auditDate: options.auditDate ?? new Date(),
+    result: options.result,
+    positives: options.positives,
+  });
+
+  let browser: Browser | null = null;
+  try {
+    browser = await launchBrowser();
+    const page = await browser.newPage();
+
+    // Render the HTML directly. `networkidle0` waits for any inline assets
+    // (none expected — template has no external resources).
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    const buffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: "18mm", right: "18mm", bottom: "22mm", left: "18mm" },
+      preferCSSPageSize: true,
+    });
+
+    return buffer;
+  } finally {
+    if (browser) {
+      try {
+        await browser.close();
+      } catch {
+        // Don't let cleanup errors mask a real failure upstream.
+      }
+    }
+  }
+}
+
+/* ── Browser launch (env-aware) ─────────────────────────────────────────── */
+
+async function launchBrowser(): Promise<Browser> {
+  // Vercel sets VERCEL=1 in the function runtime. AWS_LAMBDA_FUNCTION_NAME
+  // is set on Lambda. Either signals serverless — use chromium-min.
+  const isServerless = !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+  if (isServerless) {
+    return puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(CHROMIUM_PACK_URL),
+      headless: chromium.headless,
+    });
+  }
+
+  // Local dev: try to find an existing Chrome install. The user can override
+  // with PUPPETEER_EXECUTABLE_PATH if their Chrome lives somewhere unusual.
+  const executablePath =
+    process.env.PUPPETEER_EXECUTABLE_PATH ?? findLocalChromePath();
+
+  if (!executablePath) {
+    throw new Error(
+      "Could not locate a Chrome / Chromium executable for PDF generation. " +
+        "Set PUPPETEER_EXECUTABLE_PATH in .env.local to point at your local " +
+        "Chrome install (e.g. C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe " +
+        "on Windows, /Applications/Google Chrome.app/Contents/MacOS/Google Chrome on macOS)."
+    );
+  }
+
+  return puppeteer.launch({
+    headless: true,
+    executablePath,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 }
 
 /**
- * STUB: Generate a branded PDF audit report.
- *
- * Throws on call so we don't silently store a fake URL.
+ * Best-effort local Chrome detection. Falls back to undefined if nothing
+ * obvious is present — caller will throw with an actionable message.
  */
-export async function generateAuditPdf(
-  options: GeneratePdfOptions
-): Promise<GeneratePdfResult> {
-  void options;
-
-  // TODO(milestone-4): real implementation using Puppeteer to render
-  // `${appBaseUrl}/admin/audits/${jobId}/report` and upload the buffer.
-  throw new Error(
-    "PDF generation is not yet implemented. " +
-      "Wire up Puppeteer + blob storage in Milestone 4."
-  );
+function findLocalChromePath(): string | undefined {
+  // Most common install paths per OS. We don't `fs.existsSync` here because
+  // we want this file to be safe to import in edge runtimes; the launcher
+  // will surface a clear error if the path is wrong.
+  const platform = process.platform;
+  if (platform === "win32") {
+    return (
+      process.env.PROGRAMFILES &&
+      `${process.env.PROGRAMFILES}\\Google\\Chrome\\Application\\chrome.exe`
+    );
+  }
+  if (platform === "darwin") {
+    return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  }
+  // Linux dev
+  return "/usr/bin/google-chrome";
 }

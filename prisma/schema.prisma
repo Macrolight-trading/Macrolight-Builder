@@ -128,18 +128,24 @@ model AuditJob {
 }
 
 model AuditResult {
-  id             String   @id @default(cuid())
-  jobId          String   @unique
-  job            AuditJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  overallScore   Int
-  technicalScore Int
-  onPageScore    Int
-  backlinkScore  Int
-  localSeoScore  Int
-  issues         Json     // structured array of AuditIssue objects
-  rawData        Json     // full API responses for reference
-  pdfUrl         String?  // link to generated PDF
-  createdAt      DateTime @default(now())
+  id                    String   @id @default(cuid())
+  jobId                 String   @unique
+  job                   AuditJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  overallScore          Int
+  technicalScore        Int
+  onPageScore           Int
+  backlinkScore         Int
+  localSeoScore         Int
+  domainAnalyticsScore  Int      @default(0)
+  serpScore             Int      @default(0)
+  // New scored modules — nullable so "not run yet" reads cleanly without
+  // a sentinel-zero. Older audits will have null here.
+  localPackScore        Int?
+  reputationScore       Int?
+  issues                Json     // structured array of AuditIssue objects
+  rawData               Json     // full API responses for reference
+  pdfUrl                String?  // link to generated PDF
+  createdAt             DateTime @default(now())
 
   @@map("audit_results")
 }

@@ -15,10 +15,41 @@ async function getAudits() {
           onPageScore: true,
           backlinkScore: true,
           localSeoScore: true,
+          rawData: true,
         },
       },
     },
   });
+}
+
+/** Read availability summary out of an audit result's rawData JSON. */
+function readAvailabilitySummary(rawData: unknown): {
+  overallAvailable: boolean;
+  unavailableCount: number;
+} {
+  const fallback = { overallAvailable: true, unavailableCount: 0 };
+  if (!rawData || typeof rawData !== "object") return fallback;
+  const a = (rawData as Record<string, unknown>).availability;
+  if (!a || typeof a !== "object") return fallback;
+  const isUnavail = (key: string) => {
+    const node = (a as Record<string, unknown>)[key];
+    if (!node || typeof node !== "object") return false;
+    return (node as Record<string, unknown>).available === false;
+  };
+  const unavailableCount =
+    (isUnavail("technical") ? 1 : 0) +
+    (isUnavail("onpage") ? 1 : 0) +
+    (isUnavail("backlinks") ? 1 : 0) +
+    (isUnavail("localSeo") ? 1 : 0) +
+    (isUnavail("domainAnalytics") ? 1 : 0) +
+    (isUnavail("serpVisibility") ? 1 : 0) +
+    (isUnavail("localPack") ? 1 : 0) +
+    (isUnavail("reputation") ? 1 : 0);
+  return {
+    overallAvailable:
+      (a as Record<string, unknown>).overallAvailable !== false,
+    unavailableCount,
+  };
 }
 
 export default async function AuditsListPage() {
@@ -74,33 +105,51 @@ export default async function AuditsListPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {audits.map((a) => (
-                <tr key={a.id} className="hover:bg-gray-50/60">
-                  <td className="px-5 py-3 text-sm font-medium text-gray-900">
-                    {a.clientName}
-                  </td>
-                  <td className="px-5 py-3 text-sm text-gray-500 max-w-xs truncate">
-                    {a.url}
-                  </td>
-                  <td className="px-5 py-3">
-                    <StatusBadge status={a.status} />
-                  </td>
-                  <td className="px-5 py-3 text-sm font-semibold text-gray-900">
-                    {a.result ? <ScoreChip score={a.result.overallScore} /> : "—"}
-                  </td>
-                  <td className="px-5 py-3 text-xs text-gray-400">
-                    {new Date(a.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-5 py-3 text-right">
-                    <Link
-                      href={`/admin/audits/${a.id}`}
-                      className="text-xs font-semibold text-violet-600 hover:text-violet-700"
-                    >
-                      View &rarr;
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+              {audits.map((a) => {
+                const availability = a.result
+                  ? readAvailabilitySummary(a.result.rawData)
+                  : { overallAvailable: false, unavailableCount: 0 };
+                return (
+                  <tr key={a.id} className="hover:bg-gray-50/60">
+                    <td className="px-5 py-3 text-sm font-medium text-gray-900">
+                      {a.clientName}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-gray-500 max-w-xs truncate">
+                      {a.url}
+                    </td>
+                    <td className="px-5 py-3">
+                      <StatusBadge status={a.status} />
+                    </td>
+                    <td className="px-5 py-3 text-sm font-semibold text-gray-900">
+                      {!a.result ? (
+                        "—"
+                      ) : !availability.overallAvailable ? (
+                        <span className="text-gray-400">N/A</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-2">
+                          <ScoreChip score={a.result.overallScore} />
+                          {availability.unavailableCount > 0 && (
+                            <span className="text-[10px] font-semibold uppercase tracking-wide text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                              Partial
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 text-xs text-gray-400">
+                      {new Date(a.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <Link
+                        href={`/admin/audits/${a.id}`}
+                        className="text-xs font-semibold text-violet-600 hover:text-violet-700"
+                      >
+                        View &rarr;
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

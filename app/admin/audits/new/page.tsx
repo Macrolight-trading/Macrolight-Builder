@@ -9,6 +9,7 @@ export default function NewAuditPage() {
   const [url, setUrl] = useState("");
   const [clientName, setClientName] = useState("");
   const [crawlLimit, setCrawlLimit] = useState<number | "">("");
+  const [serviceKeywords, setServiceKeywords] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,6 +17,14 @@ export default function NewAuditPage() {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
+
+    // Parse the comma-separated input into a clean array. The API also
+    // accepts the raw string and re-parses, but doing it client-side keeps
+    // the request payload tidy.
+    const parsedKeywords = serviceKeywords
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
 
     try {
       const res = await fetch("/api/audits", {
@@ -25,6 +34,7 @@ export default function NewAuditPage() {
           url: url.trim(),
           clientName: clientName.trim(),
           crawlLimit: crawlLimit === "" ? undefined : Number(crawlLimit),
+          serviceKeywords: parsedKeywords.length > 0 ? parsedKeywords : undefined,
         }),
       });
 
@@ -123,6 +133,30 @@ export default function NewAuditPage() {
           />
           <p className="mt-1 text-xs text-gray-400">
             Maximum number of pages the crawler will fetch. Defaults to 20.
+          </p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="serviceKeywords"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Service keywords{" "}
+            <span className="text-gray-400">(comma-separated, up to 5)</span>
+          </label>
+          <input
+            id="serviceKeywords"
+            type="text"
+            value={serviceKeywords}
+            onChange={(e) => setServiceKeywords(e.target.value)}
+            placeholder="plumber, drain cleaning, water heater repair"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            disabled={submitting}
+          />
+          <p className="mt-1 text-xs text-gray-400">
+            Used by the Local Pack module to query the Maps SERP and by the
+            SERP Visibility module for commercial-intent rankings. Skip to
+            run the audit without these modules.
           </p>
         </div>
 
