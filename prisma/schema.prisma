@@ -106,6 +106,44 @@ model PageView {
   @@map("page_views")
 }
 
+// ── SEO Audit models ────────────────────────────────────────────────────────
+
+model AuditJob {
+  id          String       @id @default(cuid())
+  url         String
+  clientName  String
+  status      AuditStatus  @default(PENDING)
+  startedAt   DateTime?
+  completedAt DateTime?
+  error       String?      @db.Text
+  createdBy   String?      // userId of admin who triggered it
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  result AuditResult?
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("audit_jobs")
+}
+
+model AuditResult {
+  id             String   @id @default(cuid())
+  jobId          String   @unique
+  job            AuditJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  overallScore   Int
+  technicalScore Int
+  onPageScore    Int
+  backlinkScore  Int
+  localSeoScore  Int
+  issues         Json     // structured array of AuditIssue objects
+  rawData        Json     // full API responses for reference
+  pdfUrl         String?  // link to generated PDF
+  createdAt      DateTime @default(now())
+
+  @@map("audit_results")
+}
+
 // ── Enums ───────────────────────────────────────────────────────────────────
 
 enum Role {
@@ -131,4 +169,11 @@ enum ContactStatus {
   READ
   REPLIED
   ARCHIVED
+}
+
+enum AuditStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
 }
