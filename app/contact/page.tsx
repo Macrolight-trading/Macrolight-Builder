@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
 import ContactForm from "@/components/ContactForm";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
   title: "Request a Free Website Audit",
@@ -12,6 +13,47 @@ export const metadata: Metadata = {
     description:
       "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
     url: "https://macrolight-builder.com/contact",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "Macrolight Builders — request a free website audit",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Request a Free Website Audit — Macrolight Builders",
+    description:
+      "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
+    images: ["/og-default.png"],
+  },
+};
+
+const contactPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Request a Free Website Audit — Macrolight Builders",
+  url: "https://macrolight-builder.com/contact",
+  description:
+    "Request a free, no-obligation website conversion audit from Macrolight Builders.",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "Macrolight Builders",
+    url: "https://macrolight-builder.com",
+  },
+  mainEntity: {
+    "@type": "Organization",
+    name: "Macrolight Builders",
+    url: "https://macrolight-builder.com",
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      url: "https://macrolight-builder.com/contact",
+      availableLanguage: ["English"],
+    },
   },
 };
 
@@ -37,6 +79,7 @@ const bullets = [
 export default function ContactPage() {
   return (
     <>
+      <JsonLd data={contactPageSchema} />
       {/* Page header */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />

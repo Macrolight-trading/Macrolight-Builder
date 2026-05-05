@@ -11,11 +11,15 @@ const BASE_URL = "https://macrolight-builder.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Macrolight Builders — Client Acquisition Systems for Local Businesses",
+    // Default homepage title kept ≤60 chars for SERP truncation. Child
+    // pages still receive the " | Macrolight Builders" suffix via the
+    // template below.
+    default: "Client Acquisition Websites for Local Businesses",
     template: "%s | Macrolight Builders",
   },
+  // Trimmed to ≤160 chars (was 162 — see SEO audit Finding 7).
   description:
-    "We build, host, and manage high-converting websites that turn visitors into paying customers. Client acquisition systems for local businesses — not just websites.",
+    "We build, host, and manage high-converting websites that turn visitors into paying customers — client acquisition systems for local businesses.",
   keywords: [
     "lead generation websites",
     "website for local business",

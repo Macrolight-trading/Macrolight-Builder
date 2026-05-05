@@ -52,12 +52,21 @@ export async function GET(
     const result = structuredAuditFromRow(job.result);
     const positives = extractPositives(job.result.rawData);
 
+    // Pass through the persisted AI Content Plan when present. Null when
+    // the admin hasn't generated one yet — the PDF section will be omitted.
+    const aiContentPlanRaw = (job.result as { aiContentPlan?: unknown }).aiContentPlan;
+    const aiContentPlan =
+      aiContentPlanRaw && typeof aiContentPlanRaw === "object"
+        ? (aiContentPlanRaw as Parameters<typeof generateAuditPdf>[0]["aiContentPlan"])
+        : null;
+
     const pdfBuffer = await generateAuditPdf({
       result,
       clientName: job.clientName,
       url: job.url,
       auditDate: job.completedAt ?? job.createdAt,
       positives,
+      aiContentPlan,
     });
 
     const filename = sanitizeFilename(`${job.clientName}-seo-audit.pdf`);

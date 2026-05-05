@@ -26,12 +26,17 @@ export function generateMetadata({
   const post = getPostBySlug(params.slug);
   if (!post) return {};
 
+  // Prefer the SEO-optimised short title for the <title> tag (and OG/Twitter
+  // titles) when one is provided — keeps SERP titles under truncation while
+  // letting the visible H1 stay descriptive. See SEO audit Finding 6.
+  const metaTitle = post.seoTitle ?? post.title;
+
   return {
-    title: post.title,
+    title: metaTitle,
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: `${post.title} — Macrolight Builders`,
+      title: `${metaTitle} — Macrolight Builders`,
       description: post.description,
       url: `https://macrolight-builder.com/blog/${post.slug}`,
       type: "article",
@@ -48,7 +53,7 @@ export function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title: metaTitle,
       description: post.description,
       images: [post.ogImage],
     },
@@ -137,7 +142,12 @@ export default function BlogPostPage({
   const post = getPostBySlug(params.slug);
   if (!post) notFound();
 
-  const articleHtml = markdownToHtml(post.content);
+  // The post layout already renders the title as the page H1, and the
+  // markdown source files start with `# Title`. Strip that leading H1 so
+  // the rendered article body starts at H2 (avoids duplicate H1s — see
+  // SEO audit Finding 4).
+  const bodyMarkdown = post.content.replace(/^\s*#\s+.+\n+/, "");
+  const articleHtml = markdownToHtml(bodyMarkdown);
 
   const blogPostingSchema = {
     "@context": "https://schema.org",

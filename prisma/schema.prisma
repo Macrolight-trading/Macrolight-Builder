@@ -145,6 +145,11 @@ model AuditResult {
   issues                Json     // structured array of AuditIssue objects
   rawData               Json     // full API responses for reference
   pdfUrl                String?  // link to generated PDF
+  // AI-generated content plan — populated on-demand via the
+  // /api/audits/[id]/content-plan endpoint after the audit completes.
+  // Null until the admin clicks "Generate Content Plan".
+  aiContentPlan         Json?
+  aiContentPlanAt       DateTime?
   createdAt             DateTime @default(now())
 
   @@map("audit_results")

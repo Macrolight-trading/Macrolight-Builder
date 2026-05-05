@@ -4,7 +4,8 @@ import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "About",
+  // Keyword-rich title (template appends " | Macrolight Builders").
+  title: "About Our Web Design Agency",
   description:
     "Meet the team behind Macrolight Builders. We build high-converting websites that generate real revenue for local businesses.",
   alternates: { canonical: "/about" },
@@ -13,6 +14,22 @@ export const metadata: Metadata = {
     description:
       "Meet the team behind Macrolight Builders. Conversion-first websites for local businesses.",
     url: "https://macrolight-builder.com/about",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "About Macrolight Builders",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About — Macrolight Builders",
+    description:
+      "Meet the team behind Macrolight Builders. Conversion-first websites for local businesses.",
+    images: ["/og-default.png"],
   },
 };
 

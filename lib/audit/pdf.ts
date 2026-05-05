@@ -1,6 +1,7 @@
 import puppeteer, { type Browser } from "puppeteer-core";
 import chromium from "@sparticuz/chromium-min";
 import type { AuditRunResult } from "./types";
+import type { ContentPlanWithMeta } from "./ai/content-plan";
 import { buildReportHtml } from "./pdf-template";
 
 /**
@@ -30,9 +31,19 @@ export interface GeneratePdfOptions {
     onpage?: string[];
     backlinks?: string[];
     localSeo?: string[];
+    domainAnalytics?: string[];
+    serpVisibility?: string[];
+    localPack?: string[];
+    reputation?: string[];
   };
   /** Date the audit was run; defaults to now. */
   auditDate?: Date;
+  /**
+   * AI-generated Content Plan from /api/audits/:id/content-plan. When
+   * passed, replaces the rule-based 90-day roadmap section in the PDF.
+   * Null/undefined = no plan generated yet, section omitted.
+   */
+  aiContentPlan?: ContentPlanWithMeta | null;
 }
 
 export async function generateAuditPdf(
@@ -44,6 +55,7 @@ export async function generateAuditPdf(
     auditDate: options.auditDate ?? new Date(),
     result: options.result,
     positives: options.positives,
+    aiContentPlan: options.aiContentPlan,
   });
 
   let browser: Browser | null = null;

@@ -1,7 +1,7 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 interface EmailOptions {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
   replyTo?: string;

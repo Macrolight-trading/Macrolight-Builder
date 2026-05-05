@@ -4,6 +4,7 @@ interface NewLeadEmailData {
   company: string;
   message: string;
   industry: string;
+  phone?: string;
 }
 
 export function newLeadEmailHtml({
@@ -12,6 +13,7 @@ export function newLeadEmailHtml({
   company,
   message,
   industry,
+  phone,
 }: NewLeadEmailData): string {
   return `
 <!DOCTYPE html>
@@ -49,6 +51,12 @@ export function newLeadEmailHtml({
                     <a href="mailto:${escapeHtml(email)}" style="font-size:16px;color:#7c3aed;text-decoration:none;font-weight:500;">${escapeHtml(email)}</a>
                   </td>
                 </tr>
+                ${phone ? `<tr>
+                  <td style="padding:12px 0;border-bottom:1px solid #e4e4e7;">
+                    <span style="display:block;font-size:12px;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Phone</span>
+                    <a href="tel:${escapeHtml(phone)}" style="font-size:16px;color:#7c3aed;text-decoration:none;font-weight:500;">${escapeHtml(phone)}</a>
+                  </td>
+                </tr>` : ""}
                 <tr>
                   <td style="padding:12px 0;border-bottom:1px solid #e4e4e7;">
                     <span style="display:block;font-size:12px;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Company</span>

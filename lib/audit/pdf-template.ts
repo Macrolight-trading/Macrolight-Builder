@@ -1,4 +1,5 @@
 import type { AuditIssue, AuditModuleResult, AuditRunResult } from "./types";
+import type { ContentPlanWithMeta } from "./ai/content-plan";
 
 /**
  * Self-contained HTML template for the PDF report.
@@ -28,6 +29,12 @@ export interface BuildReportHtmlOptions {
     localPack?: string[];
     reputation?: string[];
   };
+  /**
+   * AI-generated Content Plan from /api/audits/:id/content-plan. When present,
+   * replaces the rule-based 90-day roadmap section. Null/undefined means the
+   * admin hasn't generated one yet — section is omitted entirely.
+   */
+  aiContentPlan?: ContentPlanWithMeta | null;
 }
 
 export function buildReportHtml(opts: BuildReportHtmlOptions): string {
@@ -426,7 +433,7 @@ export function buildReportHtml(opts: BuildReportHtmlOptions): string {
         : ""
     }
 
-    ${renderRoadmapSection(result)}
+    ${renderContentPlanSection(opts.aiContentPlan ?? null)}
 
     <!-- 6. CTA -->
     ${renderCtaSection()}
@@ -440,167 +447,80 @@ export function buildReportHtml(opts: BuildReportHtmlOptions): string {
 }
 
 /**
- * Recommended 90-Day Roadmap.
+ * AI-generated Content Plan.
  *
- * Auto-generated from the issue list. Strategy: take all critical + warning
- * findings, sort by (sentinel desc, severity, module weight), then bucket
- * into the three 4-week phases by category:
- *   - Week 1–4 (Quick Wins):     anything tagged in "quick-win" modules
- *                                (technical config fixes, GBP/citation
- *                                claims, schema additions, single-page
- *                                speed wins).
- *   - Week 5–8 (Content & Outreach): on-page content, keyword gap fills,
- *                                    backlink outreach, review velocity.
- *   - Week 9–12 (Foundation):    deeper rebuilds and longer plays
- *                                (perf overhauls, big content programs,
- *                                trend-reversal work).
- *
- * Bucketing is rule-based on `check` IDs, with safe fallbacks. The roadmap
- * caps at 3 items per phase to keep the section scannable.
+ * Replaces the rule-based 90-day roadmap. Renders only when the admin has
+ * generated a plan via /api/audits/:id/content-plan; absent otherwise.
+ * The plan ships 5–10 specific page recommendations with titles, target
+ * keywords, outlines, and reasoning grounded in the audit data.
  */
-const QUICK_WIN_CHECKS = new Set([
-  // Technical: tag-level fixes
-  "missing_viewport_mobile", "missing_viewport_desktop",
-  "no_https", "missing_robots_txt", "missing_sitemap",
-  "missing_canonicals", "noindex_on_homepage", "noindex_pages",
-  "missing_open_graph", "missing_twitter_card",
-  // Local SEO: claim-and-fill plays
-  "no_gbp_found", "no_local_business_schema", "no_phone_on_site",
-  "missing_citations", "no_gbp_photos", "few_gbp_photos",
-  "no_gbp_categories", "no_gbp_hours", "no_website_on_gbp",
-  "phone_mismatch", "address_possibly_inconsistent", "citation_nap_mismatch",
-  // On-page: surface fixes
-  "missing_title", "title_too_short", "title_too_long",
-  "missing_description", "description_too_short", "description_too_long",
-  "missing_h1", "multiple_h1", "h1_matches_title",
-]);
+function renderContentPlanSection(plan: ContentPlanWithMeta | null): string {
+  if (!plan) return "";
 
-const CONTENT_OUTREACH_CHECKS = new Set([
-  // Content / on-page deeper work
-  "thin_homepage", "low_alt_coverage_homepage", "low_alt_coverage_site",
-  "moderate_alt_coverage_homepage", "duplicate_titles", "duplicate_descriptions",
-  "many_pages_missing_descriptions", "pages_missing_titles",
-  "orphan_pages",
-  // Backlink outreach + reputation
-  "low_referring_domains", "broken_backlinks", "high_spam_score",
-  "over_optimised_anchor", "rd_decline_6m",
-  // Reputation building
-  "low_aggregate_rating", "low_review_count", "low_rating",
-  "recent_negative_velocity", "no_google_listing",
-  // SERP / AI visibility content plays
-  "no_ai_overview", "ai_overview_not_cited", "ai_mode_not_cited",
-  "brand_not_first", "no_local_pack_presence", "weak_local_pack_presence",
-  "partial_commercial_serp_visibility",
-]);
-
-interface RoadmapItem {
-  title: string;
-  recommendation: string;
-  module: AuditIssue["module"];
-  severity: AuditIssue["severity"];
-}
-
-function renderRoadmapSection(result: AuditRunResult): string {
-  // Eligible findings: criticals first, warnings second. Drop info — those
-  // belong in the appendix-style module sections, not in a roadmap.
-  const eligible = result.issues
-    .filter((i) => i.severity === "critical" || i.severity === "warning")
-    .sort((a, b) => {
-      // Sentinel issues go first, then critical-before-warning, then keep
-      // input order (already severity-sorted upstream).
-      const sentRank = (i: AuditIssue) => (i.sentinel ? 0 : 1);
-      if (sentRank(a) !== sentRank(b)) return sentRank(a) - sentRank(b);
-      const sevRank = (s: AuditIssue["severity"]) => (s === "critical" ? 0 : 1);
-      return sevRank(a.severity) - sevRank(b.severity);
-    });
-
-  if (eligible.length === 0) return "";
-
-  const buckets = {
-    quickWins: [] as RoadmapItem[],
-    contentOutreach: [] as RoadmapItem[],
-    foundation: [] as RoadmapItem[],
-  };
-
-  for (const issue of eligible) {
-    const item: RoadmapItem = {
-      title: issue.title,
-      recommendation: issue.recommendation,
-      module: issue.module,
-      severity: issue.severity,
-    };
-    if (QUICK_WIN_CHECKS.has(issue.check)) {
-      buckets.quickWins.push(item);
-    } else if (CONTENT_OUTREACH_CHECKS.has(issue.check)) {
-      buckets.contentOutreach.push(item);
-    } else {
-      // Default: foundational work (perf, deeper technical, traffic decline,
-      // anything we don't have a more specific bucket rule for).
-      buckets.foundation.push(item);
-    }
-  }
-
-  // Cap each bucket at 3 items so the section stays scannable.
-  const cap = 3;
-  buckets.quickWins = buckets.quickWins.slice(0, cap);
-  buckets.contentOutreach = buckets.contentOutreach.slice(0, cap);
-  buckets.foundation = buckets.foundation.slice(0, cap);
-
-  const phases: Array<{ label: string; items: RoadmapItem[]; sub: string }> = [
-    {
-      label: "Weeks 1–4 · Quick Wins",
-      sub: "Tag-level fixes, GBP claim-and-complete, schema, citation submissions.",
-      items: buckets.quickWins,
-    },
-    {
-      label: "Weeks 5–8 · Content & Outreach",
-      sub: "Service-page builds, keyword-gap content, backlink outreach, review-request flow.",
-      items: buckets.contentOutreach,
-    },
-    {
-      label: "Weeks 9–12 · Foundation",
-      sub: "Performance overhaul, deeper rebuilds, trend reversal, longer-horizon plays.",
-      items: buckets.foundation,
-    },
-  ].filter((p) => p.items.length > 0);
-
-  if (phases.length === 0) return "";
+  const recommendations = plan.recommendations ?? [];
+  if (recommendations.length === 0) return "";
 
   return `
-    <section class="section avoid-break roadmap">
-      <h2>Recommended 90-Day Roadmap</h2>
-      <p class="section-lead">
-        A prioritised plan generated from the findings above — what to ship
-        in each four-week window, ordered by impact-to-effort ratio.
-      </p>
-      ${phases
-        .map(
-          (phase, idx) => `
-        <div class="roadmap-phase">
-          <div class="roadmap-phase-h">
-            <span class="roadmap-phase-num">${idx + 1}</span>
-            <div>
-              <p class="roadmap-phase-label">${escapeHtml(phase.label)}</p>
-              <p class="roadmap-phase-sub">${escapeHtml(phase.sub)}</p>
+    <section class="section content-plan">
+      <h2>Recommended Content Plan</h2>
+      <p class="section-lead">${escapeHtml(plan.strategySummary)}</p>
+      <ol class="cp-list">
+        ${recommendations
+          .map(
+            (rec, idx) => `
+          <li class="cp-item avoid-break">
+            <div class="cp-head">
+              <span class="cp-num">${idx + 1}</span>
+              <div class="cp-head-text">
+                <p class="cp-title">${escapeHtml(rec.title)}</p>
+                <div class="cp-chips">
+                  <span class="cp-chip cp-chip-${rec.priority}">${escapeHtml(rec.priority.toUpperCase())}</span>
+                  <span class="cp-chip cp-chip-type">${escapeHtml(formatRecType(rec.type))}</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <ol class="roadmap-list">
-            ${phase.items
-              .map(
-                (item) => `
-              <li class="roadmap-item">
-                <p class="roadmap-item-title">${escapeHtml(item.title)}</p>
-                <p class="roadmap-item-fix">${escapeHtml(item.recommendation)}</p>
-              </li>`
-              )
-              .join("")}
-          </ol>
-        </div>`
-        )
-        .join("")}
+            <div class="cp-meta">
+              <span class="cp-meta-item"><strong>Target keyword:</strong> ${escapeHtml(rec.targetKeyword)}</span>
+              ${
+                rec.searchVolumePerMonth != null
+                  ? `<span class="cp-meta-item"><strong>Volume:</strong> ${rec.searchVolumePerMonth.toLocaleString()} / mo</span>`
+                  : ""
+              }
+              ${
+                rec.improvementTargetUrl
+                  ? `<span class="cp-meta-item"><strong>Existing URL:</strong> <span class="cp-url">${escapeHtml(rec.improvementTargetUrl)}</span></span>`
+                  : ""
+              }
+            </div>
+            <p class="cp-reasoning">${escapeHtml(rec.reasoning)}</p>
+            <div class="cp-outline">
+              <p class="cp-outline-h">Outline</p>
+              <ol class="cp-outline-list">
+                ${rec.outline
+                  .map((h) => `<li>${escapeHtml(h)}</li>`)
+                  .join("")}
+              </ol>
+            </div>
+            ${
+              rec.internalLinkingNote
+                ? `<p class="cp-link-note"><strong>Internal linking:</strong> ${escapeHtml(rec.internalLinkingNote)}</p>`
+                : ""
+            }
+          </li>`
+          )
+          .join("")}
+      </ol>
     </section>`;
 }
 
+function formatRecType(t: ContentPlanWithMeta["recommendations"][number]["type"]): string {
+  switch (t) {
+    case "blog_post":    return "Blog Post";
+    case "service_page": return "Service Page";
+    case "landing_page": return "Landing Page";
+    case "improvement":  return "Existing-Page Upgrade";
+  }
+}
 /**
  * Render the closing CTA section. Reads MACROLIGHT_CONTACT_EMAIL,
  * MACROLIGHT_CONTACT_URL, MACROLIGHT_CONTACT_PHONE from env so the report
@@ -1558,54 +1478,108 @@ function baseCss(): string {
     .positives li { font-size: 10pt; color: #374151; margin-bottom: 4pt; }
     .check { color: #059669; font-weight: 700; margin-right: 6pt; }
 
-    /* Recommended 90-Day Roadmap */
-    .roadmap { margin-top: 6pt; }
-    .roadmap-phase {
-      margin-bottom: 14pt;
-      padding-bottom: 10pt;
-      border-bottom: 1px solid #f3f4f6;
+    /* AI-generated Content Plan */
+    .content-plan { margin-top: 6pt; }
+    .cp-list { padding-left: 0; list-style: none; margin: 0; }
+    .cp-item {
+      margin-bottom: 12pt;
+      padding: 10pt 12pt;
+      border: 1px solid #e5e7eb;
+      border-radius: 6pt;
     }
-    .roadmap-phase:last-child { border-bottom: none; padding-bottom: 0; }
-    .roadmap-phase-h {
+    .cp-head {
       display: flex;
       align-items: flex-start;
       gap: 10pt;
-      margin-bottom: 8pt;
+      margin-bottom: 6pt;
     }
-    .roadmap-phase-num {
+    .cp-num {
       flex-shrink: 0;
-      width: 22pt;
-      height: 22pt;
+      width: 20pt;
+      height: 20pt;
       border-radius: 50%;
       background: #ede9fe;
       color: #5b21b6;
       font-weight: 800;
-      font-size: 12pt;
+      font-size: 11pt;
       display: flex;
       align-items: center;
       justify-content: center;
       line-height: 1;
     }
-    .roadmap-phase-label {
+    .cp-head-text {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8pt;
+      flex-wrap: wrap;
+    }
+    .cp-title {
       font-size: 11pt;
       font-weight: 700;
       color: #111827;
       margin: 0;
-      line-height: 1.2;
+      flex: 1;
+      min-width: 60%;
     }
-    .roadmap-phase-sub {
+    .cp-chips { display: flex; gap: 4pt; flex-shrink: 0; }
+    .cp-chip {
+      display: inline-block;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 2pt 5pt;
+      border-radius: 3pt;
+      border: 1px solid;
+    }
+    .cp-chip-high   { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
+    .cp-chip-medium { color: #b45309; background: #fffbeb; border-color: #fde68a; }
+    .cp-chip-low    { color: #4b5563; background: #f3f4f6; border-color: #e5e7eb; }
+    .cp-chip-type   { color: #5b21b6; background: #f5f3ff; border-color: #ddd6fe; }
+    .cp-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8pt 14pt;
+      font-size: 9pt;
+      color: #4b5563;
+      margin: 4pt 0 8pt 30pt;
+    }
+    .cp-meta-item strong { font-weight: 600; color: #374151; margin-right: 3pt; }
+    .cp-url { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 8.5pt; color: #6b7280; }
+    .cp-reasoning {
+      font-size: 10pt;
+      color: #374151;
+      margin: 0 0 8pt 30pt;
+      line-height: 1.5;
+    }
+    .cp-outline {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 4pt;
+      padding: 6pt 10pt;
+      margin-left: 30pt;
+    }
+    .cp-outline-h {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      margin: 0 0 3pt 0;
+    }
+    .cp-outline-list {
+      padding-left: 14pt;
+      margin: 0;
+      list-style: decimal;
+    }
+    .cp-outline-list li { font-size: 9.5pt; color: #374151; margin-bottom: 1pt; }
+    .cp-link-note {
+      margin: 6pt 0 0 30pt;
       font-size: 9pt;
       color: #6b7280;
-      margin: 2pt 0 0 0;
     }
-    .roadmap-list {
-      padding-left: 32pt;
-      list-style: decimal;
-      margin: 0;
-    }
-    .roadmap-item { margin-bottom: 6pt; }
-    .roadmap-item-title { font-size: 10pt; font-weight: 600; color: #1f2937; margin: 0; }
-    .roadmap-item-fix { font-size: 9.5pt; color: #4b5563; margin: 1pt 0 0 0; }
+    .cp-link-note strong { font-weight: 600; color: #4b5563; }
 
     /* CTA */
     .cta {

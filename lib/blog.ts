@@ -1,6 +1,14 @@
 export interface BlogPost {
   slug: string;
   title: string;
+  /**
+   * Optional shorter title used for the HTML <title> tag and OG title.
+   * Use this when `title` exceeds the SERP truncation budget once the
+   * " | Macrolight Builders" template (22 chars) is appended — i.e.
+   * keep `seoTitle` ≤38 chars to stay under ~60 chars total.
+   * Falls back to `title` when not provided.
+   */
+  seoTitle?: string;
   description: string;
   date: string;
   author: string;
@@ -16,8 +24,9 @@ export const blogPosts: BlogPost[] = [
   {
     slug: "why-your-local-business-needs-more-than-a-digital-business-card",
     title: "Why Your Local Business Needs More Than a Digital Business Card",
+    seoTitle: "Beyond the Digital Business Card",
     description:
-      "Most local business websites sit there doing nothing. Learn why a static online brochure is costing you customers and what a conversion-focused site actually looks like.",
+      "Most local business websites sit there doing nothing. Learn why a static brochure costs you customers — and what a conversion-focused site looks like.",
     date: "2026-04-20",
     author: "Macrolight Builders",
     readTime: "6 min read",
@@ -95,6 +104,7 @@ Stop treating your website like a checkbox. Start treating it like a revenue cha
   {
     slug: "how-a-200-per-month-website-generates-20k-in-monthly-revenue",
     title: "How a $200/mo Website Generates $20K in Monthly Revenue",
+    seoTitle: "How a $200/mo Website Earns $20K/mo",
     description:
       "Think websites are an expense? This breakdown shows the real ROI of a conversion-focused website for small businesses, with concrete numbers and examples.",
     date: "2026-04-14",
@@ -212,6 +222,7 @@ The question isn't whether you can afford a conversion-focused website. It's whe
   {
     slug: "5-website-mistakes-costing-contractors-leads-every-day",
     title: "5 Website Mistakes Costing Contractors Leads Every Day",
+    seoTitle: "5 Website Mistakes Costing Contractors Leads",
     description:
       "Contractors lose leads daily to avoidable website mistakes. Here are the 5 most common issues and exactly how to fix each one for more calls and quote requests.",
     date: "2026-04-07",

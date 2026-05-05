@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllPosts } from "@/lib/blog";
+import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Blog",
+  // Keyword-rich title (template appends " | Macrolight Builders").
+  title: "Local Business Web Design Blog",
   description:
     "Actionable insights on web design, lead generation, and online growth for local businesses. Learn how to turn your website into a client acquisition system.",
   alternates: { canonical: "/blog" },
@@ -13,6 +15,22 @@ export const metadata: Metadata = {
     description:
       "Actionable insights on web design, lead generation, and online growth for local businesses.",
     url: "https://macrolight-builder.com/blog",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "Macrolight Builders blog — local business web design insights",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog — Macrolight Builders",
+    description:
+      "Actionable insights on web design, lead generation, and online growth for local businesses.",
+    images: ["/og-default.png"],
   },
 };
 
@@ -27,8 +45,56 @@ function formatDate(dateString: string): string {
 export default function BlogPage() {
   const posts = getAllPosts();
 
+  // BreadcrumbList — helps Google show breadcrumb chips in SERPs.
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://macrolight-builder.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: "https://macrolight-builder.com/blog",
+      },
+    ],
+  };
+
+  // Blog schema — explicit signal that this is a blog index, with each
+  // post listed as a BlogPosting node.
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Macrolight Builders Blog",
+    url: "https://macrolight-builder.com/blog",
+    description:
+      "Actionable insights on web design, lead generation, and online growth for local businesses.",
+    publisher: {
+      "@type": "Organization",
+      name: "Macrolight Builders",
+      url: "https://macrolight-builder.com",
+    },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      url: `https://macrolight-builder.com/blog/${p.slug}`,
+      datePublished: p.date,
+      author: {
+        "@type": "Organization",
+        name: p.author,
+      },
+    })),
+  };
+
   return (
     <>
+      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={blogSchema} />
       {/* ── Hero header ── */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />

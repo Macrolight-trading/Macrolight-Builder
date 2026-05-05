@@ -274,15 +274,36 @@ export const industries: Record<string, IndustryProfile> = {
 /** List of all configured industry slugs (used for static generation). */
 export const industrySlugs = Object.keys(industries);
 
-/**
- * Resolve an industry profile from a slug. Unknown slugs return a generic
- * profile with the slug humanized — this lets the route handle arbitrary
- * niches without 404ing.
- */
-export function getIndustry(slug: string): IndustryProfile {
-  const normalized = slug.toLowerCase();
-  if (industries[normalized]) return industries[normalized];
+/** Strict check: is this slug a real, configured industry? */
+export function isValidIndustrySlug(slug: string): boolean {
+  return Object.prototype.hasOwnProperty.call(
+    industries,
+    slug.toLowerCase()
+  );
+}
 
+/**
+ * Resolve a configured industry profile from a slug. Returns `undefined`
+ * for unknown slugs so the catch-all route can call `notFound()` instead
+ * of generating an indexable doorway page.
+ *
+ * SEO note: this used to return a generic profile for ANY slug, which made
+ * `/[anything]` render an HTTP 200 industry-style page. That created an
+ * unbounded set of crawlable URLs. Do not reintroduce a fallback profile
+ * here — unknown slugs MUST 404.
+ */
+export function getIndustry(slug: string): IndustryProfile | undefined {
+  const normalized = slug.toLowerCase();
+  return industries[normalized];
+}
+
+/**
+ * Internal-only: build a generic profile from a slug. Kept for places that
+ * intentionally render a generic industry block (e.g. previews from a CMS),
+ * but NEVER used by the public `/[industry]` route.
+ */
+export function buildGenericIndustry(slug: string): IndustryProfile {
+  const normalized = slug.toLowerCase();
   const pretty = normalized
     .split("-")
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))

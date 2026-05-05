@@ -6,7 +6,7 @@ import { newLeadEmailHtml } from "@/lib/email-templates";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, message, company, industry } = body;
+    const { name, email, message, company, industry, phone } = body;
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -23,17 +23,27 @@ export async function POST(request: Request) {
         message,
         company: company || null,
         industry: industry || null,
+        phone: phone || null,
       },
     });
 
     // Send notification email and track delivery
-    const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL;
-    if (notificationEmail) {
+    const notificationEmails = parseNotificationEmails(
+      process.env.LEAD_NOTIFICATION_EMAIL
+    );
+    if (notificationEmails.length > 0) {
       try {
         const result = await sendEmail({
-          to: notificationEmail,
+          to: notificationEmails,
           subject: `New lead: ${name} from ${company || "Unknown"}`,
-          html: newLeadEmailHtml({ name, email, company, message, industry: industry || "" }),
+          html: newLeadEmailHtml({
+            name,
+            email,
+            company,
+            message,
+            industry: industry || "",
+            phone: phone || "",
+          }),
           replyTo: email,
         });
         if (result) {
@@ -54,4 +64,15 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+function parseNotificationEmails(value: string | undefined): string[] {
+  if (!value) return [];
+  const list = value
+    .split(/[;,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  // Deduplicate while preserving order.
+  return Array.from(new Set(list));
 }
