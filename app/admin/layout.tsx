@@ -3,7 +3,7 @@ import AdminShell from "@/components/admin/AdminShell";
 
 export const metadata: Metadata = {
   title: {
-    default: "Admin — Macrolight Builders",
+    default: "Admin — Macrolight Builder",
     template: "%s | Admin — Macrolight",
   },
 };

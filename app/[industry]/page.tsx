@@ -9,38 +9,17 @@ import {
 } from "@/lib/industries";
 import { caseStudies } from "@/lib/case-studies";
 import { getAllPosts } from "@/lib/blog";
-import RoofingShowcase from "@/components/industries/RoofingShowcase";
-import RestaurantsShowcase from "@/components/industries/RestaurantsShowcase";
-import LawFirmsShowcase from "@/components/industries/LawFirmsShowcase";
-import HVACShowcase from "@/components/industries/HVACShowcase";
-import DentistsShowcase from "@/components/industries/DentistsShowcase";
-import LawnShowcase from "@/components/industries/LawnShowcase";
-import IndustryPreviewFrame from "@/components/industries/IndustryPreviewFrame";
+import IndustrySampleFrame from "@/components/industries/IndustrySampleFrame";
 import JsonLd from "@/components/JsonLd";
 
 interface PageProps {
   params: { industry: string };
 }
 
-const showcases: Record<
-  string,
-  React.ComponentType<{ industry: IndustryProfile }>
-> = {
-  roofing: RoofingShowcase,
-  restaurants: RestaurantsShowcase,
-  "law-firms": LawFirmsShowcase,
-  hvac: HVACShowcase,
-  dentists: DentistsShowcase,
-  "lawn-care": LawnShowcase,
-};
-
 /**
  * Tell Next.js exactly which slugs are valid. Combined with
  * `dynamicParams = false` below, any other slug returns the framework's
  * built-in 404 (HTTP 404) instead of rendering a generated industry page.
- *
- * SEO note: see lib/industries.ts — unknown slugs MUST 404. Do not add a
- * fallback profile here.
  */
 export function generateStaticParams() {
   return industrySlugs.map((slug) => ({ industry: slug }));
@@ -69,11 +48,16 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
   const seoTitle = titleByIndustry[params.industry];
 
-  // Trim meta description to ≤160 chars while keeping the value prop.
-  const description = `${industry.heroTagline} Macrolight Builders builds, hosts, and manages a full client acquisition site for ${industry.name.toLowerCase()} businesses.`;
+  // Per-industry meta description — kept short enough to fit Google's
+  // ~160-char SERP snippet without mid-word truncation. Uses the
+  // industry's display name (not lowercased) so e.g. "HVAC" stays
+  // capitalized.
+  const description = `${industry.heroTagline} We build, host, and manage lead-generating sites for ${industry.name} businesses.`;
+  // Belt-and-braces: if a future heroTagline pushes us over 160 chars,
+  // truncate at the last word boundary instead of slicing mid-word.
   const trimmedDescription =
     description.length > 160
-      ? description.slice(0, 157).trimEnd() + "..."
+      ? description.slice(0, 157).replace(/\s+\S*$/, "").trimEnd() + "..."
       : description;
 
   return {
@@ -81,7 +65,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
     description: trimmedDescription,
     alternates: { canonical: `/${params.industry}` },
     openGraph: {
-      title: `${industry.name} Websites — Macrolight Builders`,
+      title: `${industry.name} Websites — Macrolight Builder`,
       description: trimmedDescription,
       url: `https://macrolight-builder.com/${params.industry}`,
       type: "website",
@@ -90,13 +74,13 @@ export function generateMetadata({ params }: PageProps): Metadata {
           url: "/og-default.png",
           width: 1200,
           height: 630,
-          alt: `Macrolight Builders — websites for ${industry.name.toLowerCase()} businesses`,
+          alt: `Macrolight Builder — websites for ${industry.name.toLowerCase()} businesses`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${industry.name} Websites — Macrolight Builders`,
+      title: `${industry.name} Websites — Macrolight Builder`,
       description: trimmedDescription,
       images: ["/og-default.png"],
     },
@@ -129,8 +113,6 @@ export default function IndustryPage({ params }: PageProps) {
   if (!isValidIndustrySlug(params.industry)) notFound();
 
   const industry = getIndustry(params.industry)!;
-  const Showcase = showcases[params.industry.toLowerCase()];
-  if (!Showcase) notFound();
 
   // Service schema — signals page purpose to Google.
   const serviceSchema = {
@@ -138,10 +120,10 @@ export default function IndustryPage({ params }: PageProps) {
     "@type": "Service",
     serviceType: `${industry.name} Website Design & Lead Generation`,
     name: `Websites for ${industry.name} Businesses`,
-    description: `High-converting ${industry.name.toLowerCase()} websites built, hosted, and managed by Macrolight Builders to generate consistent ${industry.clientsLabel.toLowerCase()}.`,
+    description: `High-converting ${industry.name.toLowerCase()} websites built, hosted, and managed by Macrolight Builder to generate consistent ${industry.clientsLabel.toLowerCase()}.`,
     provider: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
     areaServed: {
@@ -161,16 +143,16 @@ export default function IndustryPage({ params }: PageProps) {
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: `${industry.name} Websites — Macrolight Builders`,
+    name: `${industry.name} Websites — Macrolight Builder`,
     url: `https://macrolight-builder.com/${params.industry}`,
     isPartOf: {
       "@type": "WebSite",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
     about: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
   };
@@ -187,17 +169,10 @@ export default function IndustryPage({ params }: PageProps) {
       <JsonLd data={serviceSchema} />
       <JsonLd data={webPageSchema} />
 
-      {/* ──────────────────────────────────────────────
-          Macrolight service header — ABOVE the demo.
-          This gives Google (and screen readers) the
-          page's true purpose first. The embedded demo
-          below is wrapped in a clearly-labelled section
-          so its in-demo headings don't compete.
-         ────────────────────────────────────────────── */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14">
           <p className="text-xs font-semibold uppercase tracking-widest text-violet-600">
-            Macrolight Builders · {industry.name}
+            Macrolight Builder &middot; {industry.name}
           </p>
           <h1 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-[1.1]">
             Websites That Get More {industry.clientsLabel} —{" "}
@@ -257,18 +232,13 @@ export default function IndustryPage({ params }: PageProps) {
         </div>
       </header>
 
-      {/* ──────────────────────────────────────────────
-          Embedded sample site preview.
-          The aria-label tells assistive tech and crawlers
-          this is a sample — the showcase's own headings
-          still render, but the real page H1 is above this
-          section. (See IndustryPreviewFrame for the demo's
-          heading-demotion CSS.)
-         ────────────────────────────────────────────── */}
       <section aria-label={`Sample ${industry.name} website preview`}>
-        <IndustryPreviewFrame industry={industry}>
-          <Showcase industry={industry} />
-        </IndustryPreviewFrame>
+        {/* The mockup lives at /sample/[industry] (noindex'd, blocked in
+            robots.txt) so the fake business names, reviews and addresses
+            never get indexed against macrolight-builder.com. The iframe
+            also resolves the duplicate-H1 issue: the showcase has its
+            own H1 and now lives in a separate document. */}
+        <IndustrySampleFrame industry={industry} slug={params.industry} />
       </section>
     </>
   );

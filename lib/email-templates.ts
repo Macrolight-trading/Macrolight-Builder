@@ -1,3 +1,12 @@
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface NewLeadEmailData {
   name: string;
   email: string;
@@ -89,7 +98,7 @@ export function newLeadEmailHtml({
           <!-- Footer -->
           <tr>
             <td style="background-color:#fafafa;padding:20px 32px;border-top:1px solid #e4e4e7;">
-              <p style="margin:0;font-size:13px;color:#a1a1aa;text-align:center;">Macrolight Builders &mdash; Lead Notification</p>
+              <p style="margin:0;font-size:13px;color:#a1a1aa;text-align:center;">Macrolight Builder &mdash; Lead Notification</p>
             </td>
           </tr>
         </table>
@@ -179,7 +188,7 @@ export function weeklyDigestEmailHtml({
           <!-- Footer -->
           <tr>
             <td style="background-color:#fafafa;padding:20px 32px;border-top:1px solid #e4e4e7;">
-              <p style="margin:0;font-size:13px;color:#a1a1aa;text-align:center;">Macrolight Builders &mdash; Weekly Digest</p>
+              <p style="margin:0;font-size:13px;color:#a1a1aa;text-align:center;">Macrolight Builder &mdash; Weekly Digest</p>
             </td>
           </tr>
         </table>
@@ -188,13 +197,4 @@ export function weeklyDigestEmailHtml({
   </table>
 </body>
 </html>`.trim();
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }

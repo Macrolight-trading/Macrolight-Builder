@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     "Our five-step process and modern tech stack — Next.js, React, Tailwind CSS, Vercel — engineered for speed, SEO, and conversions.",
   alternates: { canonical: "/how-we-build" },
   openGraph: {
-    title: "How We Build — Macrolight Builders",
+    title: "How We Build — Macrolight Builder",
     description:
-      "Discover the process and technology behind every Macrolight Builders website. Built for speed, SEO, and real business results.",
+      "Discover the process and technology behind every Macrolight Builder website. Built for speed, SEO, and real business results.",
     url: "https://macrolight-builder.com/how-we-build",
   },
 };
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 const howWeBuildSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  name: "How We Build — Macrolight Builders",
+  name: "How We Build — Macrolight Builder",
   description:
     "Our five-step process and modern tech stack for building high-converting local business websites.",
   url: "https://macrolight-builder.com/how-we-build",

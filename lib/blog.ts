@@ -4,7 +4,7 @@ export interface BlogPost {
   /**
    * Optional shorter title used for the HTML <title> tag and OG title.
    * Use this when `title` exceeds the SERP truncation budget once the
-   * " | Macrolight Builders" template (22 chars) is appended — i.e.
+   * " | Macrolight Builder" template (22 chars) is appended — i.e.
    * keep `seoTitle` ≤38 chars to stay under ~60 chars total.
    * Falls back to `title` when not provided.
    */
@@ -18,6 +18,8 @@ export interface BlogPost {
   ogImage: string;
   coverImage: string;
   coverAlt: string;
+  /** Key into the `authors` record in lib/authors.ts */
+  authorKey?: string;
 }
 
 export const blogPosts: BlogPost[] = [
@@ -28,12 +30,14 @@ export const blogPosts: BlogPost[] = [
     description:
       "Most local business websites sit there doing nothing. Learn why a static brochure costs you customers — and what a conversion-focused site looks like.",
     date: "2026-04-20",
-    author: "Macrolight Builders",
+    author: "Bradley Bayley",
+    authorKey: "bradley",
     readTime: "6 min read",
     category: "Strategy",
     ogImage: "/og-default.png",
-    coverImage: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&q=80&fit=crop",
-    coverAlt: "Small business owner working on laptop in a modern storefront",
+    coverImage: "/img/blog/why-your-local-business-needs-more-than-a-digital-business-card.svg",
+    coverAlt:
+      "A flat, desaturated business card on the left contrasted with a vibrant violet-to-cyan panel on the right showing a four-stage conversion funnel and an upward growth curve.",
     content: `# Why Your Local Business Needs More Than a Digital Business Card
 
 If you run a local business, chances are someone told you years ago that you "need a website." So you got one. Maybe it was a quick template with your logo, phone number, a few photos, and an "About Us" page. It looked fine. You checked the box.
@@ -108,12 +112,14 @@ Stop treating your website like a checkbox. Start treating it like a revenue cha
     description:
       "Think websites are an expense? This breakdown shows the real ROI of a conversion-focused website for small businesses, with concrete numbers and examples.",
     date: "2026-04-14",
-    author: "Macrolight Builders",
+    author: "Nick Ottoy",
+    authorKey: "nick",
     readTime: "7 min read",
     category: "ROI",
     ogImage: "/og-default.png",
-    coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80&fit=crop",
-    coverAlt: "Analytics dashboard showing website traffic and revenue growth",
+    coverImage: "/img/blog/how-a-200-per-month-website-generates-20k-in-monthly-revenue.svg",
+    coverAlt:
+      "A small $200 pill connected by a sweeping violet-to-cyan growth curve and a 100x multiplier badge to a large $20K figure, with a faint ascending bar chart in the background.",
     content: `# How a $200/mo Website Generates $20K in Monthly Revenue
 
 Most small business owners think of their website as an expense. Something you pay for because you're "supposed to have one." That mindset is the reason most small business websites return nothing.
@@ -226,12 +232,14 @@ The question isn't whether you can afford a conversion-focused website. It's whe
     description:
       "Contractors lose leads daily to avoidable website mistakes. Here are the 5 most common issues and exactly how to fix each one for more calls and quote requests.",
     date: "2026-04-07",
-    author: "Macrolight Builders",
+    author: "Bradley Bayley",
+    authorKey: "bradley",
     readTime: "6 min read",
     category: "Tips",
     ogImage: "/og-default.png",
-    coverImage: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80&fit=crop",
-    coverAlt: "Contractor reviewing blueprints at a construction site",
+    coverImage: "/img/blog/5-website-mistakes-costing-contractors-leads-every-day.svg",
+    coverAlt:
+      "Five numbered tiles: tiles 1–4 are dark and flagged with amber warning badges showing common mistake icons; tile 5 is a vibrant violet-to-cyan 'Fixed' tile with a checkmark, plus a small line-art wrench icon in the corner.",
     content: `# 5 Website Mistakes Costing Contractors Leads Every Day
 
 If you're a contractor — roofer, plumber, electrician, HVAC tech, landscaper, painter — your website is either making you money or losing you money. There's no middle ground.
@@ -313,18 +321,18 @@ Your competitors are making these same mistakes. The contractor who fixes them f
 
 ## What to Do Next
 
-Audit your website against these five points. Be honest about where you stand. If you're making two or more of these mistakes, your site is actively costing you money every single day.
+Audit your website against these five points. Be honest about where you stand. If you're making two or more of these mistakes, start with the ones that will have the biggest impact — for most contractors that's adding a clear CTA above the fold and getting a lead-capture form live. Fix those first, measure the difference in quote requests, then work through the remaining items.
 
-The fastest path to more leads isn't more ad spend — it's fixing the leaks in your current website. Plug the holes first, then scale.`,
+If you want a second set of eyes, [book a free website review](https://macrolight-builder.com/contact) and we'll walk through your site together.`,
   },
 ];
 
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find((post) => post.slug === slug);
-}
-
 export function getAllPosts(): BlogPost[] {
-  return blogPosts.sort(
+  return [...blogPosts].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+}
+
+export function getPostBySlug(slug: string): BlogPost | undefined {
+  return blogPosts.find((post) => post.slug === slug);
 }

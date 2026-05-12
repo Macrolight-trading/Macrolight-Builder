@@ -1,0 +1,163 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five numbered tiles, the first four flagged with amber warning marks and the fifth shown as a fixed cyan tile, with a small wrench icon">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#101015"/>
+    </linearGradient>
+    <linearGradient id="tileVio" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#15151a"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </linearGradient>
+    <linearGradient id="tileFixed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <radialGradient id="glow3a" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow3b" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowAmber" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots3" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="1.2" cy="1.2" r="1.2" fill="rgba(255,255,255,0.045)"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg3)"/>
+  <rect width="1200" height="630" fill="url(#dots3)"/>
+
+  <!-- Glows -->
+  <ellipse cx="180" cy="160" rx="240" ry="160" fill="url(#glow3a)"/>
+  <ellipse cx="1050" cy="500" rx="280" ry="180" fill="url(#glow3b)"/>
+  <ellipse cx="600" cy="380" rx="380" ry="120" fill="url(#glowAmber)"/>
+
+  <!-- Eyebrow tag -->
+  <g transform="translate(60,56)">
+    <rect x="0" y="0" width="80" height="32" rx="16" fill="#111113" stroke="#1f1f23"/>
+    <circle cx="16" cy="16" r="4" fill="#f59e0b"/>
+    <text x="28" y="21" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#ffffff">TIPS</text>
+  </g>
+
+  <!-- Wrench icon (built from paths) - top right, ties to "contractors" -->
+  <g transform="translate(1060,68) rotate(-30)" opacity="0.85">
+    <!-- wrench body -->
+    <path d="M0 18
+             a18 18 0 1 1 12 17
+             L 38 60
+             a8 8 0 0 1 -11 11
+             L 5 45
+             A 18 18 0 0 1 0 18 Z"
+          fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- wrench notch -->
+    <path d="M9 9 L 22 9 L 22 22 L 14 28 L 4 24 Z" fill="#7c3aed" opacity="0.25"/>
+  </g>
+
+  <!-- Five numbered tiles in a row -->
+  <g transform="translate(90,230)">
+    <!-- Tile 1 -->
+    <g transform="translate(0,0)">
+      <rect x="0" y="0" width="180" height="220" rx="16" fill="url(#tileVio)" stroke="#1f1f23"/>
+      <text x="24" y="58" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="700" fill="rgba(255,255,255,0.18)">01</text>
+      <!-- mistake illustration: slow load (clock) -->
+      <g transform="translate(40,100)" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <circle cx="50" cy="50" r="32"/>
+        <line x1="50" y1="50" x2="50" y2="28"/>
+        <line x1="50" y1="50" x2="66" y2="58"/>
+      </g>
+      <!-- amber flag -->
+      <g transform="translate(140,16)">
+        <circle cx="12" cy="12" r="12" fill="url(#amberGrad)"/>
+        <line x1="12" y1="6" x2="12" y2="14" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="12" cy="18" r="1.4" fill="#0a0a0a"/>
+      </g>
+      <text x="24" y="200" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="1.2">SLOW LOAD</text>
+    </g>
+
+    <!-- Tile 2 -->
+    <g transform="translate(204,0)">
+      <rect x="0" y="0" width="180" height="220" rx="16" fill="url(#tileVio)" stroke="#1f1f23"/>
+      <text x="24" y="58" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="700" fill="rgba(255,255,255,0.18)">02</text>
+      <!-- mistake: no CTA (empty button outline) -->
+      <g transform="translate(34,110)" stroke="#f59e0b" stroke-width="2.5" fill="none">
+        <rect x="0" y="0" width="112" height="40" rx="20" stroke-dasharray="4 5"/>
+        <line x1="20" y1="20" x2="92" y2="20" stroke-dasharray="2 6" opacity="0.6"/>
+      </g>
+      <g transform="translate(140,16)">
+        <circle cx="12" cy="12" r="12" fill="url(#amberGrad)"/>
+        <line x1="12" y1="6" x2="12" y2="14" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="12" cy="18" r="1.4" fill="#0a0a0a"/>
+      </g>
+      <text x="24" y="200" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="1.2">WEAK CTA</text>
+    </g>
+
+    <!-- Tile 3 -->
+    <g transform="translate(408,0)">
+      <rect x="0" y="0" width="180" height="220" rx="16" fill="url(#tileVio)" stroke="#1f1f23"/>
+      <text x="24" y="58" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="700" fill="rgba(255,255,255,0.18)">03</text>
+      <!-- mistake: not mobile (broken phone frame) -->
+      <g transform="translate(60,98)" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-linejoin="round">
+        <rect x="0" y="0" width="60" height="84" rx="8"/>
+        <line x1="0" y1="20" x2="60" y2="20"/>
+        <line x1="0" y1="64" x2="60" y2="64"/>
+        <line x1="14" y1="36" x2="46" y2="50" stroke-dasharray="3 4"/>
+      </g>
+      <g transform="translate(140,16)">
+        <circle cx="12" cy="12" r="12" fill="url(#amberGrad)"/>
+        <line x1="12" y1="6" x2="12" y2="14" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="12" cy="18" r="1.4" fill="#0a0a0a"/>
+      </g>
+      <text x="24" y="200" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="1.2">NOT MOBILE</text>
+    </g>
+
+    <!-- Tile 4 -->
+    <g transform="translate(612,0)">
+      <rect x="0" y="0" width="180" height="220" rx="16" fill="url(#tileVio)" stroke="#1f1f23"/>
+      <text x="24" y="58" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="700" fill="rgba(255,255,255,0.18)">04</text>
+      <!-- mistake: no contact (envelope with X) -->
+      <g transform="translate(38,110)" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-linejoin="round">
+        <rect x="0" y="0" width="104" height="60" rx="6"/>
+        <path d="M0 4 L52 38 L104 4"/>
+        <line x1="36" y1="22" x2="68" y2="44" stroke-linecap="round"/>
+        <line x1="68" y1="22" x2="36" y2="44" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(140,16)">
+        <circle cx="12" cy="12" r="12" fill="url(#amberGrad)"/>
+        <line x1="12" y1="6" x2="12" y2="14" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="12" cy="18" r="1.4" fill="#0a0a0a"/>
+      </g>
+      <text x="24" y="200" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="1.2">NO CONTACT</text>
+    </g>
+
+    <!-- Tile 5: FIXED -->
+    <g transform="translate(816,-8)">
+      <rect x="-2" y="-2" width="184" height="240" rx="18" fill="none" stroke="rgba(6,182,212,0.35)" stroke-width="1"/>
+      <rect x="0" y="0" width="180" height="236" rx="16" fill="url(#tileFixed)"/>
+      <text x="24" y="58" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="700" fill="rgba(255,255,255,0.4)">05</text>
+      <!-- check mark -->
+      <g transform="translate(50,108)" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M0 26 L 28 50 L 80 0"/>
+      </g>
+      <!-- "fixed" pill -->
+      <g transform="translate(140,16)">
+        <circle cx="12" cy="12" r="12" fill="#ffffff"/>
+        <path d="M6 12 L 11 17 L 18 8" stroke="#7c3aed" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="24" y="208" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="800" fill="#ffffff" letter-spacing="1.5">FIXED</text>
+    </g>
+  </g>
+
+  <!-- Bottom serif caption -->
+  <text x="60" y="540" font-family="'Playfair Display', Georgia, serif" font-style="italic" font-size="26" fill="#ffffff" opacity="0.92">Five small leaks. One big drain.</text>
+  <text x="60" y="572" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">Plug them, and the leads come back.</text>
+</svg>

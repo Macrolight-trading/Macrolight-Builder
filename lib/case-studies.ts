@@ -15,9 +15,16 @@ export interface CaseStudy {
   challenge: string;
   solution: string;
   results: CaseStudyResult[];
-  testimonialQuote: string;
-  testimonialAuthor: string;
-  testimonialRole: string;
+  /**
+   * Real client testimonial. ONLY populate when we have a verified quote
+   * from a named, real client (with permission to publish). We previously
+   * filled this with self-quotes attributed to "Macrolight Founding Team",
+   * which is worse than having no testimonial at all — leave undefined
+   * until a real one is available.
+   */
+  testimonialQuote?: string;
+  testimonialAuthor?: string;
+  testimonialRole?: string;
   timeframe: string;
 }
 
@@ -56,10 +63,6 @@ export const caseStudies: CaseStudy[] = [
           "Verified performance numbers will be added once founding clients are live.",
       },
     ],
-    testimonialQuote:
-      "Our commitment is simple: publish only metrics we can document. Until then, we share transparent sample frameworks so clients know exactly what they are buying.",
-    testimonialAuthor: "Macrolight Founding Team",
-    testimonialRole: "Founder Statement",
     timeframe: "Founding phase",
   },
   {
@@ -96,10 +99,6 @@ export const caseStudies: CaseStudy[] = [
           "Metrics are published only after real campaigns and verification.",
       },
     ],
-    testimonialQuote:
-      "These case studies are transparent sample frameworks. Verified outcomes will replace placeholders as founding client engagements complete.",
-    testimonialAuthor: "Macrolight Founding Team",
-    testimonialRole: "Founder Statement",
     timeframe: "Founding phase",
   },
   {
@@ -136,10 +135,6 @@ export const caseStudies: CaseStudy[] = [
           "Performance reporting will move to documented client data after launch campaigns complete.",
       },
     ],
-    testimonialQuote:
-      "We prefer transparent positioning over inflated claims. Every published result will include context and verification once we have real client data.",
-    testimonialAuthor: "Macrolight Founding Team",
-    testimonialRole: "Founder Statement",
     timeframe: "Founding phase",
   },
   {
@@ -176,10 +171,6 @@ export const caseStudies: CaseStudy[] = [
           "Verified outcomes are published only after launch and documented performance data.",
       },
     ],
-    testimonialQuote:
-      "Our goal is transparent proof. Until founding campaigns are complete, we show the exact systems we build without claiming unverified numbers.",
-    testimonialAuthor: "Macrolight Founding Team",
-    testimonialRole: "Founder Statement",
     timeframe: "Founding phase",
   },
 ];

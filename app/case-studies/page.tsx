@@ -5,10 +5,10 @@ import { getAllCaseStudies } from "@/lib/case-studies";
 export const metadata: Metadata = {
   title: "Case Studies",
   description:
-    "Explore transparent sample build scenarios that show how Macrolight Builders structures lead-generating websites for local businesses.",
+    "Explore transparent sample build scenarios that show how Macrolight Builder structures lead-generating websites for local businesses.",
   alternates: { canonical: "/case-studies" },
   openGraph: {
-    title: "Case Studies — Macrolight Builders",
+    title: "Case Studies — Macrolight Builder",
     description:
       "Transparent sample build scenarios for local business lead-generation websites.",
     url: "https://macrolight-builder.com/case-studies",
@@ -18,13 +18,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Macrolight Builders Case Studies",
+        alt: "Macrolight Builder Case Studies",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Case Studies — Macrolight Builders",
+    title: "Case Studies — Macrolight Builder",
     description:
       "Transparent sample build scenarios for local business lead-generation websites.",
     images: ["/og-default.png"],

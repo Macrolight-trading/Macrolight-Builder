@@ -26,14 +26,14 @@ export function generateMetadata({
   if (!cs) return {};
 
   const title = `${cs.company} Case Study`;
-  const description = `A transparent sample scenario showing how Macrolight Builders would approach a ${cs.industry.toLowerCase()} lead-generation website in ${cs.location}.`;
+  const description = `A transparent sample scenario showing how Macrolight Builder would approach a ${cs.industry.toLowerCase()} lead-generation website in ${cs.location}.`;
 
   return {
     title,
     description,
     alternates: { canonical: `/case-studies/${cs.slug}` },
     openGraph: {
-      title: `${title} — Macrolight Builders`,
+      title: `${title} — Macrolight Builder`,
       description,
       url: `https://macrolight-builder.com/case-studies/${cs.slug}`,
       type: "article",
@@ -42,13 +42,13 @@ export function generateMetadata({
           url: "/og-default.png",
           width: 1200,
           height: 630,
-          alt: `${cs.company} — Macrolight Builders Case Study`,
+          alt: `${cs.company} — Macrolight Builder Case Study`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} — Macrolight Builders`,
+      title: `${title} — Macrolight Builder`,
       description,
       images: ["/og-default.png"],
     },
@@ -70,16 +70,16 @@ export default function CaseStudyPage({
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${cs.company} Case Study — Macrolight Builders`,
+    headline: `${cs.company} Case Study — Macrolight Builder`,
     description: `Sample build scenario for a ${cs.industry.toLowerCase()} website in ${cs.location}.`,
     author: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
     publisher: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
       logo: {
         "@type": "ImageObject",
@@ -96,7 +96,7 @@ export default function CaseStudyPage({
     <>
       <JsonLd data={articleSchema} />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div
           className="absolute inset-0 dot-bg pointer-events-none"
@@ -141,7 +141,6 @@ export default function CaseStudyPage({
             </span>
           </div>
 
-          {/* Company name */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-[1.1] animate-fade-in-up">
             {cs.company}
           </h1>
@@ -152,7 +151,7 @@ export default function CaseStudyPage({
         </div>
       </section>
 
-      {/* ── Challenge ── */}
+      {/* Challenge */}
       <section className="bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
@@ -165,7 +164,7 @@ export default function CaseStudyPage({
         </div>
       </section>
 
-      {/* ── Solution ── */}
+      {/* Solution */}
       <section className="bg-gray-50 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 mb-3">
@@ -178,7 +177,7 @@ export default function CaseStudyPage({
         </div>
       </section>
 
-      {/* ── Results ── */}
+      {/* Results */}
       <section className="bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-4xl px-5 sm:px-8">
           <div className="text-center mb-12">
@@ -211,44 +210,52 @@ export default function CaseStudyPage({
         </div>
       </section>
 
-      {/* ── Testimonial ── */}
-      <section className="bg-gray-50 py-16 sm:py-20">
-        <div className="mx-auto max-w-3xl px-5 sm:px-8">
-          <blockquote className="relative">
-            {/* Decorative quote mark */}
-            <svg
-              className="absolute -top-4 -left-2 h-16 w-16 text-violet-100"
-              fill="currentColor"
-              viewBox="0 0 32 32"
-              aria-hidden
-            >
-              <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-            </svg>
+      {/* Testimonial — only render when we have a real, verified client
+          quote. We previously filled this with self-quotes from the
+          "Macrolight Founding Team", which read as fake testimonials and
+          undermined trust on a page literally framed as a "transparent
+          sample". Leave the section out entirely until a real one is
+          available. */}
+      {cs.testimonialQuote && cs.testimonialAuthor && (
+        <section className="bg-gray-50 py-16 sm:py-20">
+          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+            <blockquote className="relative">
+              <svg
+                className="absolute -top-4 -left-2 h-16 w-16 text-violet-100"
+                fill="currentColor"
+                viewBox="0 0 32 32"
+                aria-hidden
+              >
+                <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+              </svg>
 
-            <p className="relative text-xl sm:text-2xl font-medium text-gray-900 leading-relaxed pl-10">
-              &ldquo;{cs.testimonialQuote}&rdquo;
-            </p>
+              <p className="relative text-xl sm:text-2xl font-medium text-gray-900 leading-relaxed pl-10">
+                &ldquo;{cs.testimonialQuote}&rdquo;
+              </p>
 
-            <footer className="mt-8 pl-10">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-sm">
-                  {cs.testimonialAuthor.charAt(0)}
+              <footer className="mt-8 pl-10">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-sm">
+                    {cs.testimonialAuthor.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {cs.testimonialAuthor}
+                    </p>
+                    {cs.testimonialRole && (
+                      <p className="text-xs text-gray-400">
+                        {cs.testimonialRole}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {cs.testimonialAuthor}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    {cs.testimonialRole}
-                  </p>
-                </div>
-              </div>
-            </footer>
-          </blockquote>
-        </div>
-      </section>
+              </footer>
+            </blockquote>
+          </div>
+        </section>
+      )}
 
-      {/* ── Bottom CTA ── */}
+      {/* Bottom CTA */}
       <CTASection
         eyebrow="Your turn"
         headline="Ready to build your lead machine?"

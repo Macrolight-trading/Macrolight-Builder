@@ -37,8 +37,8 @@ const columns: Array<{
     links: [
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
     ],
   },
 ];
@@ -52,10 +52,43 @@ export default function Footer() {
           <div className="col-span-2">
             <Logo onDark />
             <p className="mt-4 text-sm text-white/50 max-w-xs leading-relaxed">
-              Macrolight Builders installs client acquisition systems for local
+              Macrolight Builder installs client acquisition systems for local
               businesses. We build, host, and manage websites engineered to
               convert.
             </p>
+
+            {/* NAP — Name, Address, Phone. Marked up with microdata so Google
+                can pick it up as a LocalBusiness signal. Use real, identical
+                copy everywhere this appears (Google checks for consistency
+                across the web, GBP, citations, etc.). */}
+            <address
+              itemScope
+              itemType="https://schema.org/LocalBusiness"
+              className="mt-5 not-italic text-sm text-white/55 leading-relaxed"
+            >
+              <span itemProp="name" className="block font-semibold text-white/80">
+                Macrolight Builder
+              </span>
+              <span
+                itemProp="address"
+                itemScope
+                itemType="https://schema.org/PostalAddress"
+                className="block"
+              >
+                <span itemProp="streetAddress">1902 Villa Rd</span>,{" "}
+                <span itemProp="addressLocality">Birmingham</span>,{" "}
+                <span itemProp="addressRegion">MI</span>{" "}
+                <span itemProp="postalCode">48009</span>
+              </span>
+              <a
+                itemProp="telephone"
+                href="tel:+12482145877"
+                className="mt-1 inline-block text-white/60 hover:text-white transition-colors"
+              >
+                (248) 214-5877
+              </a>
+            </address>
+
             <div className="mt-5 flex items-center gap-2 text-white/35">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-xs">All systems operational</span>
@@ -85,7 +118,7 @@ export default function Footer() {
 
         <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-xs text-white/35">
-            © {year} Macrolight Builders. All rights reserved.
+            &copy; {year} Macrolight Builder. All rights reserved.
           </p>
           <p className="text-xs text-white/35">
             Built for businesses that value leads over likes.

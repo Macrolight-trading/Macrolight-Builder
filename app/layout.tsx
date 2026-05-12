@@ -5,40 +5,79 @@ import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 import ChatWidget from "@/components/ChatWidget";
 import SiteShell from "@/components/SiteShell";
+import JsonLd from "@/components/JsonLd";
 
 const BASE_URL = "https://macrolight-builder.com";
+
+/**
+ * Site-wide Organization + WebSite JSON-LD. Lives in the root layout so
+ * it's emitted on every page (Google explicitly recommends site-wide
+ * Organization markup over a one-off on the homepage). The NAP block
+ * here MUST stay byte-identical to the one in components/Footer.tsx and
+ * to the Google Business Profile listing — Google compares these across
+ * the web as a local-SEO signal.
+ */
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${BASE_URL}#organization`,
+  name: "Macrolight Builder",
+  url: BASE_URL,
+  logo: `${BASE_URL}/logo.png`,
+  email: "bbayley50@gmail.com",
+  telephone: "+1-248-214-5877",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "1902 Villa Rd",
+    addressLocality: "Birmingham",
+    addressRegion: "MI",
+    postalCode: "48009",
+    addressCountry: "US",
+  },
+  areaServed: { "@type": "Country", name: "United States" },
+  founder: [
+    { "@type": "Person", name: "Bradley Bayley" },
+    { "@type": "Person", name: "Nick Ottoy" },
+  ],
+  // Add real social profiles here as they go live (LinkedIn company
+  // page, X, Instagram, Google Business Profile). A populated `sameAs`
+  // is one of the easiest entity signals to give Google for a new brand.
+  sameAs: [],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${BASE_URL}#website`,
+  url: BASE_URL,
+  name: "Macrolight Builder",
+  publisher: { "@id": `${BASE_URL}#organization` },
+  inLanguage: "en-US",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    // Default homepage title kept ≤60 chars for SERP truncation. Child
-    // pages still receive the " | Macrolight Builders" suffix via the
+    // Default homepage title kept <=60 chars for SERP truncation. Child
+    // pages still receive the " | Macrolight Builder" suffix via the
     // template below.
     default: "Client Acquisition Websites for Local Businesses",
-    template: "%s | Macrolight Builders",
+    template: "%s | Macrolight Builder",
   },
-  // Trimmed to ≤160 chars (was 162 — see SEO audit Finding 7).
+  // Trimmed to <=160 chars (was 162 — see SEO audit Finding 7).
   description:
     "We build, host, and manage high-converting websites that turn visitors into paying customers — client acquisition systems for local businesses.",
-  keywords: [
-    "lead generation websites",
-    "website for local business",
-    "client acquisition system",
-    "conversion optimized websites",
-    "web design for contractors",
-    "small business website builder",
-    "local SEO web design",
-    "contractor website design",
-  ],
+  // Note: intentionally no `keywords` field. Google ignores meta keywords
+  // and including them only signals strategy to competitors who scrape SERPs.
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Macrolight Builders — Client Acquisition Systems",
+    title: "Macrolight Builder — Client Acquisition Systems",
     description:
       "Websites that turn visitors into paying customers. Built, hosted, and managed for local businesses.",
     url: BASE_URL,
-    siteName: "Macrolight Builders",
+    siteName: "Macrolight Builder",
     locale: "en_US",
     type: "website",
     images: [
@@ -46,13 +85,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Macrolight Builders — websites that generate leads",
+        alt: "Macrolight Builder — websites that generate leads",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Macrolight Builders — Client Acquisition Systems",
+    title: "Macrolight Builder — Client Acquisition Systems",
     description:
       "Websites that turn visitors into paying customers. Built for local businesses.",
     images: ["/og-default.png"],
@@ -93,6 +132,8 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased min-h-screen flex flex-col bg-white text-gray-900">
+        <JsonLd data={organizationSchema} />
+        <JsonLd data={websiteSchema} />
         <SiteShell
           navbar={<Navbar />}
           footer={<Footer />}

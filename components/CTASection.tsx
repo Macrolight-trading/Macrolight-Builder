@@ -15,7 +15,7 @@ const TRUST_SIGNALS = [
   { value: "Founding", label: "Client cohort" },
   { value: "Lead-first", label: "Build philosophy" },
   { value: "< 24 hrs", label: "Avg. response" },
-  { value: "0", label: "Long-term contracts" },
+  { value: "3", label: "Long-term contracts" },
 ];
 
 export default function CTASection({
@@ -32,7 +32,7 @@ export default function CTASection({
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 items-stretch">
 
-          {/* ── Left: CTA content (3/5 width) ── */}
+          {/* Left: CTA content (3/5 width) */}
           <div className="lg:col-span-3 py-24 sm:py-32 pr-0 lg:pr-16">
 
             {/* Section label */}
@@ -101,7 +101,7 @@ export default function CTASection({
             </div>
           </div>
 
-          {/* ── Right: Photo panel (2/5 width) ── */}
+          {/* Right: Photo panel (2/5 width) */}
           <div className="hidden lg:block lg:col-span-2 relative -mr-12 overflow-hidden">
             <Image
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=85&fit=crop&crop=faces"
@@ -116,15 +116,19 @@ export default function CTASection({
             {/* Floating review card */}
             <div className="absolute bottom-12 left-8 right-8 bg-white/95 backdrop-blur-sm rounded-2xl p-5 shadow-2xl">
               <p className="text-sm font-medium text-gray-800 leading-snug mb-3">
-                "Launching May 2026 with limited founding client spots for local businesses focused on lead growth."
+                &ldquo;We build, host, and manage lead-generating websites for local businesses focused on real revenue growth.&rdquo;
               </p>
               <div className="flex items-center gap-2.5">
                 <div className="h-7 w-7 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 font-bold text-xs">
                   M
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-900">Macrolight Builders</p>
-                  <p className="text-[0.6rem] text-gray-400">Founding team statement</p>
+                  <p className="text-xs font-semibold text-gray-900">
+                    Bradley Bayley &amp; Nick Ottoy
+                  </p>
+                  <p className="text-[0.6rem] text-gray-400">
+                    Co-Founders, Macrolight Builder
+                  </p>
                 </div>
               </div>
             </div>

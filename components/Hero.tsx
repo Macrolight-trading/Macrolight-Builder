@@ -33,7 +33,7 @@ const COLLAGE = [
     src: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&q=80&fit=crop&crop=center",
     alt: "HVAC technician working on an air conditioning system",
     label: "HVAC · Cincinnati, OH",
-    stat: "Founding client launch queue now open",
+    stat: "Built to capture emergency calls",
   },
 ];
 
@@ -58,7 +58,7 @@ export default function Hero() {
               <div className="inline-flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden />
                 <span className="text-xs font-medium text-gray-500">
-                  Founding client offer — 3 launch pricing spots remaining
+                  Now booking client builds — free audits available
                 </span>
               </div>
             </div>
@@ -139,9 +139,9 @@ export default function Hero() {
               style={{ animationDelay: "0.38s" }}
             >
               {[
-                ["May 2026", "Launch window"],
+                ["< 24 hr", "Audit turnaround"],
                 ["Lead-first", "Build approach"],
-                ["Founding", "Client cohort"],
+                ["Birmingham, MI", "Built locally"],
               ].map(([num, label]) => (
                 <div key={label}>
                   <div className="font-display text-2xl font-bold text-gray-900 leading-none">{num}</div>

@@ -1,0 +1,103 @@
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A small two hundred dollar pill connected by a sweeping growth curve to a large twenty thousand dollar figure, with a faint bar chart behind">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#0d0e12"/>
+    </linearGradient>
+    <linearGradient id="cyanViolet" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="60%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+    <linearGradient id="bigText" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.45"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowVio2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+    </pattern>
+    <filter id="soft2" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg2)"/>
+  <rect width="1200" height="630" fill="url(#grid2)"/>
+
+  <!-- Soft glows -->
+  <ellipse cx="950" cy="320" rx="320" ry="220" fill="url(#glow2)"/>
+  <ellipse cx="200" cy="430" rx="220" ry="180" fill="url(#glowVio2)"/>
+
+  <!-- Eyebrow tag -->
+  <g transform="translate(60,56)">
+    <rect x="0" y="0" width="78" height="32" rx="16" fill="#111113" stroke="#1f1f23"/>
+    <circle cx="16" cy="16" r="4" fill="#06b6d4"/>
+    <text x="28" y="21" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#ffffff">ROI</text>
+  </g>
+
+  <!-- Faint upward bar chart in background -->
+  <g transform="translate(180,400)" opacity="0.9">
+    <rect x="0" y="120" width="44" height="40" rx="4" fill="url(#barGrad)"/>
+    <rect x="60" y="98" width="44" height="62" rx="4" fill="url(#barGrad)"/>
+    <rect x="120" y="78" width="44" height="82" rx="4" fill="url(#barGrad)"/>
+    <rect x="180" y="50" width="44" height="110" rx="4" fill="url(#barGrad)"/>
+    <rect x="240" y="28" width="44" height="132" rx="4" fill="url(#barGrad)"/>
+    <rect x="300" y="10" width="44" height="150" rx="4" fill="url(#barGrad)"/>
+    <rect x="360" y="-14" width="44" height="174" rx="4" fill="url(#barGrad)"/>
+    <line x1="-10" y1="160" x2="420" y2="160" stroke="rgba(255,255,255,0.08)"/>
+  </g>
+
+  <!-- Small $200 pill (left) -->
+  <g transform="translate(140,290)">
+    <rect x="0" y="0" width="150" height="60" rx="30" fill="#111113" stroke="rgba(124,58,237,0.55)" stroke-width="1.5"/>
+    <text x="75" y="32" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="2">INVEST / MO</text>
+    <text x="75" y="52" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="22" font-weight="800" fill="#ffffff">$200</text>
+  </g>
+
+  <!-- Sweeping growth curve from $200 to $20K -->
+  <g fill="none" stroke-linecap="round">
+    <!-- glow behind -->
+    <path d="M295 320 C 470 320, 560 300, 640 250 S 760 120, 870 90"
+          stroke="url(#cyanViolet)" stroke-width="14" opacity="0.18" filter="url(#soft2)"/>
+    <!-- main stroke -->
+    <path d="M295 320 C 470 320, 560 300, 640 250 S 760 120, 870 90"
+          stroke="url(#cyanViolet)" stroke-width="4"/>
+    <!-- dashed continuation under big number -->
+    <path d="M870 90 L 950 80" stroke="#67e8f9" stroke-width="3" stroke-dasharray="2 8"/>
+  </g>
+  <!-- arrow head to big number area -->
+  <polygon points="948,72 968,80 948,88" fill="#67e8f9"/>
+
+  <!-- Multiplier badge floating on curve -->
+  <g transform="translate(560,200)">
+    <rect x="0" y="0" width="86" height="34" rx="17" fill="#0a0a0a" stroke="#06b6d4" stroke-width="1.5"/>
+    <text x="43" y="22" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" font-weight="800" fill="#06b6d4" letter-spacing="1">100x</text>
+  </g>
+
+  <!-- Big $20K display -->
+  <g transform="translate(720,140)">
+    <text x="0" y="120" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="220" font-weight="800" letter-spacing="-6" fill="url(#bigText)">$20K</text>
+    <!-- subtitle pill -->
+    <g transform="translate(8,150)">
+      <rect x="0" y="0" width="186" height="30" rx="15" fill="rgba(6,182,212,0.12)" stroke="rgba(6,182,212,0.4)"/>
+      <text x="93" y="20" text-anchor="middle" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" fill="#67e8f9" letter-spacing="1.5">MONTHLY REVENUE</text>
+    </g>
+  </g>
+
+  <!-- Bottom serif caption -->
+  <text x="60" y="560" font-family="'Playfair Display', Georgia, serif" font-style="italic" font-size="26" fill="#ffffff" opacity="0.92">Small input. Compounding output.</text>
+  <text x="60" y="592" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">The math behind a website that earns its keep.</text>
+</svg>

@@ -1,9 +1,9 @@
 import Image from "next/image";
 
 const STATS = [
-  { value: "New agency", label: "Full attention on every launch" },
+  { value: "Boutique", label: "Full attention on every build" },
   { value: "Lead-first", label: "Built for calls, forms, and booked jobs" },
-  { value: "May 2026", label: "Launching with limited founding spots" },
+  { value: "< 24 hr", label: "Audit turnaround, no commitment" },
   { value: "No fluff", label: "Clear positioning, transparent execution" },
 ];
 
@@ -12,9 +12,18 @@ export default function SocialProofBand() {
     <section className="relative overflow-hidden">
       {/* Full-width background image */}
       <div className="absolute inset-0">
+        {/*
+          TODO(originals): replace with a Macrolight-owned hero shot (or
+          a brand-color gradient/SVG) and drop into /public/img/.
+          The dark overlay below masks 95% of the image so a 1600w q=60
+          request is plenty — dropping from 1920w + q=80 saves ~120 KB
+          on the LCP path. alt="" + aria-hidden because the image is
+          purely decorative (the overlay hides the subject).
+        */}
         <Image
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80&fit=crop"
-          alt="Local business team celebrating results"
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=60&fit=crop"
+          alt=""
+          aria-hidden
           fill
           sizes="100vw"
           className="object-cover object-center"
@@ -31,21 +40,34 @@ export default function SocialProofBand() {
           {/* Left: quote */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/50 mb-6">
-              Founder statement
+              From the founders
             </p>
             <blockquote
               className="font-display font-bold italic text-white leading-[1.15] tracking-tight mb-8"
               style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.5rem)" }}
             >
-              "We built Macrolight because we kept watching great local businesses lose customers to worse competitors with better websites. We're here to fix that."
+              &ldquo;We built Macrolight because we kept watching great local
+              businesses lose customers to worse competitors with better
+              websites. We&rsquo;re here to fix that.&rdquo;
             </blockquote>
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-lg">
-                MB
+              {/* Stacked initials — replace with real headshots once
+                  /public/team/bradley.jpg and /public/team/nick.jpg exist. */}
+              <div className="flex -space-x-3">
+                <div className="h-12 w-12 rounded-full bg-violet-500 ring-2 ring-gray-900 flex items-center justify-center text-white font-bold text-sm">
+                  BB
+                </div>
+                <div className="h-12 w-12 rounded-full bg-cyan-500 ring-2 ring-gray-900 flex items-center justify-center text-white font-bold text-sm">
+                  NO
+                </div>
               </div>
               <div>
-                <p className="text-white font-semibold">Macrolight Founding Team</p>
-                <p className="text-white/50 text-sm">Building lead-generating sites for local businesses</p>
+                <p className="text-white font-semibold">
+                  Bradley Bayley &amp; Nick Ottoy
+                </p>
+                <p className="text-white/50 text-sm">
+                  Co-Founders, Macrolight Builder &middot; Birmingham, MI
+                </p>
               </div>
             </div>
           </div>

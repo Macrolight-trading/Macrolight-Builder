@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
+import { getAuthor } from "@/lib/authors";
 import JsonLd from "@/components/JsonLd";
 import CTASection from "@/components/CTASection";
 
@@ -36,7 +37,7 @@ export function generateMetadata({
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: `${metaTitle} — Macrolight Builders`,
+      title: `${metaTitle} — Macrolight Builder`,
       description: post.description,
       url: `https://macrolight-builder.com/blog/${post.slug}`,
       type: "article",
@@ -148,6 +149,7 @@ export default function BlogPostPage({
   // SEO audit Finding 4).
   const bodyMarkdown = post.content.replace(/^\s*#\s+.+\n+/, "");
   const articleHtml = markdownToHtml(bodyMarkdown);
+  const author = post.authorKey ? getAuthor(post.authorKey) : undefined;
 
   const blogPostingSchema = {
     "@context": "https://schema.org",
@@ -164,7 +166,7 @@ export default function BlogPostPage({
     },
     publisher: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
       logo: {
         "@type": "ImageObject",
@@ -254,18 +256,52 @@ export default function BlogPostPage({
 
       {/* ── Article body ── */}
       <section className="bg-white py-16 sm:py-20">
-        <article
-          className="mx-auto max-w-3xl px-5 sm:px-8 [&>h1]:font-display [&>h2]:font-display [&>h3]:font-display"
-          dangerouslySetInnerHTML={{ __html: articleHtml }}
-        />
+        <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <div
+            className="prose prose-gray max-w-none"
+            dangerouslySetInnerHTML={{ __html: articleHtml }}
+          />
+        </div>
       </section>
 
-      {/* ── Bottom CTA ── */}
-      <CTASection
-        eyebrow="Ready to grow?"
-        headline="Turn your website into a lead machine."
-        subhead="Get a free, no-obligation website audit. We'll show you exactly where you're losing leads and how to fix it."
-      />
+      {/* ── Author card ── */}
+      {author && (
+        <section className="bg-gray-50 border-t border-gray-200 py-12 sm:py-16">
+          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-violet-600 mb-6">
+              About the Author
+            </p>
+            <div className="flex items-start gap-5">
+              {author.photo ? (
+                <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden ring-2 ring-white shadow">
+                  <Image
+                    src={author.photo}
+                    alt={author.name}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`h-16 w-16 shrink-0 rounded-full ${author.color} flex items-center justify-center text-white text-xl font-bold`}
+                  aria-hidden
+                >
+                  {author.initials}
+                </div>
+              )}
+              <div>
+                <p className="text-base font-bold text-gray-900">{author.name}</p>
+                <p className="text-sm text-violet-600 font-medium mt-0.5">{author.role}</p>
+                <p className="mt-3 text-sm text-gray-500 leading-relaxed">{author.bio}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── CTA ── */}
+      <CTASection />
     </>
   );
 }

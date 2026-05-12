@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Tell us about your business. We'll analyze your current website and send you a prioritized conversion plan within 24 hours.",
   alternates: { canonical: "/contact" },
   openGraph: {
-    title: "Request a Free Website Audit — Macrolight Builders",
+    title: "Request a Free Website Audit — Macrolight Builder",
     description:
       "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
     url: "https://macrolight-builder.com/contact",
@@ -19,13 +19,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Macrolight Builders — request a free website audit",
+        alt: "Macrolight Builder — request a free website audit",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Request a Free Website Audit — Macrolight Builders",
+    title: "Request a Free Website Audit — Macrolight Builder",
     description:
       "Get a no-obligation website conversion audit in 24 hours. We'll show you exactly how to turn more visitors into customers.",
     images: ["/og-default.png"],
@@ -35,18 +35,18 @@ export const metadata: Metadata = {
 const contactPageSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: "Request a Free Website Audit — Macrolight Builders",
+  name: "Request a Free Website Audit — Macrolight Builder",
   url: "https://macrolight-builder.com/contact",
   description:
-    "Request a free, no-obligation website conversion audit from Macrolight Builders.",
+    "Request a free, no-obligation website conversion audit from Macrolight Builder.",
   isPartOf: {
     "@type": "WebSite",
-    name: "Macrolight Builders",
+    name: "Macrolight Builder",
     url: "https://macrolight-builder.com",
   },
   mainEntity: {
     "@type": "Organization",
-    name: "Macrolight Builders",
+    name: "Macrolight Builder",
     url: "https://macrolight-builder.com",
     contactPoint: {
       "@type": "ContactPoint",
@@ -126,35 +126,20 @@ export default function ContactPage() {
             ))}
 
             {/* Email fallback */}
-            <div className="bg-gray-50 rounded-2xl border border-gray-200 p-5 mt-8">
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Prefer email?
-              </div>
-              <a
-                href="mailto:hello@macrolight.co"
-                className="mt-1 block text-gray-900 font-medium hover:text-violet-600 transition-colors"
-              >
-                hello@macrolight.co
-              </a>
-            </div>
-
-            {/* Trust signals */}
-            <div className="bg-violet-50 rounded-2xl border border-violet-100 p-5 mt-4">
-              <div className="flex gap-3 mb-3">
-                {["★","★","★","★","★"].map((s, i) => (
-                  <span key={i} className="text-amber-400 text-sm">{s}</span>
-                ))}
-              </div>
-              <p className="text-sm text-gray-700 font-medium">
-                "Our leads doubled in the first two months. Best investment we made."
-              </p>
-              <p className="mt-2 text-xs text-gray-500">
-                — Mike T., Roofing contractor, Columbus OH
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mt-2">
+              <p className="text-sm text-gray-500">
+                Prefer email?{" "}
+                <a
+                  href="mailto:hello@macrolight-builder.com"
+                  className="font-medium text-violet-600 hover:underline"
+                >
+                  hello@macrolight-builder.com
+                </a>
               </p>
             </div>
           </div>
 
-          {/* Right: form */}
+          {/* Right: contact form */}
           <div className="lg:col-span-3">
             <ContactForm />
           </div>

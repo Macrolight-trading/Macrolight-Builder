@@ -142,7 +142,7 @@ export async function generateContentPlan(
 
 // ── Prompt construction ─────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are an SEO strategist working at Macrolight Builders, a web development studio that rebuilds client sites with SEO baked in. You write content plans that go into a client-facing audit report.
+const SYSTEM_PROMPT = `You are an SEO strategist working at Macrolight Builder, a web development studio that rebuilds client sites with SEO baked in. You write content plans that go into a client-facing audit report.
 
 Your job: take the audit data below and produce 5–10 SPECIFIC page recommendations the client should ship in the next 90 days.
 

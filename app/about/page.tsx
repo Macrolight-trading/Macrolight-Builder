@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Section from "@/components/Section";
 import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  // Keyword-rich title (template appends " | Macrolight Builders").
+  // Keyword-rich title (template appends " | Macrolight Builder").
   title: "About Our Web Design Agency",
   description:
-    "Meet the team behind Macrolight Builders. We build high-converting websites that generate real revenue for local businesses.",
+    "Meet Bradley Bayley & Nick Ottoy — co-founders of Macrolight Builder. We build high-converting websites that generate real revenue for local businesses.",
   alternates: { canonical: "/about" },
   openGraph: {
-    title: "About — Macrolight Builders",
+    title: "About — Macrolight Builder",
     description:
-      "Meet the team behind Macrolight Builders. Conversion-first websites for local businesses.",
+      "Meet the founders behind Macrolight Builder. Conversion-first websites for local businesses.",
     url: "https://macrolight-builder.com/about",
     type: "website",
     images: [
@@ -20,15 +21,15 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "About Macrolight Builders",
+        alt: "About Macrolight Builder",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About — Macrolight Builders",
+    title: "About — Macrolight Builder",
     description:
-      "Meet the team behind Macrolight Builders. Conversion-first websites for local businesses.",
+      "Meet the founders behind Macrolight Builder. Conversion-first websites for local businesses.",
     images: ["/og-default.png"],
   },
 };
@@ -36,14 +37,27 @@ export const metadata: Metadata = {
 const aboutSchema = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
-  name: "About Macrolight Builders",
+  name: "About Macrolight Builder",
   description:
-    "Learn about the team, mission, and values behind Macrolight Builders — a web design agency for local businesses.",
+    "Learn about the founders, mission, and values behind Macrolight Builder — a Birmingham, MI web design agency for local businesses.",
   url: "https://macrolight-builder.com/about",
   mainEntity: {
     "@type": "Organization",
-    name: "Macrolight Builders",
+    name: "Macrolight Builder",
     url: "https://macrolight-builder.com",
+    founder: [
+      { "@type": "Person", name: "Bradley Bayley" },
+      { "@type": "Person", name: "Nick Ottoy" },
+    ],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "1902 Villa Rd",
+      addressLocality: "Birmingham",
+      addressRegion: "MI",
+      postalCode: "48009",
+      addressCountry: "US",
+    },
+    telephone: "+1-248-214-5877",
   },
 };
 
@@ -81,27 +95,34 @@ const values = [
   },
 ];
 
-const team = [
+// Real founders. To swap in headshots:
+//   1. Save a square JPG/PNG (~400x400 or larger) to /public/team/bradley.jpg
+//      and /public/team/nick.jpg.
+//   2. Set the `photo` field below to the matching path (e.g. "/team/bradley.jpg").
+// Until `photo` is set, the styled initials avatar renders as a fallback.
+const team: Array<{
+  name: string;
+  role: string;
+  initials: string;
+  color: string;
+  bio: string;
+  photo?: string;
+}> = [
   {
     name: "Bradley Bayley",
-    role: "Founder & Lead Developer",
+    role: "Co-Founder",
     initials: "BB",
     color: "bg-violet-600",
-    bio: "Full-stack engineer obsessed with page speed and conversion optimization. Built 100+ sites for local businesses across the US.",
+    bio: "Full-stack engineer focused on page speed and conversion. Bradley leads the build side of every Macrolight project — the code, hosting, analytics, and the lead-capture systems that make a site actually pay for itself.",
+    // photo: "/team/bradley.jpg",
   },
   {
-    name: "Sarah Chen",
-    role: "Design Lead",
-    initials: "SC",
-    color: "bg-cyan-500",
-    bio: "Former agency creative director who believes great design is invisible — visitors should feel trust, not notice the layout.",
-  },
-  {
-    name: "Marcus Rivera",
-    role: "SEO & Growth Strategist",
-    initials: "MR",
-    color: "bg-violet-500",
-    bio: "Data-driven marketer specializing in local SEO, Google Business Profiles, and growth systems that compound month over month.",
+    name: "Nick Ottoy",
+    role: "Co-Founder",
+    initials: "NO",
+    color: "bg-cyan-600",
+    bio: "Strategy and client side. Nick spends most of his time talking to local business owners about what's actually keeping the phone from ringing — then turns that into the positioning, content, and growth plan behind each build.",
+    // photo: "/team/nick.jpg",
   },
 ];
 
@@ -110,7 +131,7 @@ export default function AboutPage() {
     <>
       <JsonLd data={aboutSchema} />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />
         <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-violet-100 opacity-60 blur-3xl pointer-events-none" aria-hidden />
@@ -130,7 +151,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Our Mission ── */}
+      {/* Our Mission */}
       <Section padding="lg" className="bg-white">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
@@ -148,7 +169,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* ── Our Values ── */}
+      {/* Our Values */}
       <Section padding="lg" className="bg-gray-50 border-t border-gray-100">
         <div className="mx-auto max-w-2xl text-center mb-14">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
@@ -177,41 +198,70 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* ── The Team ── */}
+      {/* The Founders */}
       <Section padding="lg" className="bg-white border-t border-gray-100">
         <div className="mx-auto max-w-2xl text-center mb-14">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
-            The Team
+            The Founders
           </h2>
           <p className="mt-4 text-base text-gray-500">
-            Small on purpose. Every project gets senior-level attention from day one.
+            Two founders, no middle layer. Every project gets the people whose
+            names are on the door.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {team.map((member) => (
             <div
               key={member.name}
               className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-200 hover:shadow-md transition-shadow"
+              itemScope
+              itemType="https://schema.org/Person"
             >
-              <div
-                className={`mx-auto h-20 w-20 rounded-full ${member.color} flex items-center justify-center text-white text-2xl font-bold mb-5`}
+              {member.photo ? (
+                <div className="relative mx-auto h-24 w-24 rounded-full overflow-hidden mb-5 ring-4 ring-white shadow">
+                  <Image
+                    src={member.photo}
+                    alt={`${member.name} — ${member.role}, Macrolight Builder`}
+                    fill
+                    sizes="96px"
+                    className="object-cover"
+                    itemProp="image"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`mx-auto h-24 w-24 rounded-full ${member.color} flex items-center justify-center text-white text-2xl font-bold mb-5`}
+                  aria-hidden
+                >
+                  {member.initials}
+                </div>
+              )}
+              <h3 className="text-lg font-bold text-gray-900" itemProp="name">
+                {member.name}
+              </h3>
+              <p
+                className="text-sm font-medium text-violet-600 mt-1"
+                itemProp="jobTitle"
               >
-                {member.initials}
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
-              <p className="text-sm font-medium text-violet-600 mt-1">
                 {member.role}
               </p>
-              <p className="mt-4 text-sm text-gray-500 leading-relaxed">
+              <p
+                className="mt-4 text-sm text-gray-500 leading-relaxed"
+                itemProp="description"
+              >
                 {member.bio}
               </p>
             </div>
           ))}
         </div>
+
+        <p className="mt-10 text-center text-xs text-gray-400">
+          Based in Birmingham, MI &middot; Building for local businesses across the U.S.
+        </p>
       </Section>
 
-      {/* ── CTA ── */}
+      {/* CTA */}
       <CTASection
         eyebrow="Work with us"
         headline="Let's build something that works."

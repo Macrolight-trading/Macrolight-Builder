@@ -32,8 +32,31 @@ export default function ContactActions({ contactId, currentStatus }: ContactActi
     }
   };
 
+  const convertToLead = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/crm/contacts/${contactId}/convert`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error();
+      const lead = await res.json();
+      router.push(`/admin/crm/leads/${lead.id}`);
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2 mt-3">
+    <div className="flex items-center gap-2 mt-3 flex-wrap">
+      <button
+        onClick={convertToLead}
+        disabled={loading}
+        className={`${btnCls} border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100`}
+      >
+        Convert to Lead
+      </button>
       {currentStatus === "NEW" && (
         <>
           <button

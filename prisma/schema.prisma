@@ -59,9 +59,15 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  payments Payment[]
+  accounts   Account[]
+  sessions   Session[]
+  payments   Payment[]
+
+  // CRM relations
+  ownedLeads     Lead[]     @relation("LeadOwner")
+  ownedDeals     Deal[]     @relation("DealOwner")
+  ownedActivities Activity[] @relation("ActivityOwner")
+  authoredNotes  Note[]     @relation("NoteAuthor")
 
   @@map("users")
 }
@@ -92,6 +98,9 @@ model Contact {
   emailSentAt  DateTime?
   createdAt    DateTime      @default(now())
 
+  // Optional linkage to a CRM Lead when the contact gets converted.
+  lead         Lead?
+
   @@map("contacts")
 }
 
@@ -104,6 +113,130 @@ model PageView {
   createdAt DateTime @default(now())
 
   @@map("page_views")
+}
+
+// ── CRM models ──────────────────────────────────────────────────────────────
+
+model Lead {
+  id          String     @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  jobTitle    String?
+  industry    String?
+  website     String?
+  source      String?    // website, referral, outbound, ad, etc.
+  status      LeadStatus @default(NEW)
+  value       Int?       // potential value in cents
+  description String?    @db.Text
+
+  // Optional link back to the original contact-form submission
+  contactId   String?   @unique
+  contact     Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  // Optional owner (sales rep)
+  ownerId     String?
+  owner       User?     @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  deals       Deal[]
+  activities  Activity[]
+  noteRecords Note[]
+  tags        TagsOnLeads[]
+
+  lastContactedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+model Deal {
+  id                String     @id @default(cuid())
+  title             String
+  value             Int        // cents
+  currency          String     @default("usd")
+  stage             DealStage  @default(PROSPECT)
+  probability       Int        @default(10) // 0-100
+  expectedCloseDate DateTime?
+  closedAt          DateTime?
+  lostReason        String?
+
+  leadId            String?
+  lead              Lead?      @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  ownerId           String?
+  owner             User?      @relation("DealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  activities        Activity[]
+  noteRecords       Note[]
+
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([stage])
+  @@index([createdAt])
+  @@map("deals")
+}
+
+model Activity {
+  id          String       @id @default(cuid())
+  type        ActivityType
+  subject     String
+  description String?      @db.Text
+  dueDate     DateTime?
+  completedAt DateTime?
+
+  leadId      String?
+  lead        Lead?        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  dealId      String?
+  deal        Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  ownerId     String?
+  owner       User?        @relation("ActivityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([dueDate])
+  @@index([completedAt])
+  @@map("activities")
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  body        String   @db.Text
+
+  leadId      String?
+  lead        Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?    @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("notes")
+}
+
+model Tag {
+  id    String        @id @default(cuid())
+  name  String        @unique
+  color String        @default("#6b7280")
+  leads TagsOnLeads[]
+
+  @@map("tags")
+}
+
+model TagsOnLeads {
+  leadId  String
+  tagId   String
+  lead    Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  tag     Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([leadId, tagId])
+  @@map("tags_on_leads")
 }
 
 // ── SEO Audit models ────────────────────────────────────────────────────────
@@ -187,4 +320,30 @@ enum AuditStatus {
   RUNNING
   COMPLETED
   FAILED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  UNQUALIFIED
+  CONVERTED
+  LOST
+}
+
+enum DealStage {
+  PROSPECT
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  TASK
+  NOTE
 }

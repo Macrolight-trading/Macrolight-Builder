@@ -17,8 +17,13 @@ export default function SiteShell({
 }: SiteShellProps) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  // /sample/* renders an industry showcase mockup that is iframed into
+  // the public /[industry] pages. Inside the iframe we don't want the
+  // Macrolight navbar/footer/chat widget — the showcase is supposed to
+  // present as its own standalone "fake" business site.
+  const isSample = pathname.startsWith("/sample");
 
-  if (isAdmin) {
+  if (isAdmin || isSample) {
     return <>{children}</>;
   }
 

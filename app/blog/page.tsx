@@ -5,13 +5,13 @@ import { getAllPosts } from "@/lib/blog";
 import JsonLd from "@/components/JsonLd";
 
 export const metadata: Metadata = {
-  // Keyword-rich title (template appends " | Macrolight Builders").
+  // Keyword-rich title (template appends " | Macrolight Builder").
   title: "Local Business Web Design Blog",
   description:
     "Actionable insights on web design, lead generation, and online growth for local businesses. Learn how to turn your website into a client acquisition system.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog — Macrolight Builders",
+    title: "Blog — Macrolight Builder",
     description:
       "Actionable insights on web design, lead generation, and online growth for local businesses.",
     url: "https://macrolight-builder.com/blog",
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Macrolight Builders blog — local business web design insights",
+        alt: "Macrolight Builder blog — local business web design insights",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog — Macrolight Builders",
+    title: "Blog — Macrolight Builder",
     description:
       "Actionable insights on web design, lead generation, and online growth for local businesses.",
     images: ["/og-default.png"],
@@ -70,13 +70,13 @@ export default function BlogPage() {
   const blogSchema = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "Macrolight Builders Blog",
+    name: "Macrolight Builder Blog",
     url: "https://macrolight-builder.com/blog",
     description:
       "Actionable insights on web design, lead generation, and online growth for local businesses.",
     publisher: {
       "@type": "Organization",
-      name: "Macrolight Builders",
+      name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
     blogPost: posts.map((p) => ({
@@ -134,40 +134,31 @@ export default function BlogPage() {
                     src={post.coverImage}
                     alt={post.coverAlt}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                 </div>
 
-                {/* Content */}
+                {/* Card body */}
                 <div className="flex flex-col flex-1 p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full bg-violet-50 text-violet-600">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-semibold text-violet-600 bg-violet-50 px-2.5 py-0.5 rounded-full">
                       {post.category}
                     </span>
-                    <span className="text-xs text-gray-400">
-                      {post.readTime}
-                    </span>
+                    <span className="text-xs text-gray-400">{post.readTime}</span>
                   </div>
-
-                  <h2 className="text-lg font-bold text-gray-900 leading-snug group-hover:text-violet-600 transition-colors mb-2">
+                  <h2 className="text-lg font-bold text-gray-900 leading-snug mb-2 group-hover:text-violet-600 transition-colors">
                     {post.title}
                   </h2>
-
-                  <p className="text-sm text-gray-500 leading-relaxed flex-1">
+                  <p className="text-sm text-gray-500 line-clamp-3 flex-1">
                     {post.description}
                   </p>
-
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                    <time
-                      dateTime={post.date}
-                      className="text-xs text-gray-400"
-                    >
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                    <span className="text-xs text-gray-400">
                       {formatDate(post.date)}
-                    </time>
-                    <span className="text-xs font-semibold text-violet-600 group-hover:translate-x-0.5 transition-transform">
-                      Read article →
+                    </span>
+                    <span className="text-xs font-semibold text-violet-600 group-hover:underline">
+                      Read more →
                     </span>
                   </div>
                 </div>
@@ -179,3 +170,4 @@ export default function BlogPage() {
     </>
   );
 }
+      

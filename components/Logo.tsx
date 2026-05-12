@@ -11,7 +11,7 @@ export default function Logo({ className = "", onDark = false }: LogoProps) {
     <Link
       href="/"
       className={`flex items-center gap-2 group ${className}`}
-      aria-label="Macrolight Builders home"
+      aria-label="Macrolight Builder home"
     >
       <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 shadow-sm transition-transform duration-300 group-hover:scale-105">
         <svg
@@ -32,7 +32,7 @@ export default function Logo({ className = "", onDark = false }: LogoProps) {
       </span>
       <span className={`font-bold tracking-tight text-lg ${onDark ? "text-white" : "text-gray-900"}`}>
         Macrolight
-        <span className={`font-medium ml-1 ${onDark ? "text-white/50" : "text-gray-400"}`}>Builders</span>
+        <span className={`font-medium ml-1 ${onDark ? "text-white/50" : "text-gray-400"}`}>Builder</span>
       </span>
     </Link>
   );

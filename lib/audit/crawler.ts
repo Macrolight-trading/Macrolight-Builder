@@ -86,7 +86,7 @@ const DEFAULT_OPTIONS: Required<CrawlOptions> = {
   maxPages: 20,
   requestTimeoutMs: 10000,
   totalTimeoutMs: 60000,
-  userAgent: "MacrolightAuditBot/1.0 (+https://macrolightbuilders.com/about)",
+  userAgent: "MacrolightAuditBot/1.0 (+https://macrolight-builder.com/about)",
 };
 
 export async function crawl(

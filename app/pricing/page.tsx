@@ -6,14 +6,14 @@ import JsonLd from "@/components/JsonLd";
 import { pricingTiers } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  // Title length: kept ≤60 chars (template adds " | Macrolight Builders"
+  // Title length: kept ≤60 chars (template adds " | Macrolight Builder"
   // — 33 + 22 = 55 chars in SERP).
   title: "Website Pricing for Local Businesses",
   description:
-    "Transparent pricing for Macrolight Builders client acquisition systems. Starter, Growth, and Pro tiers — one build fee plus a monthly subscription.",
+    "Transparent pricing for Macrolight Builder client acquisition systems. Starter, Growth, and Pro tiers — one build fee plus a monthly subscription.",
   alternates: { canonical: "/pricing" },
   openGraph: {
-    title: "Pricing — Macrolight Builders",
+    title: "Pricing — Macrolight Builder",
     description:
       "One build fee. One monthly subscription. Everything included to turn your website into a lead machine.",
     url: "https://macrolight-builder.com/pricing",
@@ -23,13 +23,13 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Macrolight Builders pricing — websites that generate leads",
+        alt: "Macrolight Builder pricing — websites that generate leads",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pricing — Macrolight Builders",
+    title: "Pricing — Macrolight Builder",
     description:
       "One build fee. One monthly subscription. Everything included to turn your website into a lead machine.",
     images: ["/og-default.png"],
@@ -117,20 +117,17 @@ export default function PricingPage() {
           {faqs.map((f) => (
             <div
               key={f.q}
-              className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-sm"
+              className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm"
             >
-              <h3 className="text-base font-semibold text-gray-900">{f.q}</h3>
-              <p className="mt-2 text-sm text-gray-500 leading-relaxed">{f.a}</p>
+              <h3 className="font-semibold text-gray-900 mb-2">{f.q}</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">{f.a}</p>
             </div>
           ))}
         </div>
       </Section>
 
-      <CTASection
-        eyebrow="Still deciding?"
-        headline="Let us audit your site first — free."
-        subhead="Get a no-obligation conversion audit. We'll show you exactly what's leaking leads before you spend a dollar."
-      />
+      {/* CTA */}
+      <CTASection />
     </>
   );
 }
