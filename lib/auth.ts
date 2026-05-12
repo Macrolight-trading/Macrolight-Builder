@@ -11,7 +11,10 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/admin/login",
+    // Default sign-in page is the client login. The admin login page
+    // (/admin/login) is kept for legacy/admin callers and uses the same
+    // backend.
+    signIn: "/login",
   },
   providers: [
     CredentialsProvider({
@@ -30,7 +33,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user.passwordHash) return null;
-        if (user.role !== "ADMIN") return null;
 
         const isValid = await compare(credentials.password, user.passwordHash);
         if (!isValid) return null;
@@ -47,15 +49,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.id = user.id;
+        token.role = (user as { role?: string }).role;
+        token.id = (user as { id?: string }).id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id;
+        (session.user as { role?: string }).role = token.role as string;
+        (session.user as { id?: string }).id = token.id as string;
       }
       return session;
     },

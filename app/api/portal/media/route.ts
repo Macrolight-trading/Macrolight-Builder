@@ -1,0 +1,77 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { put } from "@vercel/blob";
+
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
+const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+
+export async function GET(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const files = await prisma.mediaFile.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json(files);
+}
+
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const formData = await req.formData();
+  const file = formData.get("file") as File | null;
+  const category = (formData.get("category") as string | null) ?? undefined;
+
+  if (!file) {
+    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+  }
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return NextResponse.json(
+      { error: "Only image files (JPEG, PNG, WebP, GIF, SVG) are allowed." },
+      { status: 400 }
+    );
+  }
+
+  if (file.size > MAX_SIZE) {
+    return NextResponse.json(
+      { error: "File size must be under 10 MB." },
+      { status: 400 }
+    );
+  }
+
+  // Sanitize filename — strip non-alphanumeric except dots and hyphens
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 200);
+  const blobPath = `portal/${userId}/${Date.now()}-${safeName}`;
+
+  const blob = await put(blobPath, file, {
+    access: "public",
+    contentType: file.type,
+  });
+
+  const record = await prisma.mediaFile.create({
+    data: {
+      userId,
+      filename: safeName,
+      url: blob.url,
+      contentType: file.type,
+      size: file.size,
+      category: category || null,
+    },
+  });
+
+  return NextResponse.json(record, { status: 201 });
+}

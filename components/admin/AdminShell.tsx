@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 type NavItem =
   | { section: string }
@@ -25,6 +26,9 @@ const nav: NavItem[] = [
   { label: "Analytics", href: "/admin/analytics", icon: AnalyticsIcon },
   { label: "Contacts", href: "/admin/contacts", icon: ContactsIcon },
   { label: "SEO Audits", href: "/admin/audits", icon: AuditsIcon },
+  { section: "Portal" },
+  { label: "Client Projects", href: "/admin/portal/projects", icon: ProjectsIcon },
+  { label: "Client Messages", href: "/admin/portal/messages", icon: MessagesAdminIcon },
 ];
 
 export default function AdminShell({
@@ -106,6 +110,15 @@ export default function AdminShell({
             </svg>
             Back to site
           </Link>
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors mt-0.5"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sign out
+          </button>
         </div>
       </aside>
 
@@ -198,6 +211,22 @@ function AuditsIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z" />
+    </svg>
+  );
+}
+
+function ProjectsIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function MessagesAdminIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
     </svg>
   );
 }

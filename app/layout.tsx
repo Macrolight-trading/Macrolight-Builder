@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import ChatWidget from "@/components/ChatWidget";
 import SiteShell from "@/components/SiteShell";
 import JsonLd from "@/components/JsonLd";
+import SessionProvider from "@/components/auth/SessionProvider";
 
 const BASE_URL = "https://macrolight-builder.com";
 
@@ -134,13 +135,15 @@ export default function RootLayout({
       <body className="font-sans antialiased min-h-screen flex flex-col bg-white text-gray-900">
         <JsonLd data={organizationSchema} />
         <JsonLd data={websiteSchema} />
-        <SiteShell
-          navbar={<Navbar />}
-          footer={<Footer />}
-          chatWidget={<ChatWidget />}
-        >
-          {children}
-        </SiteShell>
+        <SessionProvider>
+          <SiteShell
+            navbar={<Navbar />}
+            footer={<Footer />}
+            chatWidget={<ChatWidget />}
+          >
+            {children}
+          </SiteShell>
+        </SessionProvider>
         <Analytics />
       </body>
     </html>

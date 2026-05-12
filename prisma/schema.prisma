@@ -64,10 +64,16 @@ model User {
   payments   Payment[]
 
   // CRM relations
-  ownedLeads     Lead[]     @relation("LeadOwner")
-  ownedDeals     Deal[]     @relation("DealOwner")
-  ownedActivities Activity[] @relation("ActivityOwner")
-  authoredNotes  Note[]     @relation("NoteAuthor")
+  ownedLeads      Lead[]      @relation("LeadOwner")
+  ownedDeals      Deal[]      @relation("DealOwner")
+  ownedActivities Activity[]  @relation("ActivityOwner")
+  authoredNotes   Note[]      @relation("NoteAuthor")
+
+  // Portal relations
+  project         Project?
+  messages        Message[]
+  mediaFiles      MediaFile[]
+  onboarding      OnboardingData?
 
   @@map("users")
 }
@@ -346,4 +352,170 @@ enum ActivityType {
   MEETING
   TASK
   NOTE
+}
+
+// ── Portal models ────────────────────────────────────────────────────────────
+
+model Project {
+  id        String       @id @default(cuid())
+  userId    String       @unique
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stage     ProjectStage @default(ONBOARDING)
+  liveUrl   String?
+  notes     String?      @db.Text
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("projects")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromAdmin Boolean  @default(false)
+  body      String   @db.Text
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model MediaFile {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filename    String
+  url         String
+  contentType String
+  size        Int
+  category    String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@map("media_files")
+}
+
+model OnboardingData {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName    String?
+  tagline         String?
+  primaryColor    String?
+  secondaryColor  String?
+  targetAudience  String?   @db.Text
+  keyServices     String?   @db.Text
+  competitors     String?   @db.Text
+  tone            String?
+  additionalNotes String?   @db.Text
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("onboarding_data")
+}
+
+enum ProjectStage {
+  ONBOARDING
+  DESIGN
+  DEVELOPMENT
+  REVIEW
+  LAUNCHED
+}
+
+enum DealStage {
+  PROSPECT
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  TASK
+  NOTE
+}
+
+// ── Portal models ────────────────────────────────────────────────────────────
+
+model Project {
+  id         String       @id @default(cuid())
+  userId     String       @unique
+  stage      ProjectStage @default(ONBOARDING)
+  liveUrl    String?
+  previewUrl String?
+  notes      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  userId    String
+  fromAdmin Boolean  @default(false)
+  body      String
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model MediaFile {
+  id          String   @id @default(cuid())
+  userId      String
+  filename    String
+  url         String
+  contentType String
+  size        Int
+  category    String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("media_files")
+}
+
+model OnboardingData {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  businessName    String?
+  tagline         String?
+  primaryColor    String?
+  secondaryColor  String?
+  targetAudience  String?
+  keyServices     String?
+  competitors     String?
+  tone            String?
+  additionalNotes String?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("onboarding_data")
+}
+
+enum ProjectStage {
+  ONBOARDING
+  DESIGN
+  DEVELOPMENT
+  REVIEW
+  LAUNCHED
 }

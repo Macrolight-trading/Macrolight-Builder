@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import Logo from "./Logo";
 
 const navLinks = [
@@ -16,6 +17,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -23,6 +25,10 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const isAuthed = status === "authenticated";
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const dashboardHref = role === "ADMIN" ? "/admin" : "/portal";
 
   return (
     <div className="sticky top-0 z-50">
@@ -74,18 +80,29 @@ export default function Navbar() {
             </nav>
 
             <div className="hidden md:flex items-center gap-4">
-              <Link
-                href="/contact"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Contact
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-violet-600 text-white px-5 py-2.5 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors whitespace-nowrap shadow-sm"
-              >
-                Free Audit
-              </Link>
+              {isAuthed ? (
+                <Link
+                  href={dashboardHref}
+                  className="inline-flex items-center gap-2 bg-violet-600 text-white px-5 py-2.5 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors whitespace-nowrap shadow-sm"
+                >
+                  Open portal
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center gap-2 bg-violet-600 text-white px-5 py-2.5 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors whitespace-nowrap shadow-sm"
+                  >
+                    Sign up
+                  </Link>
+                </>
+              )}
             </div>
 
             <button
@@ -126,20 +143,32 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-5 flex flex-col gap-3">
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  Contact
-                </Link>
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center justify-center bg-violet-600 text-white px-5 py-3 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors"
-                >
-                  Free Audit
-                </Link>
+                {isAuthed ? (
+                  <Link
+                    href={dashboardHref}
+                    onClick={() => setMobileOpen(false)}
+                    className="inline-flex items-center justify-center bg-violet-600 text-white px-5 py-3 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors"
+                  >
+                    Open portal
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileOpen(false)}
+                      className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                      Sign in
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setMobileOpen(false)}
+                      className="inline-flex items-center justify-center bg-violet-600 text-white px-5 py-3 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors"
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>
