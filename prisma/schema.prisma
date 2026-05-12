@@ -360,9 +360,10 @@ model Project {
   id        String       @id @default(cuid())
   userId    String       @unique
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stage     ProjectStage @default(ONBOARDING)
-  liveUrl   String?
-  notes     String?      @db.Text
+  stage      ProjectStage @default(ONBOARDING)
+  liveUrl    String?
+  previewUrl String?
+  notes      String?      @db.Text
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
