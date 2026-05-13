@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { put } from "@vercel/blob";
+import { sendEmail } from "@/lib/email";
+import { mediaUploadAdminEmailHtml } from "@/lib/email-templates";
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -72,6 +74,26 @@ export async function POST(req: NextRequest) {
       category: category || null,
     },
   });
+
+  // Notify admin of the upload (fire-and-forget)
+  const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
+  if (adminEmail) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true },
+    });
+    if (user) {
+      sendEmail({
+        to: adminEmail,
+        subject: `New media upload from ${user.name ?? user.email}`,
+        html: mediaUploadAdminEmailHtml({
+          name: user.name,
+          email: user.email,
+          filename: safeName,
+        }),
+      }).catch((err) => console.error("Media upload email failed:", err));
+    }
+  }
 
   return NextResponse.json(record, { status: 201 });
 }

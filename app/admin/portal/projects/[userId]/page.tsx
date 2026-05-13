@@ -17,13 +17,32 @@ export default async function AdminProjectDetailPage({
   const role = (session?.user as { role?: string } | undefined)?.role;
   if (role !== "ADMIN") redirect("/admin");
 
-  const [user, project, onboarding, messages, mediaFiles] = await Promise.all([
+  type OnboardingRow = {
+    id: string;
+    userId: string;
+    businessName: string | null;
+    tagline: string | null;
+    primaryColor: string | null;
+    secondaryColor: string | null;
+    targetAudience: string | null;
+    keyServices: string | null;
+    competitors: string | null;
+    tone: string | null;
+    themePicks: string | null;
+    inspirationUrls: string | null;
+    additionalNotes: string | null;
+    completedAt: Date | null;
+  };
+
+  const [user, project, onboardingRows, messages, mediaFiles] = await Promise.all([
     prisma.user.findUnique({
       where: { id: params.userId },
       select: { id: true, name: true, email: true, plan: true },
     }),
     prisma.project.findUnique({ where: { userId: params.userId } }),
-    prisma.onboardingData.findUnique({ where: { userId: params.userId } }),
+    prisma.$queryRaw<OnboardingRow[]>`
+      SELECT * FROM onboarding_data WHERE "userId" = ${params.userId} LIMIT 1
+    `,
     prisma.message.findMany({
       where: { userId: params.userId },
       orderBy: { createdAt: "asc" },
@@ -33,6 +52,8 @@ export default async function AdminProjectDetailPage({
       orderBy: { createdAt: "desc" },
     }),
   ]);
+
+  const onboarding = onboardingRows[0] ?? null;
 
   if (!user) notFound();
 
@@ -69,42 +90,131 @@ export default async function AdminProjectDetailPage({
           <h2 className="text-sm font-semibold text-gray-900 mb-4">Onboarding Brief</h2>
           {!onboarding ? (
             <p className="text-sm text-gray-400">Client hasn&apos;t submitted onboarding yet.</p>
-          ) : (
-            <dl className="space-y-3 text-sm">
-              {[
-                ["Business Name", onboarding.businessName],
-                ["Tagline", onboarding.tagline],
-                ["Primary Color", onboarding.primaryColor],
-                ["Secondary Color", onboarding.secondaryColor],
-                ["Target Audience", onboarding.targetAudience],
-                ["Key Services", onboarding.keyServices],
-                ["Competitors", onboarding.competitors],
-                ["Brand Voice", onboarding.tone],
-                ["Theme Picks", (() => { try { const p = JSON.parse((onboarding as { themePicks?: string | null }).themePicks ?? "[]"); return p.length ? p.join(", ") : null; } catch { return null; } })()],
-                ["Inspiration URLs", (onboarding as { inspirationUrls?: string | null }).inspirationUrls],
-                ["Additional Notes", onboarding.additionalNotes],
-              ]
-                .filter(([, v]) => v)
-                .map(([label, value]) => (
-                  <div key={label as string}>
-                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                      {label}
+          ) : (() => {
+            const THEME_LABELS: Record<string, { name: string; swatches: string[] }> = {
+              "bold-trade":      { name: "Bold & Professional", swatches: ["#0f4f90", "#1a6fc4", "#e85d04"] },
+              "clean-welcoming": { name: "Clean & Welcoming",  swatches: ["#00574f", "#00897b", "#ff6b35"] },
+            };
+            const themePicks: string[] = (() => {
+              try { return JSON.parse(onboarding.themePicks ?? "[]"); } catch { return []; }
+            })();
+            const inspirationLinks = (onboarding.inspirationUrls ?? "")
+              .split("\n")
+              .map((u) => u.trim())
+              .filter(Boolean);
+
+            return (
+              <dl className="space-y-4 text-sm">
+                {/* Text fields */}
+                {[
+                  ["Business Name", onboarding.businessName],
+                  ["Tagline", onboarding.tagline],
+                  ["Target Audience", onboarding.targetAudience],
+                  ["Key Services", onboarding.keyServices],
+                  ["Competitors", onboarding.competitors],
+                  ["Brand Voice", onboarding.tone],
+                  ["Additional Notes", onboarding.additionalNotes],
+                ]
+                  .filter(([, v]) => v)
+                  .map(([label, value]) => (
+                    <div key={label as string}>
+                      <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">
+                        {label}
+                      </dt>
+                      <dd className="text-gray-800 whitespace-pre-line">{value}</dd>
+                    </div>
+                  ))}
+
+                {/* Brand colours */}
+                {(onboarding.primaryColor || onboarding.secondaryColor) && (
+                  <div>
+                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
+                      Brand Colors
                     </dt>
-                    <dd className="mt-0.5 text-gray-800 whitespace-pre-line">{value}</dd>
+                    <dd className="flex items-center gap-3">
+                      {[
+                        { label: "Primary",   color: onboarding.primaryColor },
+                        { label: "Secondary", color: onboarding.secondaryColor },
+                      ].filter((c) => c.color).map((c) => (
+                        <div key={c.label} className="flex items-center gap-2">
+                          <span
+                            className="inline-block w-6 h-6 rounded border border-gray-200 shrink-0"
+                            style={{ backgroundColor: c.color! }}
+                          />
+                          <span className="text-xs text-gray-600 font-mono">{c.color}</span>
+                          <span className="text-xs text-gray-400">{c.label}</span>
+                        </div>
+                      ))}
+                    </dd>
                   </div>
-                ))}
-              {onboarding.completedAt && (
-                <p className="text-xs text-emerald-600 font-medium pt-1">
-                  ✓ Submitted{" "}
-                  {new Date(onboarding.completedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </p>
-              )}
-            </dl>
-          )}
+                )}
+
+                {/* Theme picks */}
+                {themePicks.length > 0 && (
+                  <div>
+                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
+                      Theme Style Picks
+                    </dt>
+                    <dd className="space-y-2">
+                      {themePicks.map((id) => {
+                        const theme = THEME_LABELS[id];
+                        if (!theme) return <span key={id} className="text-gray-700">{id}</span>;
+                        return (
+                          <div key={id} className="flex items-center gap-2.5">
+                            <div className="flex rounded overflow-hidden border border-gray-200 shrink-0">
+                              {theme.swatches.map((c) => (
+                                <span key={c} className="w-4 h-4 block" style={{ backgroundColor: c }} />
+                              ))}
+                            </div>
+                            <span className="text-sm text-gray-800 font-medium">{theme.name}</span>
+                            <a
+                              href={id === "bold-trade" ? "/samples/hvac.html" : "/samples/dentist.html"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-violet-600 hover:text-violet-700"
+                            >
+                              Preview →
+                            </a>
+                          </div>
+                        );
+                      })}
+                    </dd>
+                  </div>
+                )}
+
+                {/* Inspiration URLs */}
+                {inspirationLinks.length > 0 && (
+                  <div>
+                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
+                      Inspiration Sites
+                    </dt>
+                    <dd className="space-y-1">
+                      {inspirationLinks.map((url) => (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-violet-600 hover:text-violet-700 truncate"
+                        >
+                          {url}
+                        </a>
+                      ))}
+                    </dd>
+                  </div>
+                )}
+
+                {onboarding.completedAt && (
+                  <p className="text-xs text-emerald-600 font-medium pt-1 border-t border-gray-100">
+                    ✓ Submitted{" "}
+                    {new Date(onboarding.completedAt).toLocaleDateString("en-US", {
+                      month: "short", day: "numeric", year: "numeric",
+                    })}
+                  </p>
+                )}
+              </dl>
+            );
+          })()}
         </div>
 
         {/* Message thread */}

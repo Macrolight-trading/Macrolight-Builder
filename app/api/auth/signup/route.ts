@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
+import { welcomeEmailHtml, newSignupAdminEmailHtml } from "@/lib/email-templates";
 
 // Minimal validation. We avoid pulling in zod here to keep the route
 // dependency-light, but the rules are:
@@ -63,6 +65,23 @@ export async function POST(request: Request) {
       },
       select: { id: true, email: true, name: true, role: true },
     });
+
+    // Send welcome email to the new user (fire-and-forget)
+    sendEmail({
+      to: user.email,
+      subject: "Welcome to Macrolight",
+      html: welcomeEmailHtml({ name: user.name }),
+    }).catch((err) => console.error("Welcome email failed:", err));
+
+    // Notify admin of the new signup
+    const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
+    if (adminEmail) {
+      sendEmail({
+        to: adminEmail,
+        subject: `New signup: ${user.name ?? user.email}`,
+        html: newSignupAdminEmailHtml({ name: user.name, email: user.email }),
+      }).catch((err) => console.error("New signup admin email failed:", err));
+    }
 
     return NextResponse.json(user, { status: 201 });
   } catch (err) {

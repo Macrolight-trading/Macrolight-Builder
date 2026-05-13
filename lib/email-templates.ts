@@ -109,6 +109,208 @@ export function newLeadEmailHtml({
 </html>`.trim();
 }
 
+// ── Portal event templates ───────────────────────────────────────────────────
+
+/** Shared layout wrapper so all emails look consistent. */
+function emailLayout(headerTitle: string, headerSub: string, body: string, footerNote: string): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f5;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+          <tr>
+            <td style="background-color:#7c3aed;padding:24px 32px;">
+              <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:600;">${headerTitle}</h1>
+              <p style="margin:8px 0 0;color:#e0d4fc;font-size:14px;">${headerSub}</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              ${body}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#fafafa;padding:20px 32px;border-top:1px solid #e4e4e7;">
+              <p style="margin:0;font-size:13px;color:#a1a1aa;text-align:center;">${footerNote}</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`.trim();
+}
+
+function field(label: string, value: string): string {
+  return `
+    <div style="padding:12px 0;border-bottom:1px solid #e4e4e7;">
+      <span style="display:block;font-size:12px;color:#71717a;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">${label}</span>
+      <span style="font-size:15px;color:#18181b;font-weight:500;">${value}</span>
+    </div>`;
+}
+
+function ctaButton(label: string, href: string): string {
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+      <tr>
+        <td align="center">
+          <a href="${href}" style="display:inline-block;background-color:#7c3aed;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;">${label}</a>
+        </td>
+      </tr>
+    </table>`;
+}
+
+// 1. Welcome email sent to a new user on signup
+export function welcomeEmailHtml({ name }: { name: string | null }): string {
+  const greeting = name ? `Hi ${escapeHtml(name)},` : "Hi there,";
+  return emailLayout(
+    "Welcome to Macrolight",
+    "Your account is ready — let's build something great.",
+    `<p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6;">${greeting}</p>
+     <p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6;">
+       Your Macrolight account is all set. Head to your portal to fill in your project details and we'll get started on your website.
+     </p>
+     ${ctaButton("Go to My Portal", "https://macrolight-builder.com/portal")}`,
+    "Macrolight Builder &mdash; Welcome"
+  );
+}
+
+// 2. Admin alert when a new user signs up
+export function newSignupAdminEmailHtml({ name, email }: { name: string | null; email: string }): string {
+  return emailLayout(
+    "New User Signed Up",
+    "A new client account has been created.",
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+       ${field("Name", escapeHtml(name ?? "Not provided"))}
+       ${field("Email", `<a href="mailto:${escapeHtml(email)}" style="color:#7c3aed;text-decoration:none;">${escapeHtml(email)}</a>`)}
+     </table>
+     ${ctaButton("View in Admin Portal", "https://macrolight-builder.com/admin/portal/projects")}`,
+    "Macrolight Builder &mdash; New Signup Alert"
+  );
+}
+
+// 3. Auto-reply confirmation for a public contact form submission
+export function contactAutoReplyEmailHtml({ name }: { name: string }): string {
+  return emailLayout(
+    "We received your message",
+    "Thanks for reaching out — we'll be in touch shortly.",
+    `<p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6;">Hi ${escapeHtml(name)},</p>
+     <p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6;">
+       Thanks for contacting Macrolight. We've received your message and one of our team members will get back to you within one business day.
+     </p>
+     <p style="margin:0;font-size:15px;color:#3f3f46;line-height:1.6;">
+       In the meantime, feel free to browse our work at <a href="https://macrolight-builder.com" style="color:#7c3aed;text-decoration:none;">macrolight-builder.com</a>.
+     </p>`,
+    "Macrolight Builder &mdash; Contact Confirmation"
+  );
+}
+
+// 4. Admin alert when a client completes onboarding
+export function onboardingCompleteAdminEmailHtml({
+  name,
+  email,
+  businessName,
+}: {
+  name: string | null;
+  email: string;
+  businessName: string | null;
+}): string {
+  return emailLayout(
+    "Onboarding Completed",
+    "A client has submitted their project brief.",
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+       ${field("Client", escapeHtml(name ?? email))}
+       ${field("Email", `<a href="mailto:${escapeHtml(email)}" style="color:#7c3aed;text-decoration:none;">${escapeHtml(email)}</a>`)}
+       ${businessName ? field("Business Name", escapeHtml(businessName)) : ""}
+     </table>
+     <p style="margin:20px 0 0;font-size:14px;color:#71717a;line-height:1.6;">
+       The project stage has been automatically advanced to <strong style="color:#18181b;">Design</strong>. Review the brief and pick up where you left off.
+     </p>
+     ${ctaButton("View Client Brief", `https://macrolight-builder.com/admin/portal/projects`)}`,
+    "Macrolight Builder &mdash; Onboarding Alert"
+  );
+}
+
+// 5. Admin alert when a client uploads a media file
+export function mediaUploadAdminEmailHtml({
+  name,
+  email,
+  filename,
+}: {
+  name: string | null;
+  email: string;
+  filename: string;
+}): string {
+  return emailLayout(
+    "New Media Upload",
+    "A client uploaded a file to their project.",
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+       ${field("Client", escapeHtml(name ?? email))}
+       ${field("Email", `<a href="mailto:${escapeHtml(email)}" style="color:#7c3aed;text-decoration:none;">${escapeHtml(email)}</a>`)}
+       ${field("File", escapeHtml(filename))}
+     </table>
+     ${ctaButton("View in Admin Portal", "https://macrolight-builder.com/admin/portal/projects")}`,
+    "Macrolight Builder &mdash; Media Upload Alert"
+  );
+}
+
+// 6. Admin alert when a client sends a message
+export function clientMessageAdminEmailHtml({
+  name,
+  email,
+  body,
+}: {
+  name: string | null;
+  email: string;
+  body: string;
+}): string {
+  return emailLayout(
+    "New Client Message",
+    "A client sent you a message in their project portal.",
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+       ${field("From", escapeHtml(name ?? email))}
+       ${field("Email", `<a href="mailto:${escapeHtml(email)}" style="color:#7c3aed;text-decoration:none;">${escapeHtml(email)}</a>`)}
+     </table>
+     <div style="margin-top:16px;padding:16px;background-color:#f5f3ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;">
+       <p style="margin:0;font-size:15px;color:#3f3f46;line-height:1.6;white-space:pre-wrap;">${escapeHtml(body)}</p>
+     </div>
+     ${ctaButton("Reply in Admin Portal", "https://macrolight-builder.com/admin/portal/projects")}`,
+    "Macrolight Builder &mdash; Message Alert"
+  );
+}
+
+// 7. Client notification when an admin replies to them
+export function adminMessageClientEmailHtml({
+  name,
+  body,
+}: {
+  name: string | null;
+  body: string;
+}): string {
+  const greeting = name ? `Hi ${escapeHtml(name)},` : "Hi there,";
+  return emailLayout(
+    "New Message from Macrolight",
+    "Your project team sent you a message.",
+    `<p style="margin:0 0 16px;font-size:15px;color:#3f3f46;line-height:1.6;">${greeting}</p>
+     <div style="padding:16px;background-color:#f5f3ff;border-left:3px solid #7c3aed;border-radius:0 6px 6px 0;">
+       <p style="margin:0;font-size:15px;color:#3f3f46;line-height:1.6;white-space:pre-wrap;">${escapeHtml(body)}</p>
+     </div>
+     <p style="margin:16px 0 0;font-size:14px;color:#71717a;">Reply or view the full conversation in your portal.</p>
+     ${ctaButton("Open My Portal", "https://macrolight-builder.com/portal")}`,
+    "Macrolight Builder &mdash; Project Update"
+  );
+}
+
+// ── Original templates ────────────────────────────────────────────────────────
+
 interface WeeklyDigestData {
   newLeads: number;
   totalRevenue: string;

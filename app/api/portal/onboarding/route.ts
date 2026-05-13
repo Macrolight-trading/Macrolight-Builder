@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { sendEmail } from "@/lib/email";
+import { onboardingCompleteAdminEmailHtml } from "@/lib/email-templates";
 
 const schema = z.object({
   businessName: z.string().max(200).optional(),
@@ -76,6 +78,26 @@ export async function POST(req: NextRequest) {
       create: { userId, stage: "DESIGN" },
       update: { stage: "DESIGN" },
     });
+
+    // Notify admin that the client submitted their brief
+    const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
+    if (adminEmail) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true, email: true },
+      });
+      if (user) {
+        sendEmail({
+          to: adminEmail,
+          subject: `Onboarding complete: ${user.name ?? user.email}`,
+          html: onboardingCompleteAdminEmailHtml({
+            name: user.name,
+            email: user.email,
+            businessName: knownFields.businessName ?? null,
+          }),
+        }).catch((err) => console.error("Onboarding complete email failed:", err));
+      }
+    }
   }
 
   return NextResponse.json(data);

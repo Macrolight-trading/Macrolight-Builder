@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
-import { newLeadEmailHtml } from "@/lib/email-templates";
+import { newLeadEmailHtml, contactAutoReplyEmailHtml } from "@/lib/email-templates";
 
 export async function POST(request: Request) {
   try {
@@ -56,6 +56,13 @@ export async function POST(request: Request) {
         console.error("Failed to send lead notification email:", err);
       }
     }
+
+    // Auto-reply confirmation to the person who submitted the form
+    sendEmail({
+      to: email,
+      subject: "We received your message — Macrolight",
+      html: contactAutoReplyEmailHtml({ name }),
+    }).catch((err) => console.error("Contact auto-reply failed:", err));
 
     return NextResponse.json(contact, { status: 201 });
   } catch {

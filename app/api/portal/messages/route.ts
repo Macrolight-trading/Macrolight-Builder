@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { sendEmail } from "@/lib/email";
+import { clientMessageAdminEmailHtml, adminMessageClientEmailHtml } from "@/lib/email-templates";
 
 const schema = z.object({
   body: z.string().min(1).max(5000),
@@ -62,6 +64,42 @@ export async function POST(req: NextRequest) {
       body: parsed.data.body,
     },
   });
+
+  // Cross-notify the other party
+  if (isAdmin) {
+    // Admin sent a message → email the client
+    const client = await prisma.user.findUnique({
+      where: { id: targetUserId },
+      select: { name: true, email: true },
+    });
+    if (client) {
+      sendEmail({
+        to: client.email,
+        subject: "New message from Macrolight",
+        html: adminMessageClientEmailHtml({ name: client.name, body: parsed.data.body }),
+      }).catch((err) => console.error("Admin→client message email failed:", err));
+    }
+  } else {
+    // Client sent a message → email the admin
+    const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
+    if (adminEmail) {
+      const client = await prisma.user.findUnique({
+        where: { id: targetUserId },
+        select: { name: true, email: true },
+      });
+      if (client) {
+        sendEmail({
+          to: adminEmail,
+          subject: `New message from ${client.name ?? client.email}`,
+          html: clientMessageAdminEmailHtml({
+            name: client.name,
+            email: client.email,
+            body: parsed.data.body,
+          }),
+        }).catch((err) => console.error("Client→admin message email failed:", err));
+      }
+    }
+  }
 
   return NextResponse.json(message, { status: 201 });
 }
