@@ -34,6 +34,8 @@ export default async function OnboardingPage() {
             keyServices: data?.keyServices,
             competitors: data?.competitors,
             tone: data?.tone,
+            themePicks: (data as { themePicks?: string | null } | null)?.themePicks,
+            inspirationUrls: (data as { inspirationUrls?: string | null } | null)?.inspirationUrls,
             additionalNotes: data?.additionalNotes,
             completedAt: data?.completedAt,
           }}

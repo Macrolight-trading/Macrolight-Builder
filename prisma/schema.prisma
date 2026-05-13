@@ -411,6 +411,8 @@ model OnboardingData {
   keyServices     String?   @db.Text
   competitors     String?   @db.Text
   tone            String?
+  themePicks      String?   // JSON array of selected theme IDs e.g. ["hvac","dentist"]
+  inspirationUrls String?   @db.Text // newline-separated URLs
   additionalNotes String?   @db.Text
   completedAt     DateTime?
   createdAt       DateTime  @default(now())

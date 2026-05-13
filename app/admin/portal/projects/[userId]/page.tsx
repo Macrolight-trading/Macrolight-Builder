@@ -80,6 +80,8 @@ export default async function AdminProjectDetailPage({
                 ["Key Services", onboarding.keyServices],
                 ["Competitors", onboarding.competitors],
                 ["Brand Voice", onboarding.tone],
+                ["Theme Picks", (() => { try { const p = JSON.parse((onboarding as { themePicks?: string | null }).themePicks ?? "[]"); return p.length ? p.join(", ") : null; } catch { return null; } })()],
+                ["Inspiration URLs", (onboarding as { inspirationUrls?: string | null }).inspirationUrls],
                 ["Additional Notes", onboarding.additionalNotes],
               ]
                 .filter(([, v]) => v)

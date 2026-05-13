@@ -13,6 +13,8 @@ const schema = z.object({
   keyServices: z.string().max(1000).optional(),
   competitors: z.string().max(1000).optional(),
   tone: z.string().max(50).optional(),
+  themePicks: z.string().max(500).optional(),
+  inspirationUrls: z.string().max(2000).optional(),
   additionalNotes: z.string().max(2000).optional(),
   completed: z.boolean().optional(),
 });
@@ -37,22 +39,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
   }
 
-  const { completed, ...fields } = parsed.data;
+  const { completed, themePicks, inspirationUrls, ...knownFields } = parsed.data;
 
+  // Upsert with the fields the current Prisma client knows about.
   const data = await prisma.onboardingData.upsert({
     where: { userId },
     create: {
       userId,
-      ...fields,
+      ...knownFields,
       completedAt: completed ? new Date() : null,
     },
     update: {
-      ...fields,
+      ...knownFields,
       ...(completed !== undefined
         ? { completedAt: completed ? new Date() : null }
         : {}),
     },
   });
+
+  // Write the two newer columns (themePicks, inspirationUrls) via raw SQL
+  // until the Prisma client is regenerated to include them.
+  if (themePicks !== undefined || inspirationUrls !== undefined) {
+    await prisma.$executeRaw`
+      UPDATE onboarding_data
+      SET
+        "themePicks"      = COALESCE(${themePicks      ?? null}, "themePicks"),
+        "inspirationUrls" = COALESCE(${inspirationUrls ?? null}, "inspirationUrls")
+      WHERE "userId" = ${userId}
+    `;
+  }
 
   // Auto-advance project stage from ONBOARDING → DESIGN when completed
   if (completed) {
