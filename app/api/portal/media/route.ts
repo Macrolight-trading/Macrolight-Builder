@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { put } from "@vercel/blob";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { mediaUploadAdminEmailHtml } from "@/lib/email-templates";
 
 const ALLOWED_TYPES = [
@@ -76,15 +76,15 @@ export async function POST(req: NextRequest) {
   });
 
   // Notify admin of the upload (fire-and-forget)
-  const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
-  if (adminEmail) {
+  const notificationEmails = getNotificationEmails();
+  if (notificationEmails.length > 0) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { name: true, email: true },
     });
     if (user) {
       sendEmail({
-        to: adminEmail,
+        to: notificationEmails,
         subject: `New media upload from ${user.name ?? user.email}`,
         html: mediaUploadAdminEmailHtml({
           name: user.name,

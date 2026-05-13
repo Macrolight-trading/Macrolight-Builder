@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { newLeadEmailHtml, contactAutoReplyEmailHtml } from "@/lib/email-templates";
 
 export async function POST(request: Request) {
@@ -28,9 +28,7 @@ export async function POST(request: Request) {
     });
 
     // Send notification email and track delivery
-    const notificationEmails = parseNotificationEmails(
-      process.env.LEAD_NOTIFICATION_EMAIL
-    );
+    const notificationEmails = getNotificationEmails();
     if (notificationEmails.length > 0) {
       try {
         const result = await sendEmail({
@@ -73,13 +71,3 @@ export async function POST(request: Request) {
   }
 }
 
-function parseNotificationEmails(value: string | undefined): string[] {
-  if (!value) return [];
-  const list = value
-    .split(/[;,\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-  // Deduplicate while preserving order.
-  return Array.from(new Set(list));
-}

@@ -32,6 +32,24 @@ async function sendOnce({ to, subject, html, replyTo }: EmailOptions): Promise<u
   return res.json();
 }
 
+/**
+ * Parses the LEAD_NOTIFICATION_EMAIL env var into a clean array of addresses.
+ * Supports comma, semicolon, or newline-separated lists and trims whitespace.
+ * Returns an empty array if the variable is unset or empty.
+ */
+export function getNotificationEmails(): string[] {
+  const value = process.env.LEAD_NOTIFICATION_EMAIL;
+  if (!value) return [];
+  return Array.from(
+    new Set(
+      value
+        .split(/[;,\n]/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
+  );
+}
+
 export async function sendEmail(options: EmailOptions): Promise<unknown | null> {
   if (!RESEND_API_KEY) {
     console.warn("RESEND_API_KEY not set — skipping email send");

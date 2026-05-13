@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { clientMessageAdminEmailHtml, adminMessageClientEmailHtml } from "@/lib/email-templates";
 
 const schema = z.object({
@@ -81,15 +81,15 @@ export async function POST(req: NextRequest) {
     }
   } else {
     // Client sent a message → email the admin
-    const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
-    if (adminEmail) {
+    const notificationEmails = getNotificationEmails();
+    if (notificationEmails.length > 0) {
       const client = await prisma.user.findUnique({
         where: { id: targetUserId },
         select: { name: true, email: true },
       });
       if (client) {
         sendEmail({
-          to: adminEmail,
+          to: notificationEmails,
           subject: `New message from ${client.name ?? client.email}`,
           html: clientMessageAdminEmailHtml({
             name: client.name,

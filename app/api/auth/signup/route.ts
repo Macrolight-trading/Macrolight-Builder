@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { welcomeEmailHtml, newSignupAdminEmailHtml } from "@/lib/email-templates";
 
 // Minimal validation. We avoid pulling in zod here to keep the route
@@ -74,10 +74,10 @@ export async function POST(request: Request) {
     }).catch((err) => console.error("Welcome email failed:", err));
 
     // Notify admin of the new signup
-    const adminEmail = process.env.LEAD_NOTIFICATION_EMAIL;
-    if (adminEmail) {
+    const notificationEmails = getNotificationEmails();
+    if (notificationEmails.length > 0) {
       sendEmail({
-        to: adminEmail,
+        to: notificationEmails,
         subject: `New signup: ${user.name ?? user.email}`,
         html: newSignupAdminEmailHtml({ name: user.name, email: user.email }),
       }).catch((err) => console.error("New signup admin email failed:", err));
