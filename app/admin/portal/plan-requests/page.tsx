@@ -32,10 +32,11 @@ export default async function PlanRequestsPage({
     },
   });
 
-  const counts = (await prisma.customPlanRequest.groupBy({
+  const rawCounts = await prisma.customPlanRequest.groupBy({
     by: ["status"],
     _count: { _all: true },
-  })) as Array<{ status: string; _count: { _all: number } }>;
+  });
+  const counts = rawCounts as Array<{ status: string; _count: { _all: number } }>;
   const countMap = Object.fromEntries(
     counts.map((c) => [c.status, c._count._all] as const),
   );
