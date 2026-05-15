@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { reportAdConversion } from "@/lib/gtag";
 import Button from "./Button";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
@@ -212,6 +213,7 @@ export default function ContactForm({ industry }: ContactFormProps = {}) {
         }),
       });
       if (!res.ok) throw new Error("Failed to submit");
+      reportAdConversion();
       setStatus("success");
       setForm(initialForm);
     } catch {

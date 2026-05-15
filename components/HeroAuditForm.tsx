@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { reportAdConversion } from "@/lib/gtag";
 
 type Step = "url" | "details" | "success";
 
@@ -54,6 +55,7 @@ export default function HeroAuditForm() {
         body: JSON.stringify({ name, email, message, gclid: gclidRef.current ?? undefined }),
       });
       if (!res.ok) throw new Error("Failed to submit");
+      reportAdConversion();
       setStep("success");
     } catch {
       setErrorMsg("Something went wrong. Please try again.");

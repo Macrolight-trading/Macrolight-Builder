@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { reportAdConversion } from "@/lib/gtag";
 
 const inputCls =
   "w-full rounded-lg border border-gray-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400";
@@ -49,6 +50,7 @@ export default function SignupForm() {
         return;
       }
 
+      reportAdConversion();
       router.push("/portal");
       router.refresh();
     } catch {
