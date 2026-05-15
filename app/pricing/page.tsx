@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
-import PricingCard from "@/components/PricingCard";
+import TabbedPricing from "@/components/TabbedPricing";
 import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { pricingTiers } from "@/lib/pricing";
@@ -92,13 +92,9 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing cards */}
+      {/* Pricing tabs */}
       <Section padding="lg" className="bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {pricingTiers.map((tier) => (
-            <PricingCard key={tier.name} tier={tier} />
-          ))}
-        </div>
+        <TabbedPricing tiers={pricingTiers} />
 
         <p className="mt-10 text-center text-sm text-gray-400">
           All plans include hosting on Vercel, SSL, automatic backups, and

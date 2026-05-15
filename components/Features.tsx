@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SectionHeader from "./SectionHeader";
 
 const SERVICES = [
   {
@@ -49,14 +50,12 @@ export default function Features() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
 
         {/* Section header */}
-        <div className="flex items-center justify-between border-b border-gray-200 pb-5 mb-20">
-          <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-            What We Do
-          </span>
-          <span className="text-xs text-gray-300 uppercase tracking-widest hidden sm:block">
-            04 capabilities
-          </span>
-        </div>
+        <SectionHeader
+          eyebrow="What We Do"
+          meta="04 capabilities"
+          accent="violet"
+          className="mb-16 sm:mb-20"
+        />
 
         {/* Intro headline */}
         <div className="mb-20 max-w-3xl">

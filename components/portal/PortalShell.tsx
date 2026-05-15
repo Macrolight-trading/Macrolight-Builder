@@ -11,6 +11,7 @@ const nav = [
   { label: "Messages", href: "/portal/messages", icon: ChatIcon },
   { label: "Media", href: "/portal/media", icon: PhotoIcon },
   { label: "Billing", href: "/portal/billing", icon: CreditCardIcon },
+  { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
   { label: "Profile", href: "/portal/profile", icon: UserIcon },
   { label: "Support", href: "/portal/support", icon: SupportIcon },
 ] as const;
@@ -127,6 +128,14 @@ function CreditCardIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M5 6h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
+    </svg>
+  );
+}
+
+function BuildPlanIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" />
     </svg>
   );
 }

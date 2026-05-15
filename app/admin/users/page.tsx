@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { PlanSelector } from "@/components/admin/PlanSelector";
 
 export const dynamic = "force-dynamic";
 
@@ -77,17 +78,10 @@ export default async function UsersPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                        user.plan === "PRO"
-                          ? "bg-amber-50 text-amber-700"
-                          : user.plan === "GROWTH"
-                          ? "bg-blue-50 text-blue-700"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {user.plan}
-                    </span>
+                    <PlanSelector
+                      userId={user.id}
+                      initialPlan={user.plan as "NONE" | "STARTER" | "GROWTH" | "PRO" | "CUSTOM"}
+                    />
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">
                     {user._count.payments}

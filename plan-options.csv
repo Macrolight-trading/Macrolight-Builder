@@ -1,0 +1,25 @@
+name,description,category,price,billingType,active,sortOrder
+Additional Page,"Add one custom page to your site — copywriting, design, and build included",Website Extras,250,one-time,TRUE,10
+Copywriting Refresh,"Rewrite homepage plus up to 3 inner pages for conversion clarity",Website Extras,650,one-time,TRUE,20
+Monthly SEO Audit,"Technical + content + competitor audit each month with a prioritized fix list",SEO & Analytics,299,monthly,TRUE,10
+Google Search Console Setup,"Verify ownership, submit sitemap, configure property and alerts",SEO & Analytics,99,one-time,TRUE,20
+Google Analytics 4 Setup,"Install GA4, configure events, conversions, and link to Search Console",SEO & Analytics,149,one-time,TRUE,30
+Google Tag Manager Setup,"Install GTM container and migrate or configure all tracking tags",SEO & Analytics,149,one-time,TRUE,40
+Bing Webmaster Tools Setup,"Verify site and submit sitemap to Bing Webmaster Tools",SEO & Analytics,49,one-time,TRUE,50
+Schema Markup Implementation,"Add LocalBusiness, Service, and FAQ structured data to unlock rich results in Google",SEO & Analytics,349,one-time,TRUE,60
+Monthly Performance Report,"Custom monthly report covering rankings, traffic, and conversions",SEO & Analytics,99,monthly,TRUE,70
+Google Business Profile Setup,"Create and optimize Google Business Profile — categories, services, photos, posts",Local Presence,199,one-time,TRUE,10
+Apple Business Connect Setup,"Claim and optimize Apple Business Connect for Apple Maps and Siri",Local Presence,149,one-time,TRUE,20
+Local Citation Building,"Submit your business to 25 high-authority local directories with consistent NAP data",Local Presence,299,one-time,TRUE,30
+Professional Email Setup,"Google Workspace or Microsoft 365 business email (up to 5 users; license fees billed separately)",Local Presence,150,one-time,TRUE,40
+Google Ads Account Setup,"Create Google Ads account, install conversion tracking, build first campaign",Paid Marketing,349,one-time,TRUE,10
+Google Ads Management — Starter,"Up to $2,000/mo ad spend; weekly optimization and monthly reporting",Paid Marketing,399,monthly,TRUE,20
+Google Ads Management — Growth,"Up to $5,000/mo ad spend; weekly optimization, A/B testing, monthly reporting",Paid Marketing,799,monthly,TRUE,30
+Google Ads Management — Pro,"Up to $10,000/mo ad spend; weekly optimization, advanced testing, biweekly reporting",Paid Marketing,1299,monthly,TRUE,40
+Email Marketing Setup,"Configure Mailchimp or Klaviyo, branded templates, list import, first campaign",Email & CRM,299,one-time,TRUE,10
+Monthly Email Marketing,"Up to 4 emails per month: copywriting, design, send, and performance report",Email & CRM,449,monthly,TRUE,20
+CRM Setup & Integration,"HubSpot or Pipedrive base setup, pipeline configuration, connect up to 3 website forms",Email & CRM,499,one-time,TRUE,30
+Blog Post Writing,"800–1200 word SEO-optimized blog post written for your audience",Content,149,one-time,TRUE,10
+Blog Subscription,"4 SEO-optimized blog posts per month, ongoing",Content,549,monthly,TRUE,20
+Logo Refresh,"Minor refinements to existing logo: colors, proportions, modern adjustments. Vector files delivered",Brand,250,one-time,TRUE,10
+Full Logo Redesign,"From-scratch logo design — 3 concepts, 2 rounds of revisions, all file formats",Brand,750,one-time,TRUE,20

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SectionHeader from "./SectionHeader";
 
 const steps = [
   {
@@ -36,14 +37,11 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
 
         {/* Section label */}
-        <div className="flex items-center justify-between border-b border-gray-200 pb-5 mb-16">
-          <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-            The Process
-          </span>
-          <span className="text-xs text-gray-300 uppercase tracking-widest hidden sm:block">
-            From old site to lead engine — in 21 days
-          </span>
-        </div>
+        <SectionHeader
+          eyebrow="The Process"
+          meta="Old site → lead engine in 21 days"
+          accent="cyan"
+        />
 
         {/* Intro */}
         <div className="mb-16 max-w-2xl">

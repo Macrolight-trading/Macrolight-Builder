@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeroPhotoCarousel from "./HeroPhotoCarousel";
+import HeroAuditForm from "./HeroAuditForm";
 
 const MARQUEE_ITEMS = [
   "Conversion-Optimized Design",
@@ -106,32 +107,31 @@ export default function Hero() {
               </span>
             </p>
 
-            {/* CTAs */}
+            {/* Inline audit form — single field first, expands on submit */}
             <div
-              className="mt-9 flex flex-col sm:flex-row items-start gap-3 animate-fade-in-up"
+              className="mt-9 max-w-xl animate-fade-in-up"
               style={{ animationDelay: "0.26s" }}
             >
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2.5 bg-violet-600 text-white px-7 py-4 text-sm font-semibold rounded-xl hover:bg-violet-700 transition-colors whitespace-nowrap shadow-lg shadow-violet-200"
-              >
-                Get a Free Audit
-                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden>
-                  <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </Link>
-              <Link
-                href="/#sample-previews"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 border border-gray-300 px-6 py-4 rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-all"
-              >
-                See Example Sites →
-              </Link>
+              <HeroAuditForm />
             </div>
 
-            {/* Micro-trust */}
-            <p className="mt-4 text-xs text-gray-400 animate-fade-in-up" style={{ animationDelay: "0.32s" }}>
-              No commitment · Free report within 24 hrs · No credit card
-            </p>
+            {/* Secondary CTA + micro-trust */}
+            <div
+              className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 animate-fade-in-up"
+              style={{ animationDelay: "0.32s" }}
+            >
+              <Link
+                href="/#sample-previews"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                See example sites
+                <span aria-hidden>→</span>
+              </Link>
+              <span className="hidden sm:inline-block h-1 w-1 rounded-full bg-gray-300" aria-hidden />
+              <p className="text-xs text-gray-400">
+                No commitment · No credit card
+              </p>
+            </div>
 
             {/* Stats */}
             <div

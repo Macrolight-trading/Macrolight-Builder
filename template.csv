@@ -1,0 +1,14 @@
+name,description,category,price,billingType,active,sortOrder
+Monthly SEO Audit,Full technical + content audit each month,SEO,299,monthly,TRUE,10
+Logo Refresh,,Add-ons,25,one-time,TRUE,20
+Professional Email Setup,Google Workspace or Microsoft 365 business email (up to 5 users),Online Presence,150,one-time,TRUE,31
+Google Business Profile Setup,Create and optimize Google Business Profile listing,Online Presence,199,one-time,TRUE,32
+Monthly Google Ads Management,Setup and management of Google Ads campaigns,Online Presence,399,monthly,TRUE,39
+Google Ads Account Setup,"Create and configure Google Ads account, conversion tracking, and first campaign",Digital Marketing,349,one-time,TRUE,50
+Google Search Console Setup,"Verify site ownership, submit sitemap, and configure GSC property",SEO,99,one-time,TRUE,51
+Google Analytics 4 Setup,"Install GA4, configure events, goals, and connect to Search Console",SEO,149,one-time,TRUE,52
+Google Tag Manager Setup,Install GTM container and migrate/configure all tracking tags,SEO,149,one-time,TRUE,53
+Bing Webmaster Tools Setup,Verify site and submit sitemap to Bing Webmaster Tools,SEO,49,one-time,TRUE,54
+Email Marketing Setup,"Configure Mailchimp/Klaviyo account, branded templates, and first campaign",Digital Marketing,299,one-time,TRUE,58
+Monthly Email Marketing,Monthly newsletter creation and send (up to 4 emails/mo),Digital Marketing,249,monthly,TRUE,59
+CRM Setup & Integration,Configure CRM (HubSpot/Pipedrive) and connect to website lead forms,Add-ons,499,one-time,TRUE,63

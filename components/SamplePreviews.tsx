@@ -4,6 +4,7 @@
 
 import Link from "next/link";
 import Section from "./Section";
+import SectionHeader from "./SectionHeader";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 const SLIDE_INTERVAL = 5000;
@@ -480,10 +481,11 @@ export default function SamplePreviews() {
       `}</style>
 
       {/* Section header */}
-      <div className="flex items-center justify-between border-b border-gray-200 pb-5 mb-16">
-        <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">Recent Builds</span>
-        <span className="text-xs text-gray-300 uppercase tracking-widest">Updated April 2026</span>
-      </div>
+      <SectionHeader
+        eyebrow="Recent Builds"
+        meta="Updated April 2026"
+        accent="emerald"
+      />
 
       {/* Intro */}
       <div className="mb-12 max-w-2xl">

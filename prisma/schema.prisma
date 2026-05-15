@@ -74,6 +74,7 @@ model User {
   messages        Message[]
   mediaFiles      MediaFile[]
   onboarding      OnboardingData?
+  planRequests    CustomPlanRequest[]
 
   @@map("users")
 }
@@ -302,9 +303,11 @@ enum Role {
 }
 
 enum Plan {
+  NONE
   STARTER
   GROWTH
   PRO
+  CUSTOM
 }
 
 enum PaymentStatus {
@@ -427,4 +430,104 @@ enum ProjectStage {
   DEVELOPMENT
   REVIEW
   LAUNCHED
+}
+
+// ── Custom Plan Builder ─────────────────────────────────────────────────────
+
+enum BillingType {
+  ONE_TIME
+  MONTHLY
+}
+
+enum PlanRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELED
+}
+
+/// A single check-boxable option Bradley can offer in the plan builder.
+/// Managed from the admin portal at /admin/portal/plan-options.
+model PlanOption {
+  id          String      @id @default(cuid())
+  name        String
+  description String?     @db.Text
+  category    String
+  priceCents  Int
+  billingType BillingType
+  active      Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items CustomPlanRequestItem[]
+
+  @@index([active, category, sortOrder])
+  @@map("plan_options")
+}
+
+/// A submitted custom plan from a client. Acts as a quote request — Bradley
+/// reviews from /admin/portal/plan-requests and approves or rejects.
+model CustomPlanRequest {
+  id           String            @id @default(cuid())
+  userId       String
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  basePlan     Plan              @default(STARTER)
+  status       PlanRequestStatus @default(PENDING)
+  monthlyCents          Int               @default(0)
+  oneTimeCents          Int               @default(0)
+  bundleDiscountCents   Int               @default(0)
+  notes                 String?           @db.Text
+  adminNotes            String?           @db.Text
+  reviewedAt   DateTime?
+  reviewedById String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  items CustomPlanRequestItem[]
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@map("custom_plan_requests")
+}
+
+/// Line item on a CustomPlanRequest. Snapshots option values so historical
+/// requests stay accurate even if Bradley later edits or deletes the option.
+model CustomPlanRequestItem {
+  id                  String            @id @default(cuid())
+  requestId           String
+  request             CustomPlanRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  optionId            String?
+  option              PlanOption?       @relation(fields: [optionId], references: [id], onDelete: SetNull)
+  nameSnapshot        String
+  priceCents          Int
+  billingType         BillingType
+  category            String
+  includedInBasePlan  Boolean           @default(false)
+
+  @@index([requestId])
+  @@map("custom_plan_request_items")
+}
+
+
+/// Metadata for the category strings used on PlanOption — display label,
+/// sort order, and bundle discount % when the client picks every option in
+/// the category.
+
+/// Metadata for the category strings used on PlanOption — display label,
+/// sort order, bundle discount %, and base-plan inclusion tier.
+model PlanCategory {
+  id                 String   @id @default(cuid())
+  name               String   @unique
+  label              String?
+  bundleDiscountPct  Int      @default(0)
+  /// When set, this category is included for free in this base plan AND
+  /// any higher-tier plan (STARTER < GROWTH < PRO). Null means never bundled.
+  includedFromTier   Plan?
+  sortOrder          Int      @default(0)
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("plan_categories")
 }

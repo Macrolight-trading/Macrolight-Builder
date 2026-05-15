@@ -1,0 +1,588 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+type BillingType = "ONE_TIME" | "MONTHLY";
+
+type PlanOption = {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  priceCents: number;
+  billingType: BillingType;
+};
+
+type Tier = "NONE" | "STARTER" | "GROWTH" | "PRO";
+
+type PlanCategoryMeta = {
+  name: string;
+  label: string | null;
+  bundleDiscountPct: number;
+  includedFromTier: Tier | null;
+  sortOrder: number;
+};
+
+// Higher rank = "more included". A category with includedFromTier=GROWTH
+// gets bundled into any plan whose tier rank is >= GROWTH's rank.
+const TIER_RANK: Record<string, number> = {
+  NONE: 0,
+  STARTER: 1,
+  GROWTH: 2,
+  PRO: 3,
+  CUSTOM: 99,
+};
+
+const BASE_PLANS = [
+  {
+    value: "STARTER",
+    label: "Starter",
+    buildFee: 500,
+    monthlyFee: 79,
+    tagline: "A clean, conversion-ready launch for new local businesses.",
+    features: [
+      "3–5 page conversion-focused website",
+      "Fast hosting on Vercel",
+      "Ongoing security & uptime monitoring",
+      "Mobile-first responsive design",
+      "Basic on-page SEO foundation",
+      "Contact form & click-to-call",
+    ],
+  },
+  {
+    value: "GROWTH",
+    label: "Growth",
+    buildFee: 1000,
+    monthlyFee: 149,
+    badge: "Most Popular",
+    tagline: "Everything you need to consistently generate qualified leads.",
+    features: [
+      "5–8 pages with conversion copywriting",
+      "Built-in lead capture system",
+      "Analytics & conversion tracking",
+      "Monthly performance reporting",
+      "Unlimited content edits",
+      "Priority support & updates",
+    ],
+  },
+  {
+    value: "PRO",
+    label: "Pro",
+    buildFee: 2500,
+    monthlyFee: 249,
+    tagline: "The full client acquisition engine for established businesses.",
+    features: [
+      "Unlimited pages + advanced funnels",
+      "AI chatbot integration",
+      "CRM & automation integrations",
+      "A/B testing & conversion optimization",
+      "Dedicated strategist",
+      "Everything in Growth",
+    ],
+  },
+];
+
+function money(cents: number) {
+  return `$${(cents / 100).toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
+function CheckIcon() {
+  return (
+    <svg className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+export default function PlanBuilder({
+  currentPlan,
+  options,
+  categories,
+}: {
+  currentPlan: string;
+  options: PlanOption[];
+  categories: PlanCategoryMeta[];
+}) {
+  const router = useRouter();
+  const initialBase = BASE_PLANS.some((p) => p.value === currentPlan) ? currentPlan : "STARTER";
+  const [basePlan, setBasePlan] = useState(initialBase);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  const selectedBase = BASE_PLANS.find((p) => p.value === basePlan);
+
+  // Lookup category metadata by name; fall back to defaults when a category
+  // doesn't have an explicit row (which means no bundle discount).
+  const categoryMeta = useMemo(() => {
+    const m = new Map<string, PlanCategoryMeta>();
+    for (const c of categories) m.set(c.name, c);
+    return m;
+  }, [categories]);
+
+  // Group options by category, sorted by the category's own sortOrder.
+  const grouped = useMemo(() => {
+    const m = new Map<string, PlanOption[]>();
+    for (const o of options) {
+      if (!m.has(o.category)) m.set(o.category, []);
+      m.get(o.category)!.push(o);
+    }
+    return Array.from(m.entries()).sort(([a], [b]) => {
+      const sa = categoryMeta.get(a)?.sortOrder ?? 999;
+      const sb = categoryMeta.get(b)?.sortOrder ?? 999;
+      return sa - sb || a.localeCompare(b);
+    });
+  }, [options, categoryMeta]);
+
+  // Per-category subtotals, bundle status, and inclusion status. An "included"
+  // category is one whose includedFromTier is at or below the chosen base
+  // plan's tier — every item is bundled for free, the price doesn't count
+  // toward totals, and the bundle discount is moot (you can't discount $0).
+  const categoryAnalysis = useMemo(() => {
+    const baseRank = TIER_RANK[basePlan] ?? 0;
+    return grouped.map(([category, items]) => {
+      const meta = categoryMeta.get(category);
+      const includedTier = meta?.includedFromTier ?? null;
+      const includedTierRank = includedTier && includedTier !== "NONE"
+        ? TIER_RANK[includedTier] ?? 0
+        : 0;
+      const includedByBasePlan =
+        includedTier !== null && includedTier !== "NONE" && baseRank >= includedTierRank;
+
+      // When the category is included by the base plan, treat every item as
+      // selected for display purposes but skip them from totals.
+      const allSelected = includedByBasePlan
+        ? true
+        : items.length > 0 && items.every((o) => selected.has(o.id));
+
+      const discountPct = meta?.bundleDiscountPct ?? 0;
+      const bundleEligible = !includedByBasePlan && items.length >= 2 && discountPct > 0;
+      const bundleActive = bundleEligible && allSelected;
+
+      const selectedItems = includedByBasePlan
+        ? items
+        : items.filter((o) => selected.has(o.id));
+
+      // Only items NOT included by the base plan contribute to subtotals.
+      const billableItems = includedByBasePlan ? [] : selectedItems;
+      const monthlySub = billableItems
+        .filter((o) => o.billingType === "MONTHLY")
+        .reduce((a, b) => a + b.priceCents, 0);
+      const oneTimeSub = billableItems
+        .filter((o) => o.billingType === "ONE_TIME")
+        .reduce((a, b) => a + b.priceCents, 0);
+      const monthlyDiscount = bundleActive
+        ? Math.round((monthlySub * discountPct) / 100)
+        : 0;
+      const oneTimeDiscount = bundleActive
+        ? Math.round((oneTimeSub * discountPct) / 100)
+        : 0;
+      return {
+        category,
+        label: meta?.label ?? category,
+        items,
+        allSelected,
+        discountPct,
+        bundleEligible,
+        bundleActive,
+        includedByBasePlan,
+        monthlySub,
+        oneTimeSub,
+        monthlyDiscount,
+        oneTimeDiscount,
+        selectedCount: selectedItems.length,
+      };
+    });
+  }, [grouped, selected, categoryMeta, basePlan]);
+
+  const totals = useMemo(() => {
+    let addOnMonthly = 0;
+    let addOnOneTime = 0;
+    let monthlyDisc = 0;
+    let oneTimeDisc = 0;
+    for (const c of categoryAnalysis) {
+      addOnMonthly += c.monthlySub;
+      addOnOneTime += c.oneTimeSub;
+      monthlyDisc += c.monthlyDiscount;
+      oneTimeDisc += c.oneTimeDiscount;
+    }
+    // Base plan rates are in dollars in BASE_PLANS; convert to cents.
+    const baseMonthly = (selectedBase?.monthlyFee ?? 0) * 100;
+    const baseOneTime = (selectedBase?.buildFee ?? 0) * 100;
+    return {
+      addOnMonthly,
+      addOnOneTime,
+      monthlyDisc,
+      oneTimeDisc,
+      baseMonthly,
+      baseOneTime,
+      monthlyTotal: baseMonthly + addOnMonthly - monthlyDisc,
+      oneTimeTotal: baseOneTime + addOnOneTime - oneTimeDisc,
+      totalDiscount: monthlyDisc + oneTimeDisc,
+    };
+  }, [categoryAnalysis, selectedBase]);
+
+  function toggle(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleCategory(items: PlanOption[], allSelected: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allSelected) {
+        for (const o of items) next.delete(o.id);
+      } else {
+        for (const o of items) next.add(o.id);
+      }
+      return next;
+    });
+  }
+
+  async function submit() {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/portal/plan-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          basePlan,
+          optionIds: Array.from(selected),
+          notes: notes.trim() || null,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Submission failed");
+      }
+      setSubmitted(true);
+      setSelected(new Set());
+      setNotes("");
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Submission failed");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="bg-white rounded-xl border border-emerald-200 p-8 text-center">
+        <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-gray-900">Request submitted</h2>
+        <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+          We&apos;ll review your custom plan and follow up shortly. You can build another one below if you&apos;d like to revise it.
+        </p>
+        <button
+          onClick={() => setSubmitted(false)}
+          className="mt-5 px-4 py-2 text-sm font-semibold text-violet-700 hover:text-violet-800"
+        >
+          Start a new plan
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 space-y-6">
+
+        <section className="bg-white rounded-xl border border-gray-200 p-5">
+          <h2 className="text-sm font-semibold text-gray-900 mb-4">
+            1. Choose your base plan
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {BASE_PLANS.map((p) => {
+              const active = basePlan === p.value;
+              return (
+                <button
+                  key={p.value}
+                  onClick={() => setBasePlan(p.value)}
+                  className={`relative text-left px-4 py-4 rounded-xl border transition-all ${
+                    active
+                      ? "border-violet-500 bg-violet-50 ring-2 ring-violet-200"
+                      : "border-gray-200 hover:border-gray-300 bg-white"
+                  }`}
+                >
+                  {p.badge && (
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-violet-600 text-white text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full">
+                      {p.badge}
+                    </span>
+                  )}
+                  <p className={`text-sm font-bold ${active ? "text-violet-700" : "text-gray-900"}`}>
+                    {p.label}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-snug">{p.tagline}</p>
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <p className="text-xs text-gray-400">
+                      <span className="font-semibold text-gray-700">${p.buildFee}</span> build
+                      {" · "}
+                      <span className="font-semibold text-gray-700">${p.monthlyFee}/mo</span>
+                    </p>
+                  </div>
+                  <ul className="mt-3 space-y-1.5">
+                    {p.features.map((f) => (
+                      <li key={f} className="flex items-start gap-1.5">
+                        <CheckIcon />
+                        <span className="text-xs text-gray-600 leading-snug">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl border border-gray-200 p-5">
+          <h2 className="text-sm font-semibold text-gray-900 mb-1">
+            2. Add the services you want
+          </h2>
+          <p className="text-xs text-gray-500 mb-4">
+            Tick anything you&apos;d like on top of your base plan. Categories with a green badge offer a bundle discount when you select every item.
+          </p>
+          <div className="space-y-6">
+            {categoryAnalysis.map(({ category, label, items, allSelected, discountPct, bundleEligible, bundleActive, includedByBasePlan }) => (
+              <div key={category}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {includedByBasePlan ? (
+                      <span className="flex items-center gap-2">
+                        <span className="w-4 h-4 rounded bg-violet-100 text-violet-600 flex items-center justify-center text-[10px] font-bold">✓</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{label}</span>
+                      </span>
+                    ) : (
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={allSelected}
+                          onChange={() => toggleCategory(items, allSelected)}
+                          className="rounded text-violet-600 focus:ring-violet-500"
+                          aria-label={`Select all in ${label}`}
+                        />
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">{label}</span>
+                      </label>
+                    )}
+                    {includedByBasePlan ? (
+                      <span className="inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">
+                        Included with {basePlan}
+                      </span>
+                    ) : bundleEligible ? (
+                      <span
+                        className={`inline-block text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                          bundleActive ? "bg-emerald-100 text-emerald-700" : "bg-emerald-50 text-emerald-600"
+                        }`}
+                      >
+                        {bundleActive ? `${discountPct}% bundle applied` : `Save ${discountPct}% as bundle`}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  {items.map((o) => {
+                    const checked = includedByBasePlan || selected.has(o.id);
+                    const disabled = includedByBasePlan;
+                    return (
+                      <label
+                        key={o.id}
+                        className={`flex items-start gap-3 px-3 py-2.5 rounded-lg border transition-colors ${
+                          disabled
+                            ? "border-violet-200 bg-violet-50/40 cursor-not-allowed"
+                            : checked
+                              ? "border-violet-300 bg-violet-50/50 cursor-pointer"
+                              : "border-gray-100 hover:bg-gray-50 cursor-pointer"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={disabled}
+                          onChange={() => !disabled && toggle(o.id)}
+                          className="mt-0.5 rounded text-violet-600 focus:ring-violet-500 disabled:opacity-60"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-medium text-gray-900 truncate">{o.name}</span>
+                            <span className="text-sm font-mono whitespace-nowrap">
+                              {disabled ? (
+                                <span className="text-violet-700 font-semibold">Included</span>
+                              ) : (
+                                <span className="text-gray-900">
+                                  {money(o.priceCents)}
+                                  {o.billingType === "MONTHLY" && (<span className="text-xs text-gray-400">/mo</span>)}
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                          {o.description && (<p className="text-xs text-gray-500 mt-0.5">{o.description}</p>)}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-white rounded-xl border border-gray-200 p-5">
+          <h2 className="text-sm font-semibold text-gray-900 mb-1">
+            3. Anything we should know?
+          </h2>
+          <p className="text-xs text-gray-500 mb-3">
+            Optional — context, timing, or specifics about your project.
+          </p>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            maxLength={2000}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none resize-none"
+            placeholder="e.g. We're launching in Q3 and need the website live by July."
+          />
+        </section>
+      </div>
+
+      <aside className="lg:col-span-1">
+        <div className="bg-white rounded-xl border border-gray-200 p-5 lg:sticky lg:top-6">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">Your plan</p>
+
+          <div className="mt-3 space-y-2 pb-4 border-b border-gray-100">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-500">Base plan</span>
+              <span className="font-semibold text-gray-900">{basePlan}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-500">Add-ons selected</span>
+              <span className="font-semibold text-gray-900">{selected.size}</span>
+            </div>
+          </div>
+
+          {totals.totalDiscount > 0 && (
+            <div className="mt-4 space-y-1 pb-4 border-b border-gray-100 text-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Bundle savings</p>
+              {categoryAnalysis
+                .filter((c) => c.bundleActive)
+                .map((c) => (
+                  <div key={c.category} className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500 truncate">{c.label} ({c.discountPct}%)</span>
+                    <span className="font-mono text-emerald-700">−{money(c.monthlyDiscount + c.oneTimeDiscount)}</span>
+                  </div>
+                ))}
+            </div>
+          )}
+
+          {(totals.baseMonthly > 0 || totals.baseOneTime > 0) && (
+            <div className="mt-4 space-y-1 pb-3 border-b border-gray-100 text-xs">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
+                Base plan ({selectedBase?.label})
+              </p>
+              {totals.baseOneTime > 0 && (
+                <div className="flex items-baseline justify-between">
+                  <span className="text-gray-500">Build fee</span>
+                  <span className="font-mono text-gray-900">{money(totals.baseOneTime)}</span>
+                </div>
+              )}
+              {totals.baseMonthly > 0 && (
+                <div className="flex items-baseline justify-between">
+                  <span className="text-gray-500">Monthly</span>
+                  <span className="font-mono text-gray-900">
+                    {money(totals.baseMonthly)}<span className="text-gray-400">/mo</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {(totals.addOnMonthly > 0 || totals.addOnOneTime > 0) && (
+            <div className="mt-3 space-y-1 pb-3 border-b border-gray-100 text-xs">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Add-ons</p>
+              {totals.addOnOneTime > 0 && (
+                <div className="flex items-baseline justify-between">
+                  <span className="text-gray-500">One-time</span>
+                  <span className="font-mono text-gray-900">{money(totals.addOnOneTime)}</span>
+                </div>
+              )}
+              {totals.addOnMonthly > 0 && (
+                <div className="flex items-baseline justify-between">
+                  <span className="text-gray-500">Monthly</span>
+                  <span className="font-mono text-gray-900">
+                    {money(totals.addOnMonthly)}<span className="text-gray-400">/mo</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4 space-y-2">
+            {totals.monthlyTotal > 0 && (
+              <div>
+                {totals.monthlyDisc > 0 && (
+                  <div className="flex items-baseline justify-between text-xs">
+                    <span className="text-gray-400">Before bundle savings</span>
+                    <span className="font-mono text-gray-400 line-through">{money(totals.monthlyTotal + totals.monthlyDisc)}</span>
+                  </div>
+                )}
+                <div className="flex items-baseline justify-between">
+                  <span className="text-sm text-gray-500">Total monthly</span>
+                  <span>
+                    <span className="text-2xl font-extrabold text-violet-700">{money(totals.monthlyTotal)}</span>
+                    <span className="text-xs text-gray-400">/mo</span>
+                  </span>
+                </div>
+              </div>
+            )}
+            {totals.oneTimeTotal > 0 && (
+              <div>
+                {totals.oneTimeDisc > 0 && (
+                  <div className="flex items-baseline justify-between text-xs">
+                    <span className="text-gray-400">Before bundle savings</span>
+                    <span className="font-mono text-gray-400 line-through">{money(totals.oneTimeTotal + totals.oneTimeDisc)}</span>
+                  </div>
+                )}
+                <div className="flex items-baseline justify-between">
+                  <span className="text-sm text-gray-500">Total one-time</span>
+                  <span className="text-2xl font-extrabold text-amber-700">{money(totals.oneTimeTotal)}</span>
+                </div>
+              </div>
+            )}
+            {totals.monthlyTotal === 0 && totals.oneTimeTotal === 0 && (
+              <p className="text-sm text-gray-400 py-4 text-center">Pick a base plan to see your total.</p>
+            )}
+          </div>
+
+          {error && (
+            <p className="mt-4 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+          )}
+
+          <button
+            onClick={submit}
+            disabled={submitting}
+            className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submitting ? "Sending…" : "Request quote"}
+          </button>
+          <p className="mt-2 text-[11px] text-gray-400 text-center">
+            No charges. We&apos;ll review and follow up.
+          </p>
+        </div>
+      </aside>
+    </div>
+  );
+}

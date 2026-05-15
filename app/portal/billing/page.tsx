@@ -51,12 +51,20 @@ export default async function BillingPage() {
           <p className="mt-2 text-2xl font-extrabold text-violet-700">
             {user?.plan ?? "STARTER"}
           </p>
-          <Link
-            href="/pricing"
-            className="mt-3 inline-block text-xs font-semibold text-violet-600 hover:text-violet-700"
-          >
-            Change plan &rarr;
-          </Link>
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+            <Link
+              href="/pricing"
+              className="text-xs font-semibold text-violet-600 hover:text-violet-700"
+            >
+              Change plan &rarr;
+            </Link>
+            <Link
+              href="/portal/build-plan"
+              className="text-xs font-semibold text-violet-600 hover:text-violet-700"
+            >
+              Build a custom plan &rarr;
+            </Link>
+          </div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
