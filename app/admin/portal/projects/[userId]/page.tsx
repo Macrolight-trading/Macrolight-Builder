@@ -240,21 +240,35 @@ export default async function AdminProjectDetailPage({
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {mediaFiles.map((f) => (
-                <a
-                  key={f.id}
-                  href={f.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={f.filename}
-                  className="group block aspect-square rounded-lg overflow-hidden bg-gray-100 hover:ring-2 hover:ring-violet-500 transition-all"
-                >
+                <div key={f.id} className="group relative aspect-square rounded-lg overflow-hidden bg-gray-100 hover:ring-2 hover:ring-violet-500 transition-all">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={f.url}
+                    src={`/api/portal/media/${f.id}/img`}
                     alt={f.filename}
                     className="w-full h-full object-cover"
                   />
-                </a>
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                    <a
+                      href={`/api/portal/media/${f.id}/img`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-1 text-[10px] font-semibold bg-white text-gray-800 rounded hover:bg-gray-100"
+                    >
+                      View
+                    </a>
+                    <a
+                      href={`/api/portal/media/${f.id}/img?download=1`}
+                      download={f.filename}
+                      className="px-2 py-1 text-[10px] font-semibold bg-violet-600 text-white rounded hover:bg-violet-700"
+                    >
+                      Download
+                    </a>
+                  </div>
+                  <p className="absolute bottom-0 left-0 right-0 px-1.5 py-1 bg-black/60 text-white text-[9px] truncate opacity-0 group-hover:opacity-100 transition-opacity">
+                    {f.filename}
+                  </p>
+                </div>
               ))}
             </div>
           </div>

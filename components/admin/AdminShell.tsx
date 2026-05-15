@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 type NavItem =
   | { section: string }
@@ -40,6 +41,23 @@ export default function AdminShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close mobile sidebar when navigating
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = original;
+      };
+    }
+  }, [sidebarOpen]);
 
   // Don't wrap the (now-unused) login page in the admin shell
   if (pathname === "/admin/login") {
@@ -47,17 +65,66 @@ export default function AdminShell({
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <aside className="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-gray-100">
-          <Link href="/admin">
-            <span className="text-lg font-extrabold tracking-tight text-gray-900">
-              macro<span className="gradient-text">light</span>
-            </span>
-          </Link>
-          <span className="ml-2.5 text-[10px] font-semibold uppercase tracking-widest text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile top bar */}
+      <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between h-14 px-4 bg-white border-b border-gray-200">
+        <button
+          type="button"
+          aria-label="Open navigation menu"
+          aria-expanded={sidebarOpen}
+          onClick={() => setSidebarOpen(true)}
+          className="-ml-2 p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <Link href="/admin" className="flex items-center">
+          <span className="text-base font-extrabold tracking-tight text-gray-900">
+            macro<span className="gradient-text">light</span>
+          </span>
+          <span className="ml-2 text-[10px] font-semibold uppercase tracking-widest text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">
             Admin
           </span>
+        </Link>
+        <span className="w-8" aria-hidden="true" />
+      </header>
+
+      {/* Backdrop for mobile sidebar */}
+      {sidebarOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-30 bg-gray-900/50 backdrop-blur-sm"
+          aria-hidden="true"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-200 ease-out lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
+          <div className="flex items-center">
+            <Link href="/admin">
+              <span className="text-lg font-extrabold tracking-tight text-gray-900">
+                macro<span className="gradient-text">light</span>
+              </span>
+            </Link>
+            <span className="ml-2.5 text-[10px] font-semibold uppercase tracking-widest text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">
+              Admin
+            </span>
+          </div>
+          <button
+            type="button"
+            aria-label="Close navigation menu"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden -mr-2 p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -125,8 +192,10 @@ export default function AdminShell({
         </div>
       </aside>
 
-      <div className="flex-1 ml-64">
-        <main className="p-6 lg:p-8 max-w-7xl">{children}</main>
+      <div className="lg:pl-64">
+        <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto lg:mx-0">
+          {children}
+        </main>
       </div>
     </div>
   );

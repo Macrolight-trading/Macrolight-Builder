@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   const blobPath = `portal/${userId}/${Date.now()}-${safeName}`;
 
   const blob = await put(blobPath, file, {
-    access: "public",
+    access: "private",
     contentType: file.type,
   });
 

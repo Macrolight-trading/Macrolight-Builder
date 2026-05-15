@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import Image from "next/image";
 
 const CATEGORIES = [
   { value: "", label: "General" },
@@ -174,13 +173,11 @@ export default function MediaUploader({ initialFiles }: Props) {
                       key={file.id}
                       className="group relative bg-gray-100 rounded-xl overflow-hidden aspect-square"
                     >
-                      <Image
-                        src={file.url}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/api/portal/media/${file.id}/img`}
                         alt={file.filename}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, 25vw"
-                        unoptimized={file.contentType === "image/svg+xml"}
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-end">
