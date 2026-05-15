@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { newLeadEmailHtml, contactAutoReplyEmailHtml } from "@/lib/email-templates";
+import { uploadGoogleAdsConversion } from "@/lib/google-ads";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, message, company, industry, phone } = body;
+    const { name, email, message, company, industry, phone, gclid } = body;
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -61,6 +62,11 @@ export async function POST(request: Request) {
       subject: "We received your message — Macrolight",
       html: contactAutoReplyEmailHtml({ name }),
     }).catch((err) => console.error("Contact auto-reply failed:", err));
+
+    // Fire Google Ads conversion (non-blocking — never throws).
+    if (gclid && typeof gclid === "string") {
+      uploadGoogleAdsConversion({ gclid }).catch(() => {});
+    }
 
     return NextResponse.json(contact, { status: 201 });
   } catch {

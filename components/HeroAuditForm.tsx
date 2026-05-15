@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Step = "url" | "details" | "success";
 
@@ -18,6 +18,14 @@ export default function HeroAuditForm() {
   const [website, setWebsite] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const gclidRef = useRef<string | null>(null);
+
+  // Capture gclid from the landing page URL (set by Google Ads auto-tagging).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gclid = params.get("gclid");
+    if (gclid) gclidRef.current = gclid;
+  }, []);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -43,7 +51,7 @@ export default function HeroAuditForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message, gclid: gclidRef.current ?? undefined }),
       });
       if (!res.ok) throw new Error("Failed to submit");
       setStep("success");
