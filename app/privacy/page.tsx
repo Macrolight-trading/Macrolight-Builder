@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
 
-const LAST_UPDATED = "May 6, 2026";
+const LAST_UPDATED = "May 17, 2026";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -61,10 +61,12 @@ export default function PrivacyPage() {
           measurement.
         </p>
         <p className={P}>
-          <strong className="text-gray-900">Cookies.</strong> We use a minimal
-          set of first-party cookies required for the Site to function. We do
-          not sell visitor data and do not run third-party advertising
-          trackers on this Site.
+          <strong className="text-gray-900">Cookies and similar
+          technologies.</strong> We use a limited set of cookies and similar
+          technologies to operate the Site, measure traffic, and (with your
+          consent) measure the effectiveness of our advertising. See the{" "}
+          <a className={A} href="#cookies">Cookie Policy</a> section below for
+          a full breakdown.
         </p>
 
         <h2 className={H2}>2. How We Use Information</h2>
@@ -122,13 +124,93 @@ export default function PrivacyPage() {
           privacy practices are governed by their own policies.
         </p>
 
-        <h2 className={H2}>9. Changes to This Policy</h2>
+        <h2 id="cookies" className={H2}>9. Cookie Policy</h2>
+        <p className={P}>
+          Cookies are small text files stored on your device when you visit a
+          website. We also use similar technologies such as pixels, tags, and
+          local storage. This section explains what we use, why, and how to
+          control them.
+        </p>
+
+        <p className={P}>
+          <strong className="text-gray-900">Categories we use.</strong>
+        </p>
+        <ul className={UL}>
+          <li>
+            <strong className="text-gray-900">Strictly necessary.</strong>{" "}
+            Required for the Site and client portal to work — for example,
+            keeping you signed in, remembering your cookie choice, and
+            protecting forms against abuse. These cannot be turned off.
+          </li>
+          <li>
+            <strong className="text-gray-900">Analytics.</strong> We use{" "}
+            Vercel Analytics, a privacy-friendly product that does not use
+            cookies and does not collect personally identifiable information.
+            No consent is required for this.
+          </li>
+          <li>
+            <strong className="text-gray-900">Advertising and conversion
+            measurement.</strong> When you consent, we load the Google Ads tag
+            (<code>gtag.js</code>) so we can measure which campaigns produce
+            conversions and, where permitted, build remarketing audiences.
+            This sets cookies in the <code>.google.com</code>,{" "}
+            <code>.doubleclick.net</code>, and our own domain.
+          </li>
+        </ul>
+
+        <p className={P}>
+          <strong className="text-gray-900">Specific cookies and trackers.</strong>
+        </p>
+        <ul className={UL}>
+          <li>
+            <code>next-auth.session-token</code> / <code>__Secure-next-auth.session-token</code>{" "}
+            — strictly necessary. Keeps you signed in to the client and admin
+            portals. First-party, session or 30 days.
+          </li>
+          <li>
+            <code>ml-cookie-consent</code> — strictly necessary. Remembers
+            whether you accepted or rejected non-essential cookies so we
+            don&apos;t ask again. First-party, 12 months.
+          </li>
+          <li>
+            <code>_gcl_au</code>, <code>_gcl_aw</code>, <code>_gcl_dc</code> —
+            advertising. Set by Google Ads to measure ad clicks and
+            conversions. First-party, up to 90 days.
+          </li>
+          <li>
+            <code>IDE</code>, <code>test_cookie</code> on{" "}
+            <code>.doubleclick.net</code> — advertising. Set by Google to
+            serve and measure ads. Third-party, up to 13 months.
+          </li>
+        </ul>
+
+        <p className={P}>
+          <strong className="text-gray-900">Your choices.</strong> When you
+          first visit, you&apos;ll see a consent banner allowing you to accept
+          or reject non-essential cookies. Until you accept, advertising and
+          measurement tags run in Google&apos;s &quot;Consent Mode&quot;
+          denied state and do not set advertising cookies. You can change
+          your choice at any time by clearing the{" "}
+          <code>ml-cookie-consent</code> cookie in your browser, or by using
+          your browser&apos;s built-in cookie controls (typically under
+          Settings &rarr; Privacy). Most browsers also let you block all
+          cookies, but doing so may break parts of the Site.
+        </p>
+
+        <p className={P}>
+          <strong className="text-gray-900">Do Not Track.</strong> The Site
+          does not respond to browser DNT signals because there is no industry
+          consensus on how to interpret them. We honor the consent choice
+          recorded through our banner instead.
+        </p>
+
+        <h2 className={H2}>10. Changes to This Policy</h2>
         <p className={P}>
           We may update this Policy from time to time. The &quot;Last
           updated&quot; date above will reflect the most recent revision.
         </p>
 
-        <h2 className={H2}>10. Contact Us</h2>
+        <h2 className={H2}>11. Contact Us</h2>
         <address className={`${P} not-italic`}>
           Macrolight Builder
           <br />

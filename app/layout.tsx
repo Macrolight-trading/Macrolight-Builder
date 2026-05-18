@@ -7,6 +7,7 @@ import ChatWidget from "@/components/ChatWidget";
 import SiteShell from "@/components/SiteShell";
 import JsonLd from "@/components/JsonLd";
 import SessionProvider from "@/components/auth/SessionProvider";
+import CookieConsent from "@/components/CookieConsent";
 
 const BASE_URL = "https://macrolight-builder.com";
 
@@ -121,12 +122,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google Ads — Global site tag */}
+        {/* Google Ads — Global site tag.
+            Consent Mode v2 default state MUST be set *before* the AW config
+            call, otherwise the tag may set advertising cookies before the
+            visitor has had a chance to choose. The CookieConsent component
+            calls gtag('consent', 'update', ...) when the visitor accepts. */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18165743878" />
         <script
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  wait_for_update: 500
+});
 gtag('js', new Date());
 gtag('config', 'AW-18165743878');`,
           }}
@@ -154,6 +166,7 @@ gtag('config', 'AW-18165743878');`,
             {children}
           </SiteShell>
         </SessionProvider>
+        <CookieConsent />
         <Analytics />
       </body>
     </html>

@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ── NextAuth models ─────────────────────────────────────────────────────────
+// NextAuth models
 
 model Account {
   id                String  @id @default(cuid())
@@ -45,8 +45,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ── Application models ──────────────────────────────────────────────────────
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -55,33 +53,35 @@ model User {
   image         String?
   passwordHash  String?
   role          Role      @default(USER)
-  plan          Plan      @default(STARTER)
+  plan          Plan      @default(NONE)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts   Account[]
-  sessions   Session[]
-  payments   Payment[]
+  stripeCustomerId String? @unique
 
-  // CRM relations
-  ownedLeads      Lead[]      @relation("LeadOwner")
-  ownedDeals      Deal[]      @relation("DealOwner")
-  ownedActivities Activity[]  @relation("ActivityOwner")
-  authoredNotes   Note[]      @relation("NoteAuthor")
+  accounts      Account[]
+  sessions      Session[]
+  payments      Payment[]
+  subscriptions Subscription[]
 
-  // Portal relations
-  project         Project?
-  messages        Message[]
-  mediaFiles      MediaFile[]
-  onboarding      OnboardingData?
-  planRequests    CustomPlanRequest[]
+  ownedLeads      Lead[]     @relation("LeadOwner")
+  ownedDeals      Deal[]     @relation("DealOwner")
+  ownedActivities Activity[] @relation("ActivityOwner")
+  authoredNotes   Note[]     @relation("NoteAuthor")
+
+  project            Project?
+  messages           Message[]
+  mediaFiles         MediaFile[]
+  onboarding         OnboardingData?
+  planRequests       CustomPlanRequest[]
+  planRecommendation PlanRecommendation?
 
   @@map("users")
 }
 
 model Payment {
   id          String        @id @default(cuid())
-  amount      Int           // cents
+  amount      Int
   currency    String        @default("usd")
   status      PaymentStatus @default(SUCCEEDED)
   description String?
@@ -94,19 +94,18 @@ model Payment {
 }
 
 model Contact {
-  id           String        @id @default(cuid())
-  name         String
-  email        String
-  phone        String?
-  company      String?
-  industry     String?
-  message      String        @db.Text
-  status       ContactStatus @default(NEW)
-  emailSentAt  DateTime?
-  createdAt    DateTime      @default(now())
+  id          String        @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  industry    String?
+  message     String        @db.Text
+  status      ContactStatus @default(NEW)
+  emailSentAt DateTime?
+  createdAt   DateTime      @default(now())
 
-  // Optional linkage to a CRM Lead when the contact gets converted.
-  lead         Lead?
+  lead Lead?
 
   @@map("contacts")
 }
@@ -122,8 +121,6 @@ model PageView {
   @@map("page_views")
 }
 
-// ── CRM models ──────────────────────────────────────────────────────────────
-
 model Lead {
   id          String     @id @default(cuid())
   name        String
@@ -133,18 +130,16 @@ model Lead {
   jobTitle    String?
   industry    String?
   website     String?
-  source      String?    // website, referral, outbound, ad, etc.
+  source      String?
   status      LeadStatus @default(NEW)
-  value       Int?       // potential value in cents
+  value       Int?
   description String?    @db.Text
 
-  // Optional link back to the original contact-form submission
-  contactId   String?   @unique
-  contact     Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  contactId String?  @unique
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
-  // Optional owner (sales rep)
-  ownerId     String?
-  owner       User?     @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId String?
+  owner   User?   @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
 
   deals       Deal[]
   activities  Activity[]
@@ -152,8 +147,8 @@ model Lead {
   tags        TagsOnLeads[]
 
   lastContactedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([status])
   @@index([createdAt])
@@ -161,26 +156,26 @@ model Lead {
 }
 
 model Deal {
-  id                String     @id @default(cuid())
+  id                String    @id @default(cuid())
   title             String
-  value             Int        // cents
-  currency          String     @default("usd")
-  stage             DealStage  @default(PROSPECT)
-  probability       Int        @default(10) // 0-100
+  value             Int
+  currency          String    @default("usd")
+  stage             DealStage @default(PROSPECT)
+  probability       Int       @default(10)
   expectedCloseDate DateTime?
   closedAt          DateTime?
   lostReason        String?
 
-  leadId            String?
-  lead              Lead?      @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  ownerId           String?
-  owner             User?      @relation("DealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  leadId  String?
+  lead    Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  ownerId String?
+  owner   User?   @relation("DealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
 
-  activities        Activity[]
-  noteRecords       Note[]
+  activities  Activity[]
+  noteRecords Note[]
 
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([stage])
   @@index([createdAt])
@@ -195,15 +190,15 @@ model Activity {
   dueDate     DateTime?
   completedAt DateTime?
 
-  leadId      String?
-  lead        Lead?        @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  dealId      String?
-  deal        Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  ownerId     String?
-  owner       User?        @relation("ActivityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  leadId  String?
+  lead    Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  dealId  String?
+  deal    Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  ownerId String?
+  owner   User?   @relation("ActivityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([dueDate])
   @@index([completedAt])
@@ -211,18 +206,18 @@ model Activity {
 }
 
 model Note {
-  id          String   @id @default(cuid())
-  body        String   @db.Text
+  id   String @id @default(cuid())
+  body String @db.Text
 
-  leadId      String?
-  lead        Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  dealId      String?
-  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  authorId    String?
-  author      User?    @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  leadId   String?
+  lead     Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  dealId   String?
+  deal     Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId String?
+  author   User?   @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("notes")
 }
@@ -237,28 +232,26 @@ model Tag {
 }
 
 model TagsOnLeads {
-  leadId  String
-  tagId   String
-  lead    Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  tag     Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  leadId String
+  tagId  String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([leadId, tagId])
   @@map("tags_on_leads")
 }
 
-// ── SEO Audit models ────────────────────────────────────────────────────────
-
 model AuditJob {
-  id          String       @id @default(cuid())
+  id          String      @id @default(cuid())
   url         String
   clientName  String
-  status      AuditStatus  @default(PENDING)
+  status      AuditStatus @default(PENDING)
   startedAt   DateTime?
   completedAt DateTime?
-  error       String?      @db.Text
-  createdBy   String?      // userId of admin who triggered it
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  error       String?     @db.Text
+  createdBy   String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   result AuditResult?
 
@@ -268,34 +261,27 @@ model AuditJob {
 }
 
 model AuditResult {
-  id                    String   @id @default(cuid())
-  jobId                 String   @unique
-  job                   AuditJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  overallScore          Int
-  technicalScore        Int
-  onPageScore           Int
-  backlinkScore         Int
-  localSeoScore         Int
-  domainAnalyticsScore  Int      @default(0)
-  serpScore             Int      @default(0)
-  // New scored modules — nullable so "not run yet" reads cleanly without
-  // a sentinel-zero. Older audits will have null here.
-  localPackScore        Int?
-  reputationScore       Int?
-  issues                Json     // structured array of AuditIssue objects
-  rawData               Json     // full API responses for reference
-  pdfUrl                String?  // link to generated PDF
-  // AI-generated content plan — populated on-demand via the
-  // /api/audits/[id]/content-plan endpoint after the audit completes.
-  // Null until the admin clicks "Generate Content Plan".
-  aiContentPlan         Json?
-  aiContentPlanAt       DateTime?
-  createdAt             DateTime @default(now())
+  id                   String    @id @default(cuid())
+  jobId                String    @unique
+  job                  AuditJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  overallScore         Int
+  technicalScore       Int
+  onPageScore          Int
+  backlinkScore        Int
+  localSeoScore        Int
+  domainAnalyticsScore Int       @default(0)
+  serpScore            Int       @default(0)
+  localPackScore       Int?
+  reputationScore      Int?
+  issues               Json
+  rawData              Json
+  pdfUrl               String?
+  aiContentPlan        Json?
+  aiContentPlanAt      DateTime?
+  createdAt            DateTime  @default(now())
 
   @@map("audit_results")
 }
-
-// ── Enums ───────────────────────────────────────────────────────────────────
 
 enum Role {
   USER
@@ -357,30 +343,28 @@ enum ActivityType {
   NOTE
 }
 
-// ── Portal models ────────────────────────────────────────────────────────────
-
 model Project {
-  id        String       @id @default(cuid())
-  userId    String       @unique
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String       @id @default(cuid())
+  userId     String       @unique
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   stage      ProjectStage @default(ONBOARDING)
   liveUrl    String?
   previewUrl String?
   notes      String?      @db.Text
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 
   @@map("projects")
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fromAdmin Boolean  @default(false)
-  body      String   @db.Text
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromAdmin Boolean   @default(false)
+  body      String    @db.Text
   readAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([userId])
   @@index([createdAt])
@@ -414,8 +398,8 @@ model OnboardingData {
   keyServices     String?   @db.Text
   competitors     String?   @db.Text
   tone            String?
-  themePicks      String?   // JSON array of selected theme IDs e.g. ["hvac","dentist"]
-  inspirationUrls String?   @db.Text // newline-separated URLs
+  themePicks      String?
+  inspirationUrls String?   @db.Text
   additionalNotes String?   @db.Text
   completedAt     DateTime?
   createdAt       DateTime  @default(now())
@@ -432,8 +416,6 @@ enum ProjectStage {
   LAUNCHED
 }
 
-// ── Custom Plan Builder ─────────────────────────────────────────────────────
-
 enum BillingType {
   ONE_TIME
   MONTHLY
@@ -446,8 +428,22 @@ enum PlanRequestStatus {
   CANCELED
 }
 
-/// A single check-boxable option Bradley can offer in the plan builder.
-/// Managed from the admin portal at /admin/portal/plan-options.
+enum PlanRequestSource {
+  QUOTE
+  CHECKOUT
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  UNPAID
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  PAUSED
+}
+
 model PlanOption {
   id          String      @id @default(cuid())
   name        String
@@ -460,29 +456,34 @@ model PlanOption {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  items CustomPlanRequestItem[]
+  items               CustomPlanRequestItem[]
+  recommendationItems PlanRecommendationItem[]
+  subscriptionItems   SubscriptionItem[]
 
   @@index([active, category, sortOrder])
   @@map("plan_options")
 }
 
-/// A submitted custom plan from a client. Acts as a quote request — Bradley
-/// reviews from /admin/portal/plan-requests and approves or rejects.
 model CustomPlanRequest {
-  id           String            @id @default(cuid())
-  userId       String
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  basePlan     Plan              @default(STARTER)
-  status       PlanRequestStatus @default(PENDING)
-  monthlyCents          Int               @default(0)
-  oneTimeCents          Int               @default(0)
-  bundleDiscountCents   Int               @default(0)
-  notes                 String?           @db.Text
-  adminNotes            String?           @db.Text
-  reviewedAt   DateTime?
-  reviewedById String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id                  String            @id @default(cuid())
+  userId              String
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  basePlan            Plan              @default(STARTER)
+  status              PlanRequestStatus @default(PENDING)
+  source              PlanRequestSource @default(QUOTE)
+  monthlyCents        Int               @default(0)
+  oneTimeCents        Int               @default(0)
+  bundleDiscountCents Int               @default(0)
+  notes               String?           @db.Text
+  adminNotes          String?           @db.Text
+  reviewedAt          DateTime?
+  reviewedById        String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  stripeCheckoutSessionId String?       @unique
+  stripeSubscriptionId    String?       @unique
+  subscription            Subscription? @relation(fields: [stripeSubscriptionId], references: [stripeSubscriptionId], onDelete: SetNull)
 
   items CustomPlanRequestItem[]
 
@@ -491,43 +492,99 @@ model CustomPlanRequest {
   @@map("custom_plan_requests")
 }
 
-/// Line item on a CustomPlanRequest. Snapshots option values so historical
-/// requests stay accurate even if Bradley later edits or deletes the option.
 model CustomPlanRequestItem {
-  id                  String            @id @default(cuid())
-  requestId           String
-  request             CustomPlanRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  optionId            String?
-  option              PlanOption?       @relation(fields: [optionId], references: [id], onDelete: SetNull)
-  nameSnapshot        String
-  priceCents          Int
-  billingType         BillingType
-  category            String
-  includedInBasePlan  Boolean           @default(false)
+  id                 String            @id @default(cuid())
+  requestId          String
+  request            CustomPlanRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  optionId           String?
+  option             PlanOption?       @relation(fields: [optionId], references: [id], onDelete: SetNull)
+  nameSnapshot       String
+  priceCents         Int
+  billingType        BillingType
+  category           String
+  includedInBasePlan Boolean           @default(false)
 
   @@index([requestId])
   @@map("custom_plan_request_items")
 }
 
+model PlanRecommendation {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  basePlan    Plan     @default(NONE)
+  notes       String?  @db.Text
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-/// Metadata for the category strings used on PlanOption — display label,
-/// sort order, and bundle discount % when the client picks every option in
-/// the category.
+  items PlanRecommendationItem[]
 
-/// Metadata for the category strings used on PlanOption — display label,
-/// sort order, bundle discount %, and base-plan inclusion tier.
+  @@map("plan_recommendations")
+}
+
+model PlanRecommendationItem {
+  id               String             @id @default(cuid())
+  recommendationId String
+  recommendation   PlanRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+  optionId         String
+  option           PlanOption         @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([recommendationId, optionId])
+  @@index([recommendationId])
+  @@map("plan_recommendation_items")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeSubscriptionId String             @unique
+  stripeCustomerId     String
+  status               SubscriptionStatus @default(INCOMPLETE)
+  basePlan             Plan               @default(NONE)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  items       SubscriptionItem[]
+  planRequest CustomPlanRequest?
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model SubscriptionItem {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  stripeItemId   String       @unique
+  optionId       String?
+  option         PlanOption?  @relation(fields: [optionId], references: [id], onDelete: SetNull)
+  nameSnapshot   String
+  priceCents     Int
+  billingType    BillingType  @default(MONTHLY)
+  quantity       Int          @default(1)
+  kind           String       @default("addon")
+
+  @@index([subscriptionId])
+  @@map("subscription_items")
+}
+
 model PlanCategory {
-  id                 String   @id @default(cuid())
-  name               String   @unique
-  label              String?
-  bundleDiscountPct  Int      @default(0)
-  /// When set, this category is included for free in this base plan AND
-  /// any higher-tier plan (STARTER < GROWTH < PRO). Null means never bundled.
-  includedFromTier   Plan?
-  sortOrder          Int      @default(0)
-  active             Boolean  @default(true)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String   @unique
+  label             String?
+  bundleDiscountPct Int      @default(0)
+  includedFromTier  Plan?
+  sortOrder         Int      @default(0)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@map("plan_categories")
 }

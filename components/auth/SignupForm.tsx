@@ -2,14 +2,27 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { reportAdConversion } from "@/lib/gtag";
+
+/**
+ * Only relative paths are honored — prevents a `?next=https://evil/` from
+ * turning the signup page into an open redirect.
+ */
+function safeNext(value: string | null): string | null {
+  if (!value) return null;
+  if (!value.startsWith("/")) return null;
+  if (value.startsWith("//")) return null;
+  return value;
+}
 
 const inputCls =
   "w-full rounded-lg border border-gray-200 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400";
 
 export default function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = safeNext(searchParams.get("next")) ?? "/portal";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,13 +58,20 @@ export default function SignupForm() {
 
       if (!signInRes || signInRes.error || !signInRes.ok) {
         // Account was created but auto-login failed — bounce them to the
-        // login screen rather than getting stuck.
-        router.push("/login");
+        // login screen rather than getting stuck. Preserve the next path
+        // via callbackUrl (the convention LoginForm already honors) so
+        // they still land where they intended after logging in.
+        const loginNext =
+          nextPath !== "/portal"
+            ? `?callbackUrl=${encodeURIComponent(nextPath)}`
+            : "";
+        router.push(`/login${loginNext}`);
         return;
       }
 
       reportAdConversion();
-      router.push("/portal");
+      // nextPath was sanitized by safeNext() above — only relative.
+      router.push(nextPath);
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");

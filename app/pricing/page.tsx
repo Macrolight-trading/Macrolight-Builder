@@ -100,6 +100,11 @@ export default function PricingPage() {
           All plans include hosting on Vercel, SSL, automatic backups, and
           ongoing security updates.
         </p>
+        <p className="mt-2 text-center text-xs text-gray-400 max-w-xl mx-auto">
+          Standard domain registration is included. Premium domains — short,
+          branded, or specialty TLDs (.io, .ai, .co, etc.) — may carry an
+          additional one-time or annual fee at cost.
+        </p>
       </Section>
 
       {/* FAQs */}

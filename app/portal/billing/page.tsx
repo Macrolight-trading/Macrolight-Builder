@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import ManageBillingButton from "@/components/portal/ManageBillingButton";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function BillingPage() {
   const [user, payments, sum] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { plan: true },
+      select: { plan: true, stripeCustomerId: true },
     }),
     prisma.payment.findMany({
       where: { userId },
@@ -64,6 +65,7 @@ export default async function BillingPage() {
             >
               Build a custom plan &rarr;
             </Link>
+            <ManageBillingButton hasStripeCustomer={Boolean(user?.stripeCustomerId)} />
           </div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">

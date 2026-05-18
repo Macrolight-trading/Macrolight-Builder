@@ -30,6 +30,7 @@ const nav: NavItem[] = [
   { section: "Portal" },
   { label: "Client Projects", href: "/admin/portal/projects", icon: ProjectsIcon },
   { label: "Client Messages", href: "/admin/portal/messages", icon: MessagesAdminIcon },
+  { label: "Plan Recommendations", href: "/admin/portal/plan-recommendations", icon: PlanRecommendationsIcon },
   { label: "Plan Options", href: "/admin/portal/plan-options", icon: PlanOptionsIcon },
   { label: "Plan Categories", href: "/admin/portal/plan-categories", icon: PlanCategoriesIcon },
   { label: "Plan Requests", href: "/admin/portal/plan-requests", icon: PlanRequestsIcon },
@@ -323,6 +324,14 @@ function PlanRequestsIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6M9 8h6M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" />
+    </svg>
+  );
+}
+
+function PlanRecommendationsIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17.5 6.5 21 8 13.5 3 9l6.5-.5L12 2z" />
     </svg>
   );
 }

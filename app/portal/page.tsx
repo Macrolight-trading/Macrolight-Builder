@@ -59,6 +59,24 @@ export default async function PortalDashboardPage() {
         </p>
       </div>
 
+      {/* Build a plan CTA */}
+      <div className="mb-8 bg-violet-50 border border-violet-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-violet-900">
+            Want additional services?
+          </p>
+          <p className="mt-0.5 text-xs text-violet-700">
+            Build a custom plan to add SEO, content, ads, or other services to your account.
+          </p>
+        </div>
+        <Link
+          href="/portal/build-plan"
+          className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold rounded-lg transition-colors"
+        >
+          Build a Plan &rarr;
+        </Link>
+      </div>
+
       {/* Quick stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-5">

@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import Button from "./Button";
+import CheckoutButton from "./CheckoutButton";
 import type { PricingTier } from "./PricingCard";
+
+// Tiers in this component map name → Plan enum key by uppercasing, matching
+// what /api/stripe/checkout and lib/pricing.ts expect.
+function planKeyFor(tier: PricingTier): "STARTER" | "GROWTH" | "PRO" | null {
+  const k = tier.name.toUpperCase();
+  return k === "STARTER" || k === "GROWTH" || k === "PRO" ? k : null;
+}
 
 interface TabbedPricingProps {
   tiers: PricingTier[];
@@ -121,14 +129,27 @@ export default function TabbedPricing({
             </div>
 
             <div className="mt-auto pt-6 md:pt-8 space-y-3">
-              <Button
-                href={active.ctaHref}
-                variant={active.highlighted ? "primary" : "secondary"}
-                size="lg"
-                fullWidth
-              >
-                {active.ctaLabel}
-              </Button>
+              {planKeyFor(active) ? (
+                <CheckoutButton
+                  basePlan={planKeyFor(active)!}
+                  variant={active.highlighted ? "primary" : "secondary"}
+                  size="lg"
+                  fullWidth
+                >
+                  {active.ctaLabel}
+                </CheckoutButton>
+              ) : (
+                // Fall back to the original href (e.g. for a future "Custom"
+                // tier that should still route to a contact form).
+                <Button
+                  href={active.ctaHref}
+                  variant={active.highlighted ? "primary" : "secondary"}
+                  size="lg"
+                  fullWidth
+                >
+                  {active.ctaLabel}
+                </Button>
+              )}
               <p className="text-center text-xs text-gray-400">
                 🔒 30-day satisfaction guarantee
               </p>

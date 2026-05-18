@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { pricingTiers } from "@/lib/pricing";
 
 type BillingType = "ONE_TIME" | "MONTHLY";
 
@@ -34,54 +35,18 @@ const TIER_RANK: Record<string, number> = {
   CUSTOM: 99,
 };
 
-const BASE_PLANS = [
-  {
-    value: "STARTER",
-    label: "Starter",
-    buildFee: 500,
-    monthlyFee: 79,
-    tagline: "A clean, conversion-ready launch for new local businesses.",
-    features: [
-      "3–5 page conversion-focused website",
-      "Fast hosting on Vercel",
-      "Ongoing security & uptime monitoring",
-      "Mobile-first responsive design",
-      "Basic on-page SEO foundation",
-      "Contact form & click-to-call",
-    ],
-  },
-  {
-    value: "GROWTH",
-    label: "Growth",
-    buildFee: 1000,
-    monthlyFee: 149,
-    badge: "Most Popular",
-    tagline: "Everything you need to consistently generate qualified leads.",
-    features: [
-      "5–8 pages with conversion copywriting",
-      "Built-in lead capture system",
-      "Analytics & conversion tracking",
-      "Monthly performance reporting",
-      "Unlimited content edits",
-      "Priority support & updates",
-    ],
-  },
-  {
-    value: "PRO",
-    label: "Pro",
-    buildFee: 2500,
-    monthlyFee: 249,
-    tagline: "The full client acquisition engine for established businesses.",
-    features: [
-      "Unlimited pages + advanced funnels",
-      "AI chatbot integration",
-      "CRM & automation integrations",
-      "A/B testing & conversion optimization",
-      "Dedicated strategist",
-      "Everything in Growth",
-    ],
-  },
-];
+// Derived from the homepage pricing data (lib/pricing.ts) so the builder
+// and the public pricing cards can never drift out of sync. `value` is the
+// Plan enum key — derive it from name by uppercasing.
+const BASE_PLANS = pricingTiers.map((t) => ({
+  value: t.name.toUpperCase(),
+  label: t.name,
+  buildFee: t.buildFee,
+  monthlyFee: t.monthlyFee,
+  tagline: t.tagline,
+  features: t.features,
+  badge: t.badge,
+}));
 
 function money(cents: number) {
   return `$${(cents / 100).toLocaleString(undefined, {
@@ -98,20 +63,45 @@ function CheckIcon() {
   );
 }
 
+type Mode = "client" | "admin";
+
 export default function PlanBuilder({
   currentPlan,
   options,
   categories,
+  initialBasePlan,
+  initialSelectedIds,
+  initialNotes,
+  mode = "client",
+  targetUserId,
 }: {
   currentPlan: string;
   options: PlanOption[];
   categories: PlanCategoryMeta[];
+  /** Pre-select a base plan. Falls back to `currentPlan`, then "STARTER". */
+  initialBasePlan?: string;
+  /** Pre-select these option IDs. Used by the admin recommendation editor
+   *  and by the client view when a recommendation has been pre-populated. */
+  initialSelectedIds?: string[];
+  /** Pre-fill the notes field. */
+  initialNotes?: string;
+  /** "client" submits as a CustomPlanRequest. "admin" upserts the user's
+   *  PlanRecommendation via the admin API. */
+  mode?: Mode;
+  /** Required when mode === "admin": the user whose recommendation is
+   *  being edited. */
+  targetUserId?: string;
 }) {
   const router = useRouter();
-  const initialBase = BASE_PLANS.some((p) => p.value === currentPlan) ? currentPlan : "STARTER";
-  const [basePlan, setBasePlan] = useState(initialBase);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [notes, setNotes] = useState("");
+  // Precedence: explicit initialBasePlan > currentPlan > STARTER.
+  const resolvedInitialBase =
+    (initialBasePlan && BASE_PLANS.some((p) => p.value === initialBasePlan) && initialBasePlan) ||
+    (BASE_PLANS.some((p) => p.value === currentPlan) ? currentPlan : "STARTER");
+  const [basePlan, setBasePlan] = useState(resolvedInitialBase);
+  const [selected, setSelected] = useState<Set<string>>(
+    () => new Set(initialSelectedIds ?? [])
+  );
+  const [notes, setNotes] = useState(initialNotes ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -253,8 +243,15 @@ export default function PlanBuilder({
     setError(null);
     setSubmitting(true);
     try {
-      const res = await fetch("/api/portal/plan-requests", {
-        method: "POST",
+      // Admin and client use different endpoints but the same payload
+      // shape so the editor UI stays identical for both.
+      const url =
+        mode === "admin" && targetUserId
+          ? `/api/admin/portal/plan-recommendations/${encodeURIComponent(targetUserId)}`
+          : "/api/portal/plan-requests";
+      const method = mode === "admin" ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           basePlan,
@@ -267,8 +264,10 @@ export default function PlanBuilder({
         throw new Error(data?.error ?? "Submission failed");
       }
       setSubmitted(true);
-      setSelected(new Set());
-      setNotes("");
+      // Don't clear the form on submit. If the user clicks "Start a new
+      // plan" we want to re-apply the recommendation (admin-curated
+      // starting point), not drop them onto an empty editor — so the
+      // reset happens in the success card's button below, not here.
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Submission failed");
@@ -277,7 +276,39 @@ export default function PlanBuilder({
     }
   }
 
-  if (submitted) {
+  /**
+   * Direct-checkout path: build a Stripe Checkout session from the current
+   * selection and redirect. The /api/stripe/checkout route snapshots the
+   * selection as a CustomPlanRequest (source = CHECKOUT) before sending the
+   * user to Stripe, so we don't need a separate "save first" call.
+   *
+   * Only available in client mode and only for the public base plans.
+   */
+  async function checkout() {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          basePlan,
+          optionIds: Array.from(selected),
+          notes: notes.trim() || null,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error ?? "Checkout failed");
+      }
+      window.location.href = data.url as string;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Checkout failed");
+      setSubmitting(false);
+    }
+  }
+
+  if (submitted && mode !== "admin") {
     return (
       <div className="bg-white rounded-xl border border-emerald-200 p-8 text-center">
         <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4">
@@ -290,7 +321,14 @@ export default function PlanBuilder({
           We&apos;ll review your custom plan and follow up shortly. You can build another one below if you&apos;d like to revise it.
         </p>
         <button
-          onClick={() => setSubmitted(false)}
+          onClick={() => {
+            // Re-seed from the original props so the next session begins
+            // from the admin recommendation (when one exists) rather than
+            // whatever the client happened to have selected at submit.
+            setSelected(new Set(initialSelectedIds ?? []));
+            setNotes(initialNotes ?? "");
+            setSubmitted(false);
+          }}
           className="mt-5 px-4 py-2 text-sm font-semibold text-violet-700 hover:text-violet-800"
         >
           Start a new plan
@@ -571,16 +609,46 @@ export default function PlanBuilder({
             <p className="mt-4 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
           )}
 
-          <button
-            onClick={submit}
-            disabled={submitting}
-            className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submitting ? "Sending…" : "Request quote"}
-          </button>
-          <p className="mt-2 text-[11px] text-gray-400 text-center">
-            No charges. We&apos;ll review and follow up.
-          </p>
+          {mode === "admin" ? (
+            <>
+              <button
+                onClick={submit}
+                disabled={submitting}
+                className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? "Saving…" : "Save recommendation"}
+              </button>
+              {submitted && !submitting && (
+                <p className="mt-2 text-[11px] text-emerald-600 text-center font-semibold">
+                  Recommendation saved.
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              {/* Primary CTA: direct checkout. Builds the Stripe session
+                  on the fly from the current selection. */}
+              <button
+                onClick={checkout}
+                disabled={submitting}
+                className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? "Redirecting…" : "Checkout now"}
+              </button>
+              {/* Secondary CTA: ask for a quote. Same data, no Stripe. */}
+              <button
+                onClick={submit}
+                disabled={submitting}
+                className="mt-2 w-full px-4 py-2 text-sm font-semibold text-violet-700 bg-white border border-violet-200 rounded-lg hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {submitting ? "Sending…" : "Request a quote instead"}
+              </button>
+              <p className="mt-2 text-[11px] text-gray-400 text-center leading-relaxed">
+                Checkout sends you to secure Stripe billing. Choosing a quote
+                lets us review and confirm pricing first.
+              </p>
+            </>
+          )}
         </div>
       </aside>
     </div>

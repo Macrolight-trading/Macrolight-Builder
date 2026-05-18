@@ -1,10 +1,18 @@
 import type { PricingTier } from "@/components/PricingCard";
 
+/**
+ * Single source of truth for base plan pricing. The `name` is also the
+ * uppercased Plan enum key (STARTER, GROWTH, PRO).
+ *
+ * `buildFee` and `monthlyFee` are in WHOLE DOLLARS — they're rendered
+ * directly in marketing copy. The server-side Stripe checkout helper uses
+ * `basePlanCents()` below to convert them to cents safely.
+ */
 export const pricingTiers: PricingTier[] = [
   {
     name: "Starter",
     tagline: "A clean, conversion-ready launch for new local businesses.",
-    buildFee: 500,
+    buildFee: 1000,
     monthlyFee: 79,
     ctaLabel: "Start with Starter",
     ctaHref: "/contact?plan=starter",
@@ -20,7 +28,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Growth",
     tagline: "Everything you need to consistently generate qualified leads.",
-    buildFee: 1000,
+    buildFee: 1500,
     monthlyFee: 149,
     highlighted: true,
     badge: "Most Popular",
@@ -38,7 +46,7 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Pro",
     tagline: "The full client acquisition engine for established businesses.",
-    buildFee: 2500,
+    buildFee: 2000,
     monthlyFee: 249,
     ctaLabel: "Scale with Pro",
     ctaHref: "/contact?plan=pro",
@@ -52,3 +60,31 @@ export const pricingTiers: PricingTier[] = [
     ],
   },
 ];
+
+/** Plan enum key — must match prisma `Plan` (excluding NONE/CUSTOM). */
+export type BasePlanKey = "STARTER" | "GROWTH" | "PRO";
+
+export function isBasePlanKey(value: unknown): value is BasePlanKey {
+  return value === "STARTER" || value === "GROWTH" || value === "PRO";
+}
+
+/**
+ * Resolve a Plan enum key to its base plan pricing in cents. Returns null
+ * for NONE/CUSTOM/unknown values. Use this on the server when building
+ * Stripe line items so the prices the UI shows can't drift from the prices
+ * the user is actually charged.
+ */
+export function basePlanCents(
+  plan: string,
+): { buildCents: number; monthlyCents: number; name: string } | null {
+  const tier = pricingTiers.find(
+    (t) => t.name.toUpperCase() === plan.toUpperCase(),
+  );
+  if (!tier) return null;
+  return {
+    name: tier.name,
+    // dollars -> cents, guarding against float drift.
+    buildCents: Math.round(tier.buildFee * 100),
+    monthlyCents: Math.round(tier.monthlyFee * 100),
+  };
+}

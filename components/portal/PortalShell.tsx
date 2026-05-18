@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 
 const nav = [
   { label: "Dashboard", href: "/portal", icon: HomeIcon, exact: true },
+  { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
   { label: "Onboarding", href: "/portal/onboarding", icon: ClipboardIcon },
   { label: "My Project", href: "/portal/project", icon: TimelineIcon },
   { label: "Messages", href: "/portal/messages", icon: ChatIcon },
   { label: "Media", href: "/portal/media", icon: PhotoIcon },
   { label: "Billing", href: "/portal/billing", icon: CreditCardIcon },
-  { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
   { label: "Profile", href: "/portal/profile", icon: UserIcon },
   { label: "Support", href: "/portal/support", icon: SupportIcon },
 ] as const;

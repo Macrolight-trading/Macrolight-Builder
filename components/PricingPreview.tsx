@@ -28,7 +28,13 @@ export default function PricingPreview() {
 
       <TabbedPricing tiers={pricingTiers} />
 
-      <div className="mt-10 flex justify-center sm:justify-start">
+      <p className="mt-8 text-center sm:text-left text-xs text-gray-400 max-w-xl">
+        Standard domain registration is included. Premium domains — short,
+        branded, or specialty TLDs (.io, .ai, .co, etc.) — may carry an
+        additional one-time or annual fee at cost.
+      </p>
+
+      <div className="mt-6 flex justify-center sm:justify-start">
         <Link
           href="/pricing"
           className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 hover:text-violet-800 transition-colors"
