@@ -74,6 +74,8 @@ export default function PlanBuilder({
   initialNotes,
   mode = "client",
   targetUserId,
+  hasActiveSubscription = false,
+  currentSubscribedOptionIds = [],
 }: {
   currentPlan: string;
   options: PlanOption[];
@@ -91,7 +93,19 @@ export default function PlanBuilder({
   /** Required when mode === "admin": the user whose recommendation is
    *  being edited. */
   targetUserId?: string;
+  /** True when the user already has an ACTIVE or TRIALING Stripe sub.
+   *  Switches CTA copy to "Update subscription" and the post-submit
+   *  flow to an inline confirmation instead of a Stripe redirect. */
+  hasActiveSubscription?: boolean;
+  /** Option IDs the user is currently paying for as monthly add-ons.
+   *  Rendered with an "Active" badge so they can see what's already
+   *  subscribed vs. what they're about to add or drop. */
+  currentSubscribedOptionIds?: string[];
 }) {
+  const subscribedSet = useMemo(
+    () => new Set(currentSubscribedOptionIds),
+    [currentSubscribedOptionIds],
+  );
   const router = useRouter();
   // Precedence: explicit initialBasePlan > currentPlan > STARTER.
   const resolvedInitialBase =
@@ -282,7 +296,10 @@ export default function PlanBuilder({
    * selection as a CustomPlanRequest (source = CHECKOUT) before sending the
    * user to Stripe, so we don't need a separate "save first" call.
    *
-   * Only available in client mode and only for the public base plans.
+   * If the user has an active subscription, the API returns
+   * { modified: true } instead of a Stripe URL — Stripe modified the
+   * subscription in place, charging only the net difference, so we show an
+   * inline success rather than a redirect.
    */
   async function checkout() {
     setError(null);
@@ -298,8 +315,20 @@ export default function PlanBuilder({
         }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok || !data?.url) {
+      if (!res.ok) {
         throw new Error(data?.error ?? "Checkout failed");
+      }
+      if (data?.modified) {
+        // In-place modification — Stripe charged/credited the diff. Show
+        // the success card so the user can see it worked without a Stripe
+        // round-trip.
+        setSubmitted(true);
+        router.refresh();
+        setSubmitting(false);
+        return;
+      }
+      if (!data?.url) {
+        throw new Error("Checkout failed: no redirect URL returned");
       }
       window.location.href = data.url as string;
     } catch (e) {
@@ -316,9 +345,13 @@ export default function PlanBuilder({
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-lg font-bold text-gray-900">Request submitted</h2>
+        <h2 className="text-lg font-bold text-gray-900">
+          {hasActiveSubscription ? "Subscription updated" : "Request submitted"}
+        </h2>
         <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
-          We&apos;ll review your custom plan and follow up shortly. You can build another one below if you&apos;d like to revise it.
+          {hasActiveSubscription
+            ? "Your changes are live. Any net difference will appear on your next invoice — or has already been charged if you added something new."
+            : "We'll review your custom plan and follow up shortly. You can build another one below if you'd like to revise it."}
         </p>
         <button
           onClick={() => {
@@ -436,6 +469,7 @@ export default function PlanBuilder({
                   {items.map((o) => {
                     const checked = includedByBasePlan || selected.has(o.id);
                     const disabled = includedByBasePlan;
+                    const isActiveSubscribed = subscribedSet.has(o.id);
                     return (
                       <label
                         key={o.id}
@@ -456,7 +490,14 @@ export default function PlanBuilder({
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-medium text-gray-900 truncate">{o.name}</span>
+                            <span className="text-sm font-medium text-gray-900 truncate flex items-center gap-1.5">
+                              {o.name}
+                              {isActiveSubscribed && !disabled && (
+                                <span className="inline-flex items-center text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                                  Active
+                                </span>
+                              )}
+                            </span>
                             <span className="text-sm font-mono whitespace-nowrap">
                               {disabled ? (
                                 <span className="text-violet-700 font-semibold">Included</span>
@@ -626,14 +667,22 @@ export default function PlanBuilder({
             </>
           ) : (
             <>
-              {/* Primary CTA: direct checkout. Builds the Stripe session
-                  on the fly from the current selection. */}
+              {/* Primary CTA: direct checkout. For a new user, builds the
+                  Stripe Checkout Session and redirects. For a user with an
+                  active subscription, the API modifies the sub in place
+                  and charges only the net difference (no Stripe redirect). */}
               <button
                 onClick={checkout}
                 disabled={submitting}
                 className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? "Redirecting…" : "Checkout now"}
+                {submitting
+                  ? hasActiveSubscription
+                    ? "Updating…"
+                    : "Redirecting…"
+                  : hasActiveSubscription
+                    ? "Update subscription"
+                    : "Checkout now"}
               </button>
               {/* Secondary CTA: ask for a quote. Same data, no Stripe. */}
               <button
@@ -644,8 +693,9 @@ export default function PlanBuilder({
                 {submitting ? "Sending…" : "Request a quote instead"}
               </button>
               <p className="mt-2 text-[11px] text-gray-400 text-center leading-relaxed">
-                Checkout sends you to secure Stripe billing. Choosing a quote
-                lets us review and confirm pricing first.
+                {hasActiveSubscription
+                  ? "We'll charge or credit only the net difference. Changes apply immediately."
+                  : "Checkout sends you to secure Stripe billing. Choosing a quote lets us review and confirm pricing first."}
               </p>
             </>
           )}

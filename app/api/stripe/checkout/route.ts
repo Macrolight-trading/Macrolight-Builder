@@ -6,7 +6,12 @@ import { z } from "zod";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { resolveSelection } from "@/lib/plan-selection";
+import {
+  resolveSelection,
+  getUserSubscriptionState,
+  type ResolvedOption,
+  type ResolvedSelection,
+} from "@/lib/plan-selection";
 import { basePlanCents } from "@/lib/pricing";
 
 export const runtime = "nodejs";
@@ -15,27 +20,24 @@ export const dynamic = "force-dynamic";
 /**
  * POST /api/stripe/checkout
  *
- * Builds a Stripe Checkout Session from the user's plan-builder selection.
+ * One entry point. Forks into two paths based on whether the user already
+ * has an active subscription:
  *
- * Behavior:
- *   - mode = "subscription" (the base plan is always recurring).
- *   - Recurring items (base plan monthly + monthly add-ons) become recurring
- *     line items.
- *   - One-time items (base plan build fee + one-time add-ons) are mixed into
- *     the same line_items array — in subscription mode Stripe attaches them
- *     to the first invoice automatically.
- *   - Persists a CustomPlanRequest with source=CHECKOUT so the request is
- *     auditable before payment completes. The webhook promotes it to
- *     APPROVED on checkout.session.completed.
+ *   NEW path — no active sub:
+ *     - Creates a Stripe Checkout Session in subscription mode.
+ *     - Monthly items (base + add-ons) become recurring line items.
+ *     - One-time items (build fee + one-time add-ons) ride the first
+ *       invoice as non-recurring line items.
+ *     - Returns { url } for a redirect.
  *
- * Body:
- *   {
- *     basePlan: "STARTER" | "GROWTH" | "PRO",
- *     optionIds?: string[],
- *     notes?: string | null,
- *     successUrl?: string,   // defaults to /portal/billing?checkout=success
- *     cancelUrl?: string     // defaults to /portal/build-plan?checkout=canceled
- *   }
+ *   MODIFY path — active sub exists:
+ *     - Diffs desired vs current monthly items.
+ *     - Calls subscriptions.update with proration_behavior=always_invoice
+ *       so Stripe charges/credits only the net difference, immediately.
+ *     - Creates invoice items for any new one-time add-ons; always_invoice
+ *       folds them into the same immediate invoice.
+ *     - Skips the build fee (already paid the first time).
+ *     - Returns { modified: true } for an inline confirmation.
  */
 const schema = z.object({
   basePlan: z.enum(["STARTER", "GROWTH", "PRO"]),
@@ -64,14 +66,11 @@ export async function POST(request: NextRequest) {
 
     const { basePlan, optionIds, notes, successUrl, cancelUrl } = parsed.data;
 
-    // Lookup user + verify they exist.
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Pricing for the chosen base plan — pulled from the same lib/pricing.ts
-    // the marketing page uses, so prices can never drift.
     const base = basePlanCents(basePlan);
     if (!base) {
       return NextResponse.json(
@@ -80,96 +79,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resolve add-on selection → billable + included, with bundle discount.
     const resolved = await resolveSelection(basePlan, optionIds);
 
-    // Build Stripe line items. price_data lets us push prices straight from
-    // the DB without maintaining a parallel set of Stripe Products.
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-
-    // 1. Base plan: monthly recurring.
-    if (base.monthlyCents > 0) {
-      lineItems.push({
-        quantity: 1,
-        price_data: {
-          currency: "usd",
-          unit_amount: base.monthlyCents,
-          recurring: { interval: "month" },
-          product_data: {
-            name: `${base.name} plan — monthly`,
-            description: `Hosting, support, and ongoing improvements for the ${base.name} plan.`,
-            metadata: { kind: "base_monthly", basePlan },
-          },
-        },
-      });
-    }
-
-    // 2. Base plan: build fee (one-time). In subscription mode this is added
-    //    to the first invoice automatically.
-    if (base.buildCents > 0) {
-      lineItems.push({
-        quantity: 1,
-        price_data: {
-          currency: "usd",
-          unit_amount: base.buildCents,
-          product_data: {
-            name: `${base.name} website build`,
-            description: `One-time build fee for the ${base.name} plan.`,
-            metadata: { kind: "base_build_fee", basePlan },
-          },
-        },
-      });
-    }
-
-    // 3. Add-ons: billable items only. Included items aren't charged; they're
-    //    just snapshotted on the CustomPlanRequest for the audit trail.
-    for (const opt of resolved.billable) {
-      lineItems.push({
-        quantity: 1,
-        price_data: {
-          currency: "usd",
-          unit_amount: opt.priceCents,
-          ...(opt.billingType === "MONTHLY"
-            ? { recurring: { interval: "month" } }
-            : {}),
-          product_data: {
-            name: opt.name,
-            metadata: {
-              kind: opt.billingType === "MONTHLY" ? "addon_monthly" : "addon_one_time",
-              optionId: opt.id,
-              category: opt.category,
-            },
-          },
-        },
-      });
-    }
-
-    if (lineItems.length === 0) {
-      return NextResponse.json(
-        { error: "Nothing to charge for — pick a base plan with pricing." },
-        { status: 400 },
-      );
-    }
-
-    // 4. Apply per-category bundle discounts. The simplest path that keeps
-    //    Stripe's books consistent with what the UI shows is a single
-    //    Stripe Coupon for the total bundle discount on the first invoice.
-    //    We only apply it when there's a discount to apply.
-    const discounts: Stripe.Checkout.SessionCreateParams.Discount[] = [];
-    if (resolved.bundleDiscountCents > 0) {
-      const coupon = await stripe.coupons.create({
-        amount_off: resolved.bundleDiscountCents,
-        currency: "usd",
-        duration: "once",
-        name: "Bundle discount",
-        metadata: { userId, basePlan },
-      });
-      discounts.push({ coupon: coupon.id });
-    }
-
-    // 5. Get-or-create the Stripe customer for this user. Keeping it on
-    //    user.stripeCustomerId means future actions (portal, add-on, cancel)
-    //    don't have to look the customer up by email.
+    // Get-or-create the Stripe customer up front; both paths need it.
     let stripeCustomerId = user.stripeCustomerId ?? null;
     if (!stripeCustomerId) {
       const customer = await stripe.customers.create({
@@ -184,8 +96,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // 6. Snapshot the selection as a PENDING CustomPlanRequest. The webhook
-    //    promotes it to APPROVED on checkout.session.completed.
+    // Snapshot the selection as a PENDING CustomPlanRequest. The webhook
+    // (NEW path) or this route (MODIFY path) promotes it to APPROVED.
     const itemRows = [
       ...resolved.billable.map((o) => ({
         optionId: o.id,
@@ -219,42 +131,32 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 7. Create the Checkout Session.
-    const origin = request.nextUrl.origin;
-    const checkoutSession = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer: stripeCustomerId,
-      line_items: lineItems,
-      discounts: discounts.length > 0 ? discounts : undefined,
-      allow_promotion_codes: discounts.length === 0,
-      metadata: {
-        userId,
-        planRequestId: planRequest.id,
+    // Fork: is there already an active subscription to modify?
+    const subState = await getUserSubscriptionState(userId);
+    if (subState.stripeSubscriptionId) {
+      return await modifyExistingSubscription({
+        stripeSubscriptionId: subState.stripeSubscriptionId,
+        stripeCustomerId,
         basePlan,
-      },
-      subscription_data: {
-        metadata: {
-          userId,
-          planRequestId: planRequest.id,
-          basePlan,
-        },
-      },
-      success_url:
-        successUrl ?? `${origin}/portal/billing?checkout=success`,
-      cancel_url:
-        cancelUrl ?? `${origin}/portal/build-plan?checkout=canceled`,
-    });
+        baseMonthlyCents: base.monthlyCents,
+        baseName: base.name,
+        resolved,
+        planRequestId: planRequest.id,
+        userId,
+      });
+    }
 
-    // 8. Link the session ID so the webhook can find this request.
-    await prisma.customPlanRequest.update({
-      where: { id: planRequest.id },
-      data: { stripeCheckoutSessionId: checkoutSession.id },
-    });
-
-    return NextResponse.json({
-      url: checkoutSession.url,
-      sessionId: checkoutSession.id,
+    // NEW path: create a Stripe Checkout Session.
+    return await createNewCheckoutSession({
+      request,
+      stripeCustomerId,
+      basePlan,
+      base,
+      resolved,
       planRequestId: planRequest.id,
+      userId,
+      successUrl,
+      cancelUrl,
     });
   } catch (error) {
     console.error("Stripe checkout error:", error);
@@ -263,3 +165,382 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+// ── NEW path ────────────────────────────────────────────────────────────────
+
+async function createNewCheckoutSession(opts: {
+  request: NextRequest;
+  stripeCustomerId: string;
+  basePlan: "STARTER" | "GROWTH" | "PRO";
+  base: { name: string; monthlyCents: number; buildCents: number };
+  resolved: ResolvedSelection;
+  planRequestId: string;
+  userId: string;
+  successUrl?: string;
+  cancelUrl?: string;
+}) {
+  const {
+    request,
+    stripeCustomerId,
+    basePlan,
+    base,
+    resolved,
+    planRequestId,
+    userId,
+    successUrl,
+    cancelUrl,
+  } = opts;
+
+  const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+  if (base.monthlyCents > 0) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: "usd",
+        unit_amount: base.monthlyCents,
+        recurring: { interval: "month" },
+        product_data: {
+          name: `${base.name} plan — monthly`,
+          description: `Hosting, support, and ongoing improvements for the ${base.name} plan.`,
+          metadata: { kind: "base_monthly", basePlan },
+        },
+      },
+    });
+  }
+
+  if (base.buildCents > 0) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: "usd",
+        unit_amount: base.buildCents,
+        product_data: {
+          name: `${base.name} website build`,
+          description: `One-time build fee for the ${base.name} plan.`,
+          metadata: { kind: "base_build_fee", basePlan },
+        },
+      },
+    });
+  }
+
+  for (const opt of resolved.billable) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: "usd",
+        unit_amount: opt.priceCents,
+        ...(opt.billingType === "MONTHLY"
+          ? { recurring: { interval: "month" } }
+          : {}),
+        product_data: {
+          name: opt.name,
+          metadata: {
+            kind:
+              opt.billingType === "MONTHLY" ? "addon_monthly" : "addon_one_time",
+            optionId: opt.id,
+            category: opt.category,
+          },
+        },
+      },
+    });
+  }
+
+  if (lineItems.length === 0) {
+    return NextResponse.json(
+      { error: "Nothing to charge for — pick a base plan with pricing." },
+      { status: 400 },
+    );
+  }
+
+  const discounts: Stripe.Checkout.SessionCreateParams.Discount[] = [];
+  if (resolved.bundleDiscountCents > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: resolved.bundleDiscountCents,
+      currency: "usd",
+      duration: "once",
+      name: "Bundle discount",
+      metadata: { userId, basePlan },
+    });
+    discounts.push({ coupon: coupon.id });
+  }
+
+  const origin = request.nextUrl.origin;
+  const hasBundleCoupon = discounts.length > 0;
+  const checkoutSession = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer: stripeCustomerId,
+    line_items: lineItems,
+    ...(hasBundleCoupon ? { discounts } : { allow_promotion_codes: true }),
+    metadata: {
+      userId,
+      planRequestId,
+      basePlan,
+    },
+    subscription_data: {
+      metadata: {
+        userId,
+        planRequestId,
+        basePlan,
+      },
+    },
+    success_url: successUrl ?? `${origin}/portal/billing?checkout=success`,
+    cancel_url: cancelUrl ?? `${origin}/portal/build-plan?checkout=canceled`,
+  });
+
+  await prisma.customPlanRequest.update({
+    where: { id: planRequestId },
+    data: { stripeCheckoutSessionId: checkoutSession.id },
+  });
+
+  return NextResponse.json({
+    url: checkoutSession.url,
+    sessionId: checkoutSession.id,
+    planRequestId,
+  });
+}
+
+// ── MODIFY path ─────────────────────────────────────────────────────────────
+
+type ExistingItem = {
+  id: string;
+  kind: "base" | "addon" | "unknown";
+  optionId: string | null;
+  unitAmount: number | null;
+};
+
+async function modifyExistingSubscription(opts: {
+  stripeSubscriptionId: string;
+  stripeCustomerId: string;
+  basePlan: "STARTER" | "GROWTH" | "PRO";
+  baseMonthlyCents: number;
+  baseName: string;
+  resolved: ResolvedSelection;
+  planRequestId: string;
+  userId: string;
+}) {
+  const {
+    stripeSubscriptionId,
+    stripeCustomerId,
+    basePlan,
+    baseMonthlyCents,
+    baseName,
+    resolved,
+    planRequestId,
+    userId,
+  } = opts;
+
+  // Pull the live subscription with product expansion. Product metadata is
+  // our cross-system mapping (kind = base|addon, optionId = PlanOption id).
+  const fullSub = await stripe.subscriptions.retrieve(stripeSubscriptionId, {
+    expand: ["items.data.price.product"],
+  });
+
+  const existingItems: ExistingItem[] = fullSub.items.data.map((it) => {
+    const product =
+      typeof it.price.product === "object" && it.price.product !== null
+        ? (it.price.product as Stripe.Product)
+        : null;
+    const meta = product?.metadata ?? {};
+    const kind: ExistingItem["kind"] =
+      meta.kind === "base_monthly"
+        ? "base"
+        : meta.kind === "addon_monthly"
+          ? "addon"
+          : "unknown";
+    return {
+      id: it.id,
+      kind,
+      optionId: meta.optionId ?? null,
+      unitAmount: it.price.unit_amount ?? null,
+    };
+  });
+
+  type DesiredItem = {
+    matchKind: "base" | "addon";
+    optionId?: string;
+    priceCents: number;
+    name: string;
+    productMetadata: Stripe.MetadataParam;
+  };
+  const desired: DesiredItem[] = [];
+
+  if (baseMonthlyCents > 0) {
+    desired.push({
+      matchKind: "base",
+      priceCents: baseMonthlyCents,
+      name: `${baseName} plan — monthly`,
+      productMetadata: { kind: "base_monthly", basePlan },
+    });
+  }
+
+  const monthlyAddons = resolved.billable.filter(
+    (o) => o.billingType === "MONTHLY",
+  );
+  for (const opt of monthlyAddons) {
+    desired.push({
+      matchKind: "addon",
+      optionId: opt.id,
+      priceCents: opt.priceCents,
+      name: opt.name,
+      productMetadata: {
+        kind: "addon_monthly",
+        optionId: opt.id,
+        category: opt.category,
+      },
+    });
+  }
+
+  // Diff: match desired vs existing by (kind, optionId).
+  const usedExisting = new Set<string>();
+  const updateItems: Stripe.SubscriptionUpdateParams.Item[] = [];
+
+  for (const d of desired) {
+    const match =
+      d.matchKind === "base"
+        ? existingItems.find(
+            (e) => e.kind === "base" && !usedExisting.has(e.id),
+          )
+        : existingItems.find(
+            (e) =>
+              e.kind === "addon" &&
+              e.optionId === d.optionId &&
+              !usedExisting.has(e.id),
+          );
+
+    if (match) {
+      usedExisting.add(match.id);
+      if (match.unitAmount !== d.priceCents) {
+        updateItems.push({
+          id: match.id,
+          price_data: {
+            currency: "usd",
+            unit_amount: d.priceCents,
+            recurring: { interval: "month" },
+            product_data: {
+              name: d.name,
+              metadata: d.productMetadata,
+            },
+          },
+        });
+      }
+    } else {
+      updateItems.push({
+        price_data: {
+          currency: "usd",
+          unit_amount: d.priceCents,
+          recurring: { interval: "month" },
+          product_data: {
+            name: d.name,
+            metadata: d.productMetadata,
+          },
+        },
+      });
+    }
+  }
+
+  // Any existing item not matched gets deleted; Stripe credits the proration.
+  for (const existing of existingItems) {
+    if (!usedExisting.has(existing.id)) {
+      updateItems.push({ id: existing.id, deleted: true });
+    }
+  }
+
+  // One-time add-ons + bundle discount go on the immediate invoice as
+  // invoice items. We create them BEFORE the subscriptions.update so
+  // always_invoice picks them up alongside the proration.
+  const oneTimeAddons = resolved.billable.filter(
+    (o) => o.billingType === "ONE_TIME",
+  );
+  for (const opt of oneTimeAddons) {
+    await stripe.invoiceItems.create({
+      customer: stripeCustomerId,
+      subscription: stripeSubscriptionId,
+      currency: "usd",
+      unit_amount: opt.priceCents,
+      quantity: 1,
+      description: opt.name,
+      metadata: {
+        kind: "addon_one_time",
+        optionId: opt.id,
+        planRequestId,
+      },
+    });
+  }
+
+  if (resolved.bundleDiscountCents > 0) {
+    await stripe.invoiceItems.create({
+      customer: stripeCustomerId,
+      subscription: stripeSubscriptionId,
+      currency: "usd",
+      amount: -resolved.bundleDiscountCents,
+      description: "Bundle discount",
+      metadata: { kind: "bundle_discount", planRequestId },
+    });
+  }
+
+  const hasMonthlyChanges = updateItems.length > 0;
+  const hasOneTime =
+    oneTimeAddons.length > 0 || resolved.bundleDiscountCents > 0;
+  const noChanges = !hasMonthlyChanges && !hasOneTime;
+
+  if (noChanges) {
+    await prisma.customPlanRequest.update({
+      where: { id: planRequestId },
+      data: {
+        status: "APPROVED",
+        reviewedAt: new Date(),
+        stripeSubscriptionId,
+      },
+    });
+    return NextResponse.json({
+      modified: true,
+      noChanges: true,
+      planRequestId,
+      message: "Your subscription already matches this selection.",
+    });
+  }
+
+  if (hasMonthlyChanges) {
+    await stripe.subscriptions.update(stripeSubscriptionId, {
+      items: updateItems,
+      proration_behavior: "always_invoice",
+      metadata: {
+        userId,
+        planRequestId,
+        basePlan,
+      },
+    });
+  } else if (hasOneTime) {
+    const invoice = await stripe.invoices.create({
+      customer: stripeCustomerId,
+      subscription: stripeSubscriptionId,
+      auto_advance: true,
+    });
+    await stripe.invoices.finalizeInvoice(invoice.id);
+  }
+
+  await prisma.customPlanRequest.update({
+    where: { id: planRequestId },
+    data: {
+      status: "APPROVED",
+      reviewedAt: new Date(),
+      stripeSubscriptionId,
+    },
+  });
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { plan: basePlan },
+  });
+
+  return NextResponse.json({
+    modified: true,
+    planRequestId,
+    subscriptionId: stripeSubscriptionId,
+    message:
+      "Subscription updated. Net difference has been billed (or credited) immediately.",
+  });
+}
+
+export type { ResolvedOption };

@@ -233,40 +233,85 @@ async function onSubscriptionUpserted(sub: Stripe.Subscription) {
   const basePlan = toPlan(sub.metadata?.basePlan);
   const status = SUBSCRIPTION_STATUS_MAP[sub.status] ?? "INCOMPLETE";
 
-  await prisma.subscription.upsert({
+  // Re-fetch with product expansion so we can read product metadata
+  // (kind, optionId) off each subscription item. We stamp this metadata on
+  // the products when creating Checkout Sessions / subscription items, so
+  // it's our cross-system mapping back to PlanOption IDs.
+  const fullSub = await stripe.subscriptions.retrieve(sub.id, {
+    expand: ["items.data.price.product"],
+  });
+
+  const existing = await prisma.subscription.findUnique({
     where: { stripeSubscriptionId: sub.id },
-    create: {
-      userId: user.id,
-      stripeSubscriptionId: sub.id,
-      stripeCustomerId: customerId,
-      status,
-      basePlan,
-      currentPeriodStart: epochToDate(sub.current_period_start),
-      currentPeriodEnd: epochToDate(sub.current_period_end),
-      cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
-      canceledAt: epochToDate(sub.canceled_at),
-      items: {
-        create: sub.items.data.map((it) => ({
-          stripeItemId: it.id,
-          nameSnapshot:
-            typeof it.price.product === "string"
-              ? it.price.product
-              : (it.price.product as Stripe.Product)?.name ?? "Item",
-          priceCents: it.price.unit_amount ?? 0,
-          billingType: "MONTHLY",
-          quantity: it.quantity ?? 1,
-        })),
-      },
-    },
-    update: {
-      status,
-      basePlan,
-      currentPeriodStart: epochToDate(sub.current_period_start),
-      currentPeriodEnd: epochToDate(sub.current_period_end),
-      cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
-      canceledAt: epochToDate(sub.canceled_at),
+    select: { id: true },
+  });
+
+  const ourSub = existing
+    ? await prisma.subscription.update({
+        where: { stripeSubscriptionId: sub.id },
+        data: {
+          status,
+          basePlan,
+          currentPeriodStart: epochToDate(sub.current_period_start),
+          currentPeriodEnd: epochToDate(sub.current_period_end),
+          cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
+          canceledAt: epochToDate(sub.canceled_at),
+        },
+      })
+    : await prisma.subscription.create({
+        data: {
+          userId: user.id,
+          stripeSubscriptionId: sub.id,
+          stripeCustomerId: customerId,
+          status,
+          basePlan,
+          currentPeriodStart: epochToDate(sub.current_period_start),
+          currentPeriodEnd: epochToDate(sub.current_period_end),
+          cancelAtPeriodEnd: sub.cancel_at_period_end ?? false,
+          canceledAt: epochToDate(sub.canceled_at),
+        },
+      });
+
+  // Sync items: remove anything Stripe no longer has, upsert the rest with
+  // metadata-derived kind/optionId. Doing this on every subscription.*
+  // event keeps the DB in lockstep when a user adds/removes add-ons via
+  // the Billing Portal or the modify path below.
+  const stripeItemIds = fullSub.items.data.map((i) => i.id);
+  await prisma.subscriptionItem.deleteMany({
+    where: {
+      subscriptionId: ourSub.id,
+      stripeItemId: { notIn: stripeItemIds.length > 0 ? stripeItemIds : ["__none__"] },
     },
   });
+
+  for (const it of fullSub.items.data) {
+    const product =
+      typeof it.price.product === "object" && it.price.product !== null
+        ? (it.price.product as Stripe.Product)
+        : null;
+    const meta = product?.metadata ?? {};
+    const isBase = meta.kind === "base_monthly";
+    await prisma.subscriptionItem.upsert({
+      where: { stripeItemId: it.id },
+      create: {
+        subscriptionId: ourSub.id,
+        stripeItemId: it.id,
+        nameSnapshot: product?.name ?? "Item",
+        priceCents: it.price.unit_amount ?? 0,
+        billingType: "MONTHLY",
+        quantity: it.quantity ?? 1,
+        optionId: !isBase && meta.optionId ? meta.optionId : null,
+        kind: isBase ? "base" : "addon",
+      },
+      update: {
+        nameSnapshot: product?.name ?? "Item",
+        priceCents: it.price.unit_amount ?? 0,
+        quantity: it.quantity ?? 1,
+        optionId: !isBase && meta.optionId ? meta.optionId : null,
+        kind: isBase ? "base" : "addon",
+      },
+    });
+  }
 }
 
 async function onSubscriptionDeleted(sub: Stripe.Subscription) {

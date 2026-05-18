@@ -171,3 +171,59 @@ export async function resolveSelection(
 
   return { billable, included, bundleDiscountCents, monthlyCents, oneTimeCents };
 }
+
+export type UserSubscriptionState = {
+  /** The Prisma Subscription row, or null when the user has no active sub. */
+  subscriptionId: string | null;
+  stripeSubscriptionId: string | null;
+  /** Status as Prisma enum string. Null when no sub. */
+  status: string | null;
+  /** Base plan currently on the subscription. Null when no sub. */
+  basePlan: BasePlanKey | null;
+  /** PlanOption IDs currently active as monthly add-ons on the sub. The base
+   *  plan item is excluded — track it via `basePlan` above. */
+  subscribedOptionIds: string[];
+};
+
+/**
+ * Read the user's current active subscription state. Used by:
+ *   - /portal/build-plan to pre-check options the user is already paying for
+ *   - /api/stripe/checkout to decide whether to start a new subscription or
+ *     modify an existing one
+ *
+ * "Active" = ACTIVE or TRIALING. Anything else is treated as "no live sub"
+ * so users in PAST_DUE or CANCELED state get the full new-checkout flow.
+ */
+export async function getUserSubscriptionState(
+  userId: string,
+): Promise<UserSubscriptionState> {
+  const sub = await prisma.subscription.findFirst({
+    where: { userId, status: { in: ["ACTIVE", "TRIALING"] } },
+    include: { items: true },
+    orderBy: { createdAt: "desc" },
+  });
+  if (!sub) {
+    return {
+      subscriptionId: null,
+      stripeSubscriptionId: null,
+      status: null,
+      basePlan: null,
+      subscribedOptionIds: [],
+    };
+  }
+  const subscribedOptionIds = sub.items
+    .filter((i) => i.kind === "addon" && i.optionId)
+    .map((i) => i.optionId as string);
+  const bp = sub.basePlan as string;
+  const validBp: BasePlanKey =
+    bp === "STARTER" || bp === "GROWTH" || bp === "PRO" || bp === "CUSTOM"
+      ? bp
+      : "NONE";
+  return {
+    subscriptionId: sub.id,
+    stripeSubscriptionId: sub.stripeSubscriptionId,
+    status: sub.status as string,
+    basePlan: validBp,
+    subscribedOptionIds,
+  };
+}

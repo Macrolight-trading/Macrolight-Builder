@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import PlanBuilder from "@/components/portal/PlanBuilder";
+import { getUserSubscriptionState } from "@/lib/plan-selection";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Build your plan" };
@@ -12,7 +13,7 @@ export default async function BuildPlanPage() {
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect("/login?callbackUrl=/portal/build-plan");
 
-  const [user, options, latestPending, categories, recommendation] =
+  const [user, options, latestPending, categories, recommendation, subState] =
     await Promise.all([
       prisma.user.findUnique({
         where: { id: userId },
@@ -41,10 +42,15 @@ export default async function BuildPlanPage() {
           items: { select: { optionId: true } },
         },
       }),
+      // Current subscription state — used to pre-check items the user is
+      // already paying for and to render the "Update subscription" mode
+      // (rather than "Checkout now") when one exists.
+      getUserSubscriptionState(userId),
     ]);
 
   const recommendedIds = recommendation?.items.map((i) => i.optionId) ?? [];
   const hasRecommendation = Boolean(recommendation);
+  const hasActiveSubscription = Boolean(subState.subscriptionId);
 
   return (
     <>
@@ -112,8 +118,14 @@ export default async function BuildPlanPage() {
           currentPlan={user?.plan ?? "NONE"}
           options={JSON.parse(JSON.stringify(options))}
           categories={JSON.parse(JSON.stringify(categories))}
-          initialBasePlan={recommendation?.basePlan ?? undefined}
-          initialSelectedIds={recommendedIds}
+          initialBasePlan={
+            recommendation?.basePlan ?? subState.basePlan ?? undefined
+          }
+          initialSelectedIds={
+            hasRecommendation ? recommendedIds : subState.subscribedOptionIds
+          }
+          hasActiveSubscription={hasActiveSubscription}
+          currentSubscribedOptionIds={subState.subscribedOptionIds}
         />
       )}
 
