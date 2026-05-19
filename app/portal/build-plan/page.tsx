@@ -126,6 +126,7 @@ export default async function BuildPlanPage() {
           }
           hasActiveSubscription={hasActiveSubscription}
           currentSubscribedOptionIds={subState.subscribedOptionIds}
+          currentBasePlan={subState.basePlan ?? undefined}
         />
       )}
 

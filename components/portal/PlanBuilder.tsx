@@ -101,10 +101,20 @@ export default function PlanBuilder({
    *  Rendered with an "Active" badge so they can see what's already
    *  subscribed vs. what they're about to add or drop. */
   currentSubscribedOptionIds?: string[];
+  /** Current base plan on the user's Stripe sub (e.g. "GROWTH"). Used to
+   *  compute current MRR so the summary can show current → new → delta. */
+  currentBasePlan?: string;
 }) {
   const subscribedSet = useMemo(
     () => new Set(currentSubscribedOptionIds),
     [currentSubscribedOptionIds],
+  );
+  const currentBase = useMemo(
+    () =>
+      currentBasePlan
+        ? BASE_PLANS.find((p) => p.value === currentBasePlan)
+        : undefined,
+    [currentBasePlan],
   );
   const router = useRouter();
   // Precedence: explicit initialBasePlan > currentPlan > STARTER.
@@ -231,6 +241,53 @@ export default function PlanBuilder({
       totalDiscount: monthlyDisc + oneTimeDisc,
     };
   }, [categoryAnalysis, selectedBase]);
+
+  // When the user has an active subscription, compute current MRR (base
+  // monthly + monthly add-ons currently on the sub) so we can show
+  // current → new → delta in the summary. Build fee is excluded because
+  // it was already paid and won't be charged on a modification.
+  const currentTotals = useMemo(() => {
+    if (!hasActiveSubscription || !currentBase) {
+      return null;
+    }
+    const baseMonthly = currentBase.monthlyFee * 100;
+    let addOnMonthly = 0;
+    for (const o of options) {
+      if (o.billingType === "MONTHLY" && subscribedSet.has(o.id)) {
+        addOnMonthly += o.priceCents;
+      }
+    }
+    return {
+      baseMonthly,
+      addOnMonthly,
+      monthlyTotal: baseMonthly + addOnMonthly,
+    };
+  }, [hasActiveSubscription, currentBase, options, subscribedSet]);
+
+  // Deltas only meaningful when modifying. The "new recurring" figure is
+  // intentionally NOT discounted — bundle savings are applied once on the
+  // immediate invoice, not as a recurring discount, so the user's MRR
+  // going forward is the un-discounted total.
+  const deltas = useMemo(() => {
+    if (!currentTotals) return null;
+    const newRecurringMonthly = totals.baseMonthly + totals.addOnMonthly;
+    const monthlyDelta = newRecurringMonthly - currentTotals.monthlyTotal;
+    // The full bundle discount (monthly + one-time portions) is applied as
+    // a one-time credit on the immediate invoice via a negative invoice
+    // item — see the MODIFY path in /api/stripe/checkout.
+    const bundleSavings = totals.monthlyDisc + totals.oneTimeDisc;
+    // One-time charged today = new one-time add-ons - bundle credit. Build
+    // fee is excluded (already paid). Floored at 0; if the credit exceeds
+    // the new charge, Stripe carries the rest forward as a credit balance.
+    const oneTimeCharge = Math.max(0, totals.addOnOneTime - bundleSavings);
+    return {
+      newRecurringMonthly,
+      monthlyDelta,
+      oneTimeCharge,
+      bundleSavings,
+      newAddOnsOneTime: totals.addOnOneTime,
+    };
+  }, [currentTotals, totals]);
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -567,84 +624,226 @@ export default function PlanBuilder({
             </div>
           )}
 
-          {(totals.baseMonthly > 0 || totals.baseOneTime > 0) && (
-            <div className="mt-4 space-y-1 pb-3 border-b border-gray-100 text-xs">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
-                Base plan ({selectedBase?.label})
-              </p>
-              {totals.baseOneTime > 0 && (
+          {/* MODIFY mode: show current → new → delta. */}
+          {currentTotals && deltas ? (
+            <>
+              <div className="mt-4 space-y-1 pb-3 border-b border-gray-100 text-xs">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
+                  Currently paying
+                </p>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-gray-500">Build fee</span>
-                  <span className="font-mono text-gray-900">{money(totals.baseOneTime)}</span>
-                </div>
-              )}
-              {totals.baseMonthly > 0 && (
-                <div className="flex items-baseline justify-between">
-                  <span className="text-gray-500">Monthly</span>
+                  <span className="text-gray-500">{currentBase?.label} plan</span>
                   <span className="font-mono text-gray-900">
-                    {money(totals.baseMonthly)}<span className="text-gray-400">/mo</span>
+                    {money(currentTotals.baseMonthly)}
+                    <span className="text-gray-400">/mo</span>
                   </span>
                 </div>
-              )}
-            </div>
-          )}
-
-          {(totals.addOnMonthly > 0 || totals.addOnOneTime > 0) && (
-            <div className="mt-3 space-y-1 pb-3 border-b border-gray-100 text-xs">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Add-ons</p>
-              {totals.addOnOneTime > 0 && (
-                <div className="flex items-baseline justify-between">
-                  <span className="text-gray-500">One-time</span>
-                  <span className="font-mono text-gray-900">{money(totals.addOnOneTime)}</span>
-                </div>
-              )}
-              {totals.addOnMonthly > 0 && (
-                <div className="flex items-baseline justify-between">
-                  <span className="text-gray-500">Monthly</span>
-                  <span className="font-mono text-gray-900">
-                    {money(totals.addOnMonthly)}<span className="text-gray-400">/mo</span>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="mt-4 space-y-2">
-            {totals.monthlyTotal > 0 && (
-              <div>
-                {totals.monthlyDisc > 0 && (
-                  <div className="flex items-baseline justify-between text-xs">
-                    <span className="text-gray-400">Before bundle savings</span>
-                    <span className="font-mono text-gray-400 line-through">{money(totals.monthlyTotal + totals.monthlyDisc)}</span>
+                {currentTotals.addOnMonthly > 0 && (
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-gray-500">Current add-ons</span>
+                    <span className="font-mono text-gray-900">
+                      {money(currentTotals.addOnMonthly)}
+                      <span className="text-gray-400">/mo</span>
+                    </span>
                   </div>
                 )}
-                <div className="flex items-baseline justify-between">
-                  <span className="text-sm text-gray-500">Total monthly</span>
-                  <span>
-                    <span className="text-2xl font-extrabold text-violet-700">{money(totals.monthlyTotal)}</span>
-                    <span className="text-xs text-gray-400">/mo</span>
+                <div className="flex items-baseline justify-between pt-1 border-t border-gray-50 mt-1">
+                  <span className="text-gray-700 font-semibold">Total today</span>
+                  <span className="font-mono text-gray-900 font-semibold">
+                    {money(currentTotals.monthlyTotal)}
+                    <span className="text-gray-400 font-normal">/mo</span>
                   </span>
                 </div>
               </div>
-            )}
-            {totals.oneTimeTotal > 0 && (
-              <div>
-                {totals.oneTimeDisc > 0 && (
-                  <div className="flex items-baseline justify-between text-xs">
-                    <span className="text-gray-400">Before bundle savings</span>
-                    <span className="font-mono text-gray-400 line-through">{money(totals.oneTimeTotal + totals.oneTimeDisc)}</span>
+
+              <div className="mt-3 space-y-1 pb-3 border-b border-gray-100 text-xs">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-600 mb-1">
+                  After update
+                </p>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-gray-500">{selectedBase?.label} plan</span>
+                  <span className="font-mono text-gray-900">
+                    {money(totals.baseMonthly)}
+                    <span className="text-gray-400">/mo</span>
+                  </span>
+                </div>
+                {totals.addOnMonthly > 0 && (
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-gray-500">Monthly add-ons</span>
+                    <span className="font-mono text-gray-900">
+                      {money(totals.addOnMonthly)}
+                      <span className="text-gray-400">/mo</span>
+                    </span>
                   </div>
                 )}
-                <div className="flex items-baseline justify-between">
-                  <span className="text-sm text-gray-500">Total one-time</span>
-                  <span className="text-2xl font-extrabold text-amber-700">{money(totals.oneTimeTotal)}</span>
+                <div className="flex items-baseline justify-between pt-1 border-t border-gray-50 mt-1">
+                  <span className="text-gray-700 font-semibold">New total</span>
+                  <span className="font-mono text-violet-700 font-semibold">
+                    {money(deltas.newRecurringMonthly)}
+                    <span className="text-violet-400 font-normal">/mo</span>
+                  </span>
                 </div>
               </div>
-            )}
-            {totals.monthlyTotal === 0 && totals.oneTimeTotal === 0 && (
-              <p className="text-sm text-gray-400 py-4 text-center">Pick a base plan to see your total.</p>
-            )}
-          </div>
+
+              <div className="mt-4 space-y-2">
+                {/* Net monthly change — the headline number. Charged or
+                    credited via Stripe proration at submit. */}
+                <div
+                  className={`rounded-lg px-3 py-3 ${
+                    deltas.monthlyDelta > 0
+                      ? "bg-amber-50 border border-amber-100"
+                      : deltas.monthlyDelta < 0
+                        ? "bg-emerald-50 border border-emerald-100"
+                        : "bg-gray-50 border border-gray-100"
+                  }`}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-sm text-gray-600">
+                      {deltas.monthlyDelta > 0
+                        ? "Monthly change"
+                        : deltas.monthlyDelta < 0
+                          ? "Monthly savings"
+                          : "No monthly change"}
+                    </span>
+                    <span
+                      className={`text-2xl font-extrabold ${
+                        deltas.monthlyDelta > 0
+                          ? "text-amber-700"
+                          : deltas.monthlyDelta < 0
+                            ? "text-emerald-700"
+                            : "text-gray-500"
+                      }`}
+                    >
+                      {deltas.monthlyDelta > 0 ? "+" : deltas.monthlyDelta < 0 ? "−" : ""}
+                      {money(Math.abs(deltas.monthlyDelta))}
+                      <span className="text-xs font-medium text-gray-400">/mo</span>
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    {deltas.monthlyDelta !== 0
+                      ? "Prorated to today and charged or credited immediately."
+                      : "Your monthly bill stays the same."}
+                  </p>
+                </div>
+
+                {/* One-time charge today: new one-time add-ons net of
+                    bundle credit. Build fee is excluded (already paid). */}
+                {(deltas.newAddOnsOneTime > 0 || deltas.bundleSavings > 0) && (
+                  <div className="rounded-lg px-3 py-3 bg-amber-50 border border-amber-100 space-y-1">
+                    {deltas.newAddOnsOneTime > 0 && (
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="text-gray-500">New one-time add-ons</span>
+                        <span className="font-mono text-gray-900">
+                          {money(deltas.newAddOnsOneTime)}
+                        </span>
+                      </div>
+                    )}
+                    {deltas.bundleSavings > 0 && (
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="text-gray-500">Bundle credit</span>
+                        <span className="font-mono text-emerald-700">
+                          −{money(deltas.bundleSavings)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-baseline justify-between pt-1 border-t border-amber-100">
+                      <span className="text-sm text-gray-700 font-semibold">
+                        One-time charge today
+                      </span>
+                      <span className="text-2xl font-extrabold text-amber-700">
+                        {money(deltas.oneTimeCharge)}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-500">
+                      Build fees aren&apos;t re-charged.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* NEW checkout flow: full totals as before. */}
+              {(totals.baseMonthly > 0 || totals.baseOneTime > 0) && (
+                <div className="mt-4 space-y-1 pb-3 border-b border-gray-100 text-xs">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">
+                    Base plan ({selectedBase?.label})
+                  </p>
+                  {totals.baseOneTime > 0 && (
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-gray-500">Build fee</span>
+                      <span className="font-mono text-gray-900">{money(totals.baseOneTime)}</span>
+                    </div>
+                  )}
+                  {totals.baseMonthly > 0 && (
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-gray-500">Monthly</span>
+                      <span className="font-mono text-gray-900">
+                        {money(totals.baseMonthly)}<span className="text-gray-400">/mo</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(totals.addOnMonthly > 0 || totals.addOnOneTime > 0) && (
+                <div className="mt-3 space-y-1 pb-3 border-b border-gray-100 text-xs">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-1">Add-ons</p>
+                  {totals.addOnOneTime > 0 && (
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-gray-500">One-time</span>
+                      <span className="font-mono text-gray-900">{money(totals.addOnOneTime)}</span>
+                    </div>
+                  )}
+                  {totals.addOnMonthly > 0 && (
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-gray-500">Monthly</span>
+                      <span className="font-mono text-gray-900">
+                        {money(totals.addOnMonthly)}<span className="text-gray-400">/mo</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="mt-4 space-y-2">
+                {totals.monthlyTotal > 0 && (
+                  <div>
+                    {totals.monthlyDisc > 0 && (
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="text-gray-400">Before bundle savings</span>
+                        <span className="font-mono text-gray-400 line-through">{money(totals.monthlyTotal + totals.monthlyDisc)}</span>
+                      </div>
+                    )}
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm text-gray-500">Total monthly</span>
+                      <span>
+                        <span className="text-2xl font-extrabold text-violet-700">{money(totals.monthlyTotal)}</span>
+                        <span className="text-xs text-gray-400">/mo</span>
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {totals.oneTimeTotal > 0 && (
+                  <div>
+                    {totals.oneTimeDisc > 0 && (
+                      <div className="flex items-baseline justify-between text-xs">
+                        <span className="text-gray-400">Before bundle savings</span>
+                        <span className="font-mono text-gray-400 line-through">{money(totals.oneTimeTotal + totals.oneTimeDisc)}</span>
+                      </div>
+                    )}
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm text-gray-500">Total one-time</span>
+                      <span className="text-2xl font-extrabold text-amber-700">{money(totals.oneTimeTotal)}</span>
+                    </div>
+                  </div>
+                )}
+                {totals.monthlyTotal === 0 && totals.oneTimeTotal === 0 && (
+                  <p className="text-sm text-gray-400 py-4 text-center">Pick a base plan to see your total.</p>
+                )}
+              </div>
+            </>
+          )}
 
           {error && (
             <p className="mt-4 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>

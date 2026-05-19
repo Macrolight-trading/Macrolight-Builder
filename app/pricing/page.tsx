@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import Section from "@/components/Section";
 import TabbedPricing from "@/components/TabbedPricing";
 import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
 import { pricingTiers } from "@/lib/pricing";
+import { authOptions } from "@/lib/auth";
+import { getUserSubscriptionState } from "@/lib/plan-selection";
+
+// /pricing CTAs change based on whether the visitor is logged in and
+// whether they already have an active subscription, so the page can't be
+// statically pre-rendered. The metadata above still applies.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   // Title length: kept ≤60 chars (template adds " | Macrolight Builder"
@@ -68,7 +76,14 @@ const faqSchema = {
   })),
 };
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  // Only need sub state for authenticated users — guests get the standard
+  // "Get started" CTAs regardless.
+  const session = await getServerSession(authOptions);
+  const userId = (session?.user as { id?: string } | undefined)?.id;
+  const subState = userId ? await getUserSubscriptionState(userId) : null;
+  const currentBasePlan = subState?.basePlan ?? null;
+
   return (
     <>
       <JsonLd data={faqSchema} />
@@ -94,7 +109,7 @@ export default function PricingPage() {
 
       {/* Pricing tabs */}
       <Section padding="lg" className="bg-white">
-        <TabbedPricing tiers={pricingTiers} />
+        <TabbedPricing tiers={pricingTiers} currentBasePlan={currentBasePlan} />
 
         <p className="mt-10 text-center text-sm text-gray-400">
           All plans include hosting on Vercel, SSL, automatic backups, and

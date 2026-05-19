@@ -17,14 +17,25 @@ interface TabbedPricingProps {
   /** Optional name of the tier that should be active on first render. Defaults
    *  to the highlighted tier, or the first tier if none are highlighted. */
   defaultTierName?: string;
+  /** If the logged-in viewer has an active subscription, the Plan enum key
+   *  of its base plan (STARTER | GROWTH | PRO). Used to switch the CTA on
+   *  matching/non-matching tiers. Null for logged-out or no-sub viewers. */
+  currentBasePlan?: string | null;
 }
 
 export default function TabbedPricing({
   tiers,
   defaultTierName,
+  currentBasePlan,
 }: TabbedPricingProps) {
+  // If the viewer is already subscribed, default the active tab to their
+  // current plan so they land on "Current plan" rather than "Get Started".
+  const subscribedTier = currentBasePlan
+    ? tiers.find((t) => t.name.toUpperCase() === currentBasePlan)
+    : undefined;
   const initial =
     tiers.find((t) => t.name === defaultTierName)?.name ??
+    subscribedTier?.name ??
     tiers.find((t) => t.highlighted)?.name ??
     tiers[0]?.name;
 
@@ -43,6 +54,8 @@ export default function TabbedPricing({
       >
         {tiers.map((tier) => {
           const isActive = tier.name === active.name;
+          const isCurrentPlan =
+            currentBasePlan && planKeyFor(tier) === currentBasePlan;
           return (
             <button
               key={tier.name}
@@ -60,23 +73,32 @@ export default function TabbedPricing({
               }
             >
               <span className="block">{tier.name}</span>
-              {tier.badge && (
-                <span
-                  className={
-                    "mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide " +
-                    (isActive
-                      ? "bg-gradient-to-r from-violet-600 to-cyan-600 text-white"
-                      : "bg-violet-50 text-violet-600 border border-violet-100")
-                  }
-                >
+              {isCurrentPlan ? (
+                <span className="mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide bg-emerald-100 text-emerald-700 border border-emerald-200">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Current
+                </span>
+              ) : (
+                tier.badge && (
                   <span
                     className={
-                      "h-1.5 w-1.5 rounded-full " +
-                      (isActive ? "bg-white/80 animate-pulse" : "bg-violet-500")
+                      "mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide " +
+                      (isActive
+                        ? "bg-gradient-to-r from-violet-600 to-cyan-600 text-white"
+                        : "bg-violet-50 text-violet-600 border border-violet-100")
                     }
-                  />
-                  {tier.badge}
-                </span>
+                  >
+                    <span
+                      className={
+                        "h-1.5 w-1.5 rounded-full " +
+                        (isActive
+                          ? "bg-white/80 animate-pulse"
+                          : "bg-violet-500")
+                      }
+                    />
+                    {tier.badge}
+                  </span>
+                )
               )}
             </button>
           );
@@ -129,29 +151,58 @@ export default function TabbedPricing({
             </div>
 
             <div className="mt-auto pt-6 md:pt-8 space-y-3">
-              {planKeyFor(active) ? (
-                <CheckoutButton
-                  basePlan={planKeyFor(active)!}
-                  variant={active.highlighted ? "primary" : "secondary"}
-                  size="lg"
-                  fullWidth
-                >
-                  {active.ctaLabel}
-                </CheckoutButton>
-              ) : (
-                // Fall back to the original href (e.g. for a future "Custom"
-                // tier that should still route to a contact form).
-                <Button
-                  href={active.ctaHref}
-                  variant={active.highlighted ? "primary" : "secondary"}
-                  size="lg"
-                  fullWidth
-                >
-                  {active.ctaLabel}
-                </Button>
-              )}
+              {(() => {
+                const planKey = planKeyFor(active);
+                if (!planKey) {
+                  return (
+                    <Button
+                      href={active.ctaHref}
+                      variant={active.highlighted ? "primary" : "secondary"}
+                      size="lg"
+                      fullWidth
+                    >
+                      {active.ctaLabel}
+                    </Button>
+                  );
+                }
+                const isCurrent =
+                  currentBasePlan && currentBasePlan === planKey;
+                const hasOtherSub =
+                  Boolean(currentBasePlan) && !isCurrent;
+                // Current plan: render a non-checkout button that links to
+                // billing instead. Other plan but already subscribed:
+                // "Switch to {tier}" — the checkout API will route this
+                // through the modify path automatically. No active sub:
+                // standard "Get started" CTA.
+                if (isCurrent) {
+                  return (
+                    <Button
+                      href="/portal/billing"
+                      variant="secondary"
+                      size="lg"
+                      fullWidth
+                    >
+                      Current plan — manage →
+                    </Button>
+                  );
+                }
+                return (
+                  <CheckoutButton
+                    basePlan={planKey}
+                    variant={active.highlighted ? "primary" : "secondary"}
+                    size="lg"
+                    fullWidth
+                  >
+                    {hasOtherSub
+                      ? `Switch to ${active.name}`
+                      : active.ctaLabel}
+                  </CheckoutButton>
+                );
+              })()}
               <p className="text-center text-xs text-gray-400">
-                🔒 30-day satisfaction guarantee
+                {currentBasePlan && currentBasePlan !== planKeyFor(active)
+                  ? "Net difference will be prorated on your next invoice."
+                  : "🔒 30-day satisfaction guarantee"}
               </p>
             </div>
           </div>
