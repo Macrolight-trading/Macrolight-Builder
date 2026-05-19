@@ -4,6 +4,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+import CheckoutTosModal from "@/components/CheckoutTosModal";
+
 /**
  * /checkout/start — post-signup handoff into Stripe.
  *
@@ -44,9 +46,15 @@ function CheckoutStartInner() {
   const router = useRouter();
   const search = useSearchParams();
   const { status } = useSession();
-  const [message, setMessage] = useState("Preparing your checkout…");
+  const [message, setMessage] = useState("Waiting for confirmation…");
   const [error, setError] = useState<string | null>(null);
   const [modified, setModified] = useState<{ message: string } | null>(null);
+  // Was the TOS already accepted on the way in (e.g., from /pricing →
+  // /signup → here)? CheckoutButton stores a flag in sessionStorage; we
+  // honor it so the user doesn't get prompted twice.
+  const [tosOpen, setTosOpen] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
+  const [busy, setBusy] = useState(false);
   const startedRef = useRef(false);
 
   const plan = (search.get("plan") ?? "").toUpperCase();
@@ -55,8 +63,9 @@ function CheckoutStartInner() {
     ? optionsParam.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
 
+  // Open the modal once we know who the user is and that the plan is
+  // valid. Skip if we already have a stored acceptance from a prior step.
   useEffect(() => {
-    if (startedRef.current) return;
     if (status === "loading") return;
     if (status === "unauthenticated") {
       const here = `/checkout/start?${search.toString()}`;
@@ -69,9 +78,31 @@ function CheckoutStartInner() {
       setError(`Unknown plan "${plan}". Pick a plan from /pricing.`);
       return;
     }
+    const prior =
+      typeof window !== "undefined" &&
+      window.sessionStorage.getItem("checkoutTosAccepted") === "1";
+    if (prior) {
+      setTosAccepted(true);
+    } else {
+      setTosOpen(true);
+    }
+  }, [status, plan, router, search]);
+
+  // Once TOS is accepted (or skipped due to prior acceptance), fire the
+  // actual checkout exactly once.
+  useEffect(() => {
+    if (!tosAccepted) return;
+    if (startedRef.current) return;
+    if (status !== "authenticated") return;
+    if (!["STARTER", "GROWTH", "PRO"].includes(plan)) return;
 
     startedRef.current = true;
     setMessage("Redirecting to Stripe…");
+    // Clear the sessionStorage flag so a future visit to /checkout/start
+    // won't silently inherit a stale agreement.
+    if (typeof window !== "undefined") {
+      window.sessionStorage.removeItem("checkoutTosAccepted");
+    }
 
     fetch("/api/stripe/checkout", {
       method: "POST",
@@ -103,7 +134,7 @@ function CheckoutStartInner() {
       .catch((e: unknown) => {
         setError(e instanceof Error ? e.message : "Checkout failed");
       });
-  }, [status, plan, optionIds, router, search]);
+  }, [tosAccepted, status, plan, optionIds]);
 
   if (modified) {
     return (
@@ -146,5 +177,25 @@ function CheckoutStartInner() {
     );
   }
 
-  return <LoadingCard message={message} />;
+  return (
+    <>
+      <LoadingCard message={message} />
+      <CheckoutTosModal
+        open={tosOpen && !tosAccepted}
+        busy={busy}
+        title="Confirm your subscription"
+        description="By continuing, you authorize Macrolight Builder to charge your payment method via Stripe and confirm you've read and accepted our Terms and Privacy Policy."
+        confirmLabel="Continue to checkout"
+        onCancel={() => {
+          setTosOpen(false);
+          router.replace("/pricing");
+        }}
+        onConfirm={() => {
+          setBusy(true);
+          setTosAccepted(true);
+          setTosOpen(false);
+        }}
+      />
+    </>
+  );
 }

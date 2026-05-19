@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import Button from "./Button";
+import CheckoutTosModal from "./CheckoutTosModal";
 
 type Variant = "primary" | "secondary" | "ghost" | "outline";
 type Size = "sm" | "md" | "lg";
@@ -51,11 +52,17 @@ export default function CheckoutButton({
   const { status } = useSession();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tosOpen, setTosOpen] = useState(false);
 
-  async function go() {
+  function openTos() {
     setError(null);
+    setTosOpen(true);
+  }
 
-    // Not signed in → bounce to signup, then resume checkout.
+  async function confirm() {
+    // Not signed in → bounce to signup, then resume checkout. The TOS
+    // checkbox here covers the intent to subscribe; the user will see
+    // the signup form next and complete payment via Stripe afterwards.
     if (status !== "authenticated") {
       const next = signupRedirect
         ? signupRedirect
@@ -64,6 +71,9 @@ export default function CheckoutButton({
               ? `&options=${encodeURIComponent(optionIds.join(","))}`
               : ""
           }`;
+      // Mark TOS as accepted so the post-signup /checkout/start handoff
+      // doesn't re-prompt the user.
+      sessionStorage.setItem("checkoutTosAccepted", "1");
       router.push(
         `/signup?plan=${encodeURIComponent(basePlan)}&next=${encodeURIComponent(next)}`,
       );
@@ -82,13 +92,23 @@ export default function CheckoutButton({
         }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok || !data?.url) {
+      if (!res.ok) {
         throw new Error(data?.error || "Checkout failed");
+      }
+      // MODIFY path returns { modified: true } and no URL. Send the user
+      // to /portal/billing so they can see the new state.
+      if (data?.modified) {
+        window.location.href = "/portal/billing?checkout=updated";
+        return;
+      }
+      if (!data?.url) {
+        throw new Error("Checkout failed: no redirect URL returned");
       }
       window.location.href = data.url as string;
     } catch (e) {
       setError(e instanceof Error ? e.message : "Checkout failed");
       setLoading(false);
+      setTosOpen(false);
     }
   }
 
@@ -99,7 +119,7 @@ export default function CheckoutButton({
         size={size}
         fullWidth={fullWidth}
         className={className}
-        onClick={go}
+        onClick={openTos}
         disabled={loading || status === "loading"}
       >
         {loading ? "Redirecting…" : children}
@@ -107,6 +127,21 @@ export default function CheckoutButton({
       {error && (
         <p className="mt-2 text-xs text-red-600 text-center">{error}</p>
       )}
+      <CheckoutTosModal
+        open={tosOpen}
+        onCancel={() => !loading && setTosOpen(false)}
+        onConfirm={confirm}
+        busy={loading}
+        title="Confirm your subscription"
+        description={
+          status === "authenticated"
+            ? "By continuing, you authorize Macrolight Builder to charge your payment method via Stripe and confirm you've read and accepted our Terms and Privacy Policy."
+            : "Tick to agree, then you'll create an account and finish payment through Stripe's secure checkout."
+        }
+        confirmLabel={
+          status === "authenticated" ? "Continue to checkout" : "Agree and sign up"
+        }
+      />
     </>
   );
 }

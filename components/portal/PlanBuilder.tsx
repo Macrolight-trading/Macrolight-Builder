@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { pricingTiers } from "@/lib/pricing";
+import CheckoutTosModal from "@/components/CheckoutTosModal";
 
 type BillingType = "ONE_TIME" | "MONTHLY";
 
@@ -129,6 +130,7 @@ export default function PlanBuilder({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [tosOpen, setTosOpen] = useState(false);
 
   const selectedBase = BASE_PLANS.find((p) => p.value === basePlan);
 
@@ -866,12 +868,16 @@ export default function PlanBuilder({
             </>
           ) : (
             <>
-              {/* Primary CTA: direct checkout. For a new user, builds the
-                  Stripe Checkout Session and redirects. For a user with an
-                  active subscription, the API modifies the sub in place
-                  and charges only the net difference (no Stripe redirect). */}
+              {/* Primary CTA: open the TOS modal, then on confirm fire the
+                  checkout. For a new user, /api/stripe/checkout builds a
+                  Stripe Checkout Session and we redirect. For a user with
+                  an active subscription, the API modifies the sub in place
+                  and the modal handler shows the inline success. */}
               <button
-                onClick={checkout}
+                onClick={() => {
+                  setError(null);
+                  setTosOpen(true);
+                }}
                 disabled={submitting}
                 className="mt-5 w-full px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -900,6 +906,36 @@ export default function PlanBuilder({
           )}
         </div>
       </aside>
+
+      {/* TOS-agreement modal — gates the Stripe redirect / sub modification.
+          Wraps the existing checkout() so the user has to actively agree
+          before any money moves. */}
+      <CheckoutTosModal
+        open={tosOpen}
+        onCancel={() => !submitting && setTosOpen(false)}
+        onConfirm={() => {
+          // Fire-and-forget; checkout() handles its own redirect + state.
+          // Modal stays mounted with busy=true while submitting, then
+          // either the page navigates or we close the modal on error.
+          void checkout().finally(() => {
+            setTosOpen(false);
+          });
+        }}
+        busy={submitting}
+        title={
+          hasActiveSubscription
+            ? "Confirm subscription update"
+            : "Confirm your subscription"
+        }
+        description={
+          hasActiveSubscription
+            ? "We'll charge or credit the net difference via Stripe and apply your changes immediately. Confirm you've read and accepted our Terms and Privacy Policy to continue."
+            : "By continuing, you authorize Macrolight Builder to charge your payment method via Stripe and confirm you've read and accepted our Terms and Privacy Policy."
+        }
+        confirmLabel={
+          hasActiveSubscription ? "Update subscription" : "Continue to checkout"
+        }
+      />
     </div>
   );
 }
