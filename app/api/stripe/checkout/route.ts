@@ -307,6 +307,9 @@ type ExistingItem = {
   kind: "base" | "addon" | "unknown";
   optionId: string | null;
   unitAmount: number | null;
+  /** Stripe Product ID — needed for in-place price updates because
+   *  subscriptions.update's PriceData accepts `product`, not `product_data`. */
+  productId: string | null;
 };
 
 async function modifyExistingSubscription(opts: {
@@ -341,6 +344,10 @@ async function modifyExistingSubscription(opts: {
       typeof it.price.product === "object" && it.price.product !== null
         ? (it.price.product as Stripe.Product)
         : null;
+    const productId =
+      typeof it.price.product === "string"
+        ? it.price.product
+        : product?.id ?? null;
     const meta = product?.metadata ?? {};
     const kind: ExistingItem["kind"] =
       meta.kind === "base_monthly"
@@ -353,6 +360,7 @@ async function modifyExistingSubscription(opts: {
       kind,
       optionId: meta.optionId ?? null,
       unitAmount: it.price.unit_amount ?? null,
+      productId,
     };
   });
 
@@ -411,29 +419,40 @@ async function modifyExistingSubscription(opts: {
     if (match) {
       usedExisting.add(match.id);
       if (match.unitAmount !== d.priceCents) {
+        // Reuse the existing Stripe Product so we only mint a new Price.
+        // Fall back to creating a fresh product if the existing item
+        // somehow has no product (shouldn't happen — defensive).
+        const productId =
+          match.productId ??
+          (
+            await stripe.products.create({
+              name: d.name,
+              metadata: d.productMetadata,
+            })
+          ).id;
         updateItems.push({
           id: match.id,
           price_data: {
             currency: "usd",
             unit_amount: d.priceCents,
             recurring: { interval: "month" },
-            product_data: {
-              name: d.name,
-              metadata: d.productMetadata,
-            },
+            product: productId,
           },
         });
       }
     } else {
+      // No existing item to reuse — create a fresh Product and reference
+      // it by ID. subscriptions.update doesn't accept inline product_data.
+      const product = await stripe.products.create({
+        name: d.name,
+        metadata: d.productMetadata,
+      });
       updateItems.push({
         price_data: {
           currency: "usd",
           unit_amount: d.priceCents,
           recurring: { interval: "month" },
-          product_data: {
-            name: d.name,
-            metadata: d.productMetadata,
-          },
+          product: product.id,
         },
       });
     }
