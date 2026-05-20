@@ -12,10 +12,16 @@ import {
   type ResolvedSelection,
 } from "@/lib/plan-selection";
 import { basePlanCents } from "@/lib/pricing";
-import { generateAndStoreSowForRequest } from "@/lib/sow/generate";
+// SOW generation is currently disabled at the call site below. Keep the
+// import commented so re-enabling is a single uncomment.
+// import { generateAndStoreSowForRequest } from "@/lib/sow/generate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// SOW generation runs inline (Puppeteer cold-start + PDF render + Blob
+// upload) before the Stripe redirect. Default Vercel function timeout
+// (10s on hobby, 15s on pro) isn't enough — bump it.
+export const maxDuration = 60;
 
 /**
  * POST /api/stripe/checkout
@@ -161,14 +167,16 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // SOW PDF — generated before redirect so it exists at the moment of
-    // acceptance. Non-fatal: log + proceed if it fails.
-    let sowPdfUrl: string | null = null;
-    try {
-      sowPdfUrl = await generateAndStoreSowForRequest(planRequest.id);
-    } catch (err) {
-      console.error("SOW generation failed for", planRequest.id, err);
-    }
+    // SOW PDF generation is disabled for now. Re-enable by uncommenting
+    // the block below. The generator + admin regenerate route are still
+    // in place, so existing requests can be back-filled later via
+    // POST /api/admin/portal/plan-requests/[id]/sow/regenerate.
+    const sowPdfUrl: string | null = null;
+    // try {
+    //   sowPdfUrl = await generateAndStoreSowForRequest(planRequest.id);
+    // } catch (err) {
+    //   console.error("SOW generation failed for", planRequest.id, err);
+    // }
 
     return await createCheckoutSession({
       request,

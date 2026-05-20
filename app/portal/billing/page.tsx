@@ -63,19 +63,22 @@ export default async function BillingPage() {
       where: { userId, status: "SUCCEEDED" },
       _sum: { amount: true },
     }),
-    // Approved plan requests with a generated SOW PDF. We list every one
-    // (not just the latest) so users can grab historical SOWs after they
-    // upgrade or modify.
+    // Plan requests with a generated SOW PDF. We surface anything that
+    // has a SOW attached regardless of APPROVED vs PENDING — when the
+    // webhook hasn't fired yet (or in test mode without one configured)
+    // a paid request can sit in PENDING but still has a valid SOW.
     prisma.customPlanRequest.findMany({
       where: {
         userId,
-        status: "APPROVED",
+        source: "CHECKOUT",
         sowPdfUrl: { not: null },
+        status: { not: "REJECTED" },
       },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
         basePlan: true,
+        status: true,
         sowPdfUrl: true,
         sowGeneratedAt: true,
         createdAt: true,
