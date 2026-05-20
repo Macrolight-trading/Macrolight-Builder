@@ -16,7 +16,9 @@ type PlanOption = {
   billingType: BillingType;
 };
 
-type Tier = "NONE" | "STARTER" | "GROWTH" | "PRO";
+// Mirror of the Prisma `Plan` enum. Kept here so the PlanCategoryMeta
+// type matches what Prisma actually returns — CUSTOM included.
+type Tier = "NONE" | "STARTER" | "GROWTH" | "PRO" | "CUSTOM";
 
 type PlanCategoryMeta = {
   name: string;
