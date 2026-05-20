@@ -83,10 +83,10 @@ export default function Footer() {
               </span>
               <a
                 itemProp="telephone"
-                href="tel:+12482145877"
+                href="tel:+12482147957"
                 className="mt-1 inline-block text-white/60 hover:text-white transition-colors"
               >
-                (248) 214-5877
+                (248) 214-7957
               </a>
             </address>
 

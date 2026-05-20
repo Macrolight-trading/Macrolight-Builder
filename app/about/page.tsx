@@ -57,7 +57,7 @@ const aboutSchema = {
       postalCode: "48009",
       addressCountry: "US",
     },
-    telephone: "+1-248-214-5877",
+    telephone: "+1-248-214-7957",
   },
 };
 

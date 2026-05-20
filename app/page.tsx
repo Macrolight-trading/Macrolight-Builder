@@ -27,11 +27,11 @@ const organizationSchema = {
     postalCode: "48009",
     addressCountry: "US",
   },
-  telephone: "+1-248-214-5877",
+  telephone: "+1-248-214-7957",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "sales",
-    telephone: "+1-248-214-5877",
+    telephone: "+1-248-214-7957",
     url: "https://macrolight-builder.com/contact",
   },
   sameAs: [],
@@ -45,7 +45,7 @@ const localBusinessSchema = {
   description:
     "Client acquisition websites for local businesses — built, hosted, and managed so your phone rings more every month.",
   priceRange: "$$",
-  telephone: "+1-248-214-5877",
+  telephone: "+1-248-214-7957",
   address: {
     "@type": "PostalAddress",
     streetAddress: "1902 Villa Rd",

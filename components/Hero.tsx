@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeroPhotoCarousel from "./HeroPhotoCarousel";
-import HeroAuditForm from "./HeroAuditForm";
+import HeroPrimaryCTA from "./HeroPrimaryCTA";
 
 const MARQUEE_ITEMS = [
   "Conversion-Optimized Design",
@@ -48,18 +48,18 @@ export default function Hero() {
           {/* ── Left: Text ── */}
           <div className="flex flex-col justify-center">
 
-            {/* Social proof pill */}
+            {/* Social proof pill — reframed: "new agency" → boutique scarcity */}
             <div className="flex flex-wrap items-center gap-3 mb-8 animate-fade-in">
               <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-1.5 shadow-sm">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-500" aria-hidden />
                 <span className="text-xs font-medium text-gray-600">
-                  New agency. Full attention.
+                  Boutique by design. Limited builds per quarter.
                 </span>
               </div>
               <div className="inline-flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden />
                 <span className="text-xs font-medium text-gray-500">
-                  Now booking client builds — free audits available
+                  Founding cohort — booking calls this week
                 </span>
               </div>
             </div>
@@ -107,15 +107,15 @@ export default function Hero() {
               </span>
             </p>
 
-            {/* Inline audit form — single field first, expands on submit */}
+            {/* Primary CTA — Book a call (with audit form as fallback toggle) */}
             <div
               className="mt-9 max-w-xl animate-fade-in-up"
               style={{ animationDelay: "0.26s" }}
             >
-              <HeroAuditForm />
+              <HeroPrimaryCTA />
             </div>
 
-            {/* Secondary CTA + micro-trust */}
+            {/* Secondary nav links */}
             <div
               className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 animate-fade-in-up"
               style={{ animationDelay: "0.32s" }}
@@ -128,18 +128,21 @@ export default function Hero() {
                 <span aria-hidden>→</span>
               </Link>
               <span className="hidden sm:inline-block h-1 w-1 rounded-full bg-gray-300" aria-hidden />
-              <p className="text-xs text-gray-400">
-                No commitment · No credit card
-              </p>
+              <Link
+                href="/#pricing"
+                className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                See pricing →
+              </Link>
             </div>
 
-            {/* Stats */}
+            {/* Stats — reframed around the call commitment */}
             <div
               className="mt-10 pt-8 border-t border-gray-100 grid grid-cols-3 gap-6 max-w-sm animate-fade-in-up"
               style={{ animationDelay: "0.38s" }}
             >
               {[
-                ["< 24 hr", "Audit turnaround"],
+                ["15 min", "Audit call length"],
                 ["Lead-first", "Build approach"],
                 ["Birmingham, MI", "Built locally"],
               ].map(([num, label]) => (

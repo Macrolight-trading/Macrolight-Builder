@@ -8,6 +8,7 @@ import SiteShell from "@/components/SiteShell";
 import JsonLd from "@/components/JsonLd";
 import SessionProvider from "@/components/auth/SessionProvider";
 import CookieConsent from "@/components/CookieConsent";
+import Clarity from "@/components/Clarity";
 
 const BASE_URL = "https://macrolight-builder.com";
 
@@ -27,7 +28,7 @@ const organizationSchema = {
   url: BASE_URL,
   logo: `${BASE_URL}/logo.png`,
   email: "bbayley50@gmail.com",
-  telephone: "+1-248-214-5877",
+  telephone: "+1-248-214-7957",
   address: {
     "@type": "PostalAddress",
     streetAddress: "1902 Villa Rd",
@@ -168,6 +169,7 @@ gtag('config', 'AW-18165743878');`,
         </SessionProvider>
         <CookieConsent />
         <Analytics />
+        <Clarity />
       </body>
     </html>
   );

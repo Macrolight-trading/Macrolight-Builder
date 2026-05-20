@@ -90,10 +90,10 @@ export default function ContactPage() {
           <p className="mt-8 text-sm text-gray-400">
             Prefer email?{" "}
             <a
-              href="mailto:hello@macrolight-builder.com"
+              href="mailto:bbayley50@gmail.com"
               className="font-medium text-violet-600 hover:underline"
             >
-              hello@macrolight-builder.com
+              bbayley50@gmail.com
             </a>
           </p>
         </div>

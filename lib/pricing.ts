@@ -14,8 +14,8 @@ export const pricingTiers: PricingTier[] = [
     tagline: "A clean, conversion-ready launch for new local businesses.",
     buildFee: 1000,
     monthlyFee: 79,
-    ctaLabel: "Start with Starter",
-    ctaHref: "/contact?plan=starter",
+    ctaLabel: "Book a call about Starter",
+    ctaHref: "/book?plan=starter",
     features: [
       "3–5 page conversion-focused website",
       "Fast hosting on Vercel",
@@ -32,8 +32,8 @@ export const pricingTiers: PricingTier[] = [
     monthlyFee: 149,
     highlighted: true,
     badge: "Most Popular",
-    ctaLabel: "Install the Growth System",
-    ctaHref: "/contact?plan=growth",
+    ctaLabel: "Book a call to get started",
+    ctaHref: "/book?plan=growth",
     features: [
       "5–8 pages with conversion copywriting",
       "Built-in lead capture system",
@@ -48,8 +48,8 @@ export const pricingTiers: PricingTier[] = [
     tagline: "The full client acquisition engine for established businesses.",
     buildFee: 2000,
     monthlyFee: 249,
-    ctaLabel: "Scale with Pro",
-    ctaHref: "/contact?plan=pro",
+    ctaLabel: "Book a call about Pro",
+    ctaHref: "/book?plan=pro",
     features: [
       "Unlimited pages + advanced funnels",
       "AI chatbot integration",

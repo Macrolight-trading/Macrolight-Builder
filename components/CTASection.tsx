@@ -12,18 +12,25 @@ interface CTASectionProps {
 }
 
 const TRUST_SIGNALS = [
-  { value: "Founding", label: "Client cohort" },
+  { value: "15 min", label: "Audit call length" },
   { value: "Lead-first", label: "Build philosophy" },
-  { value: "< 24 hrs", label: "Avg. response" },
-  { value: "3", label: "Long-term contracts" },
+  { value: "Founding", label: "Client cohort" },
+  { value: "0", label: "Long-term contracts" },
+];
+
+const CALL_AGENDA = [
+  "Screen-share your current site live",
+  "Run our 20-point audit while you watch",
+  "Show you the 3 biggest leaks costing leads",
+  "Tell you straight whether we're a fit",
 ];
 
 export default function CTASection({
   eyebrow = "Ready when you are",
-  headline = "Get Your Free Website Audit.",
-  subhead = "We analyze your site across 20 conversion factors and send you a prioritized action plan — no cost, no commitment.",
-  primaryLabel = "Request My Audit",
-  primaryHref = "/contact",
+  headline = "Book your free 15-min audit call.",
+  subhead = "Hop on with a founder. We'll screen-share your site, run our 20-point audit live, and show you exactly where you're losing customers. No pitch, no contract — and if we're not a fit, we'll tell you who is.",
+  primaryLabel = "Find a time on our calendar",
+  primaryHref = "/book",
   secondaryLabel = "See Pricing",
   secondaryHref = "/pricing",
 }: CTASectionProps) {
@@ -68,9 +75,26 @@ export default function CTASection({
               {headline}
             </h2>
 
-            <p className="text-base text-white/50 leading-relaxed max-w-lg mb-10">
+            <p className="text-base text-white/50 leading-relaxed max-w-lg mb-8">
               {subhead}
             </p>
+
+            {/* Call agenda — reduces booking anxiety by spelling out what happens */}
+            <div className="mb-10 max-w-lg">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white/40 mb-4">
+                On the call, we&apos;ll:
+              </p>
+              <ul className="space-y-2.5">
+                {CALL_AGENDA.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-white/70">
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" aria-hidden>
+                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
               <Link
@@ -96,7 +120,7 @@ export default function CTASection({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
               </svg>
               <p className="text-sm text-white/40">
-                No contracts. Free audit delivered within 24 hours.
+                15 minutes. No pitch. No contract. You leave with the audit either way.
               </p>
             </div>
           </div>

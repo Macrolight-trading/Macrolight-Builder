@@ -623,8 +623,8 @@ export default function TermsPage() {
           1902 Villa Rd, Birmingham, MI 48009
           <br />
           Phone:{" "}
-          <a href="tel:+12482145877" className={A}>
-            (248) 214-5877
+          <a href="tel:+12482147957" className={A}>
+            (248) 214-7957
           </a>
           <br />
           Email:{" "}

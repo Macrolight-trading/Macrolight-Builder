@@ -49,7 +49,7 @@ const COMPANY = {
   legalName: "Macrolight Builder LLC",
   brand: "Macrolight Builder",
   address: "1902 Villa Rd, Birmingham, MI 48009",
-  phone: "(248) 214-5877",
+  phone: "(248) 214-7957",
   email: "bbayley50@gmail.com",
   website: "macrolight-builder.com",
 };
