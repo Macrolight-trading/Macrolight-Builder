@@ -46,7 +46,7 @@ export default async function BookACallPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Book a call</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Pick a time that works for you — calls are 30 minutes and you&apos;ll
+          Pick a time that works for you — calls are 15 minutes and you&apos;ll
           get a calendar invite plus a video link by email.
         </p>
       </div>

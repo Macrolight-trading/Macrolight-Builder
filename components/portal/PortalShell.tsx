@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 
 const nav = [
   { label: "Dashboard", href: "/portal", icon: HomeIcon, exact: true },
-  { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
   { label: "Book a Call", href: "/portal/book-a-call", icon: CalendarIcon },
+  { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
   { label: "Onboarding", href: "/portal/onboarding", icon: ClipboardIcon },
   { label: "My Project", href: "/portal/project", icon: TimelineIcon },
   { label: "Messages", href: "/portal/messages", icon: ChatIcon },
