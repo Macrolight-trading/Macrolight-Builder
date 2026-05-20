@@ -31,10 +31,12 @@ export default function CalEmbed({
       const cal = await getCalApi();
       cal("ui", {
         theme: "light",
+        // Cal's types require both light + dark keys even when theme is
+        // pinned. We mirror the violet brand color across both so a
+        // future dark-mode flip Just Works.
         cssVarsPerTheme: {
-          light: {
-            "cal-brand": "#7c3aed",
-          },
+          light: { "cal-brand": "#7c3aed" },
+          dark: { "cal-brand": "#7c3aed" },
         },
         hideEventTypeDetails: false,
         layout: "month_view",
