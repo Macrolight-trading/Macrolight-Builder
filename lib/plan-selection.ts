@@ -185,45 +185,124 @@ export type UserSubscriptionState = {
   subscribedOptionIds: string[];
 };
 
+function toBasePlanKey(bp: string): BasePlanKey {
+  return bp === "STARTER" ||
+    bp === "GROWTH" ||
+    bp === "PRO" ||
+    bp === "CUSTOM"
+    ? bp
+    : "NONE";
+}
+
 /**
  * Read the user's current active subscription state. Used by:
  *   - /portal/build-plan to pre-check options the user is already paying for
  *   - /api/stripe/checkout to decide whether to start a new subscription or
  *     modify an existing one
+ *   - /portal/billing to display the current plan + active add-ons
  *
- * "Active" = ACTIVE or TRIALING. Anything else is treated as "no live sub"
- * so users in PAST_DUE or CANCELED state get the full new-checkout flow.
+ * Resolution order:
+ *   1. ACTIVE / TRIALING Subscription row (canonical — written by the
+ *      customer.subscription.* webhook events).
+ *   2. User.plan != NONE — they've paid for SOMETHING. Pair it with the
+ *      most recent CHECKOUT CustomPlanRequest (any status) to recover the
+ *      add-on selection. This is the fallback when the subscription.*
+ *      webhooks aren't configured but checkout.session.completed or
+ *      invoice.payment_succeeded set User.plan.
+ *   3. Most recent APPROVED CHECKOUT request, even if User.plan wasn't set
+ *      for some reason (defensive — shouldn't happen normally).
+ *   4. Nothing — return empty state.
  */
 export async function getUserSubscriptionState(
   userId: string,
 ): Promise<UserSubscriptionState> {
+  // 1. Canonical: live Subscription row.
   const sub = await prisma.subscription.findFirst({
     where: { userId, status: { in: ["ACTIVE", "TRIALING"] } },
     include: { items: true },
     orderBy: { createdAt: "desc" },
   });
-  if (!sub) {
+
+  if (sub) {
+    const subscribedOptionIds = sub.items
+      .filter((i) => i.kind === "addon" && i.optionId)
+      .map((i) => i.optionId as string);
     return {
-      subscriptionId: null,
-      stripeSubscriptionId: null,
-      status: null,
-      basePlan: null,
-      subscribedOptionIds: [],
+      subscriptionId: sub.id,
+      stripeSubscriptionId: sub.stripeSubscriptionId,
+      status: sub.status as string,
+      basePlan: toBasePlanKey(sub.basePlan as string),
+      subscribedOptionIds,
     };
   }
-  const subscribedOptionIds = sub.items
-    .filter((i) => i.kind === "addon" && i.optionId)
-    .map((i) => i.optionId as string);
-  const bp = sub.basePlan as string;
-  const validBp: BasePlanKey =
-    bp === "STARTER" || bp === "GROWTH" || bp === "PRO" || bp === "CUSTOM"
-      ? bp
-      : "NONE";
+
+  // 2 + 3. Fallback to User.plan and/or most recent CHECKOUT request.
+  // We trust User.plan as the source of truth for the base plan when set
+  // — it's how every code path elsewhere in the app reads "what plan are
+  // they on" (the portal nav, the billing card, etc.).
+  const [user, recentCheckout] = await Promise.all([
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { plan: true },
+    }),
+    prisma.customPlanRequest.findFirst({
+      where: { userId, source: "CHECKOUT" },
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  const userPlan = user?.plan ?? "NONE";
+
+  if (userPlan !== "NONE") {
+    // They've paid for something. Pull add-ons from their most recent
+    // CHECKOUT request (regardless of PENDING/APPROVED — PENDING means
+    // checkout.session.completed didn't fire to promote it, but they
+    // clearly checked out since User.plan is set).
+    const subscribedOptionIds = recentCheckout
+      ? recentCheckout.items
+          .filter(
+            (i) =>
+              !i.includedInBasePlan &&
+              i.billingType === "MONTHLY" &&
+              i.optionId,
+          )
+          .map((i) => i.optionId as string)
+      : [];
+    return {
+      subscriptionId: null,
+      stripeSubscriptionId: recentCheckout?.stripeSubscriptionId ?? null,
+      status: "ACTIVE",
+      basePlan: toBasePlanKey(userPlan),
+      subscribedOptionIds,
+    };
+  }
+
+  // 3. User.plan is NONE but maybe an APPROVED request exists somehow.
+  if (recentCheckout && recentCheckout.status === "APPROVED") {
+    const subscribedOptionIds = recentCheckout.items
+      .filter(
+        (i) =>
+          !i.includedInBasePlan &&
+          i.billingType === "MONTHLY" &&
+          i.optionId,
+      )
+      .map((i) => i.optionId as string);
+    return {
+      subscriptionId: null,
+      stripeSubscriptionId: recentCheckout.stripeSubscriptionId,
+      status: "ACTIVE",
+      basePlan: toBasePlanKey(recentCheckout.basePlan as string),
+      subscribedOptionIds,
+    };
+  }
+
+  // 4. No subscription at all.
   return {
-    subscriptionId: sub.id,
-    stripeSubscriptionId: sub.stripeSubscriptionId,
-    status: sub.status as string,
-    basePlan: validBp,
-    subscribedOptionIds,
+    subscriptionId: null,
+    stripeSubscriptionId: null,
+    status: null,
+    basePlan: null,
+    subscribedOptionIds: [],
   };
 }

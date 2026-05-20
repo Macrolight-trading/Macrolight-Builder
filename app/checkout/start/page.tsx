@@ -48,7 +48,6 @@ function CheckoutStartInner() {
   const { status } = useSession();
   const [message, setMessage] = useState("Waiting for confirmation…");
   const [error, setError] = useState<string | null>(null);
-  const [modified, setModified] = useState<{ message: string } | null>(null);
   // Was the TOS already accepted on the way in (e.g., from /pricing →
   // /signup → here)? CheckoutButton stores a flag in sessionStorage; we
   // honor it so the user doesn't get prompted twice.
@@ -114,18 +113,6 @@ function CheckoutStartInner() {
         if (!res.ok) {
           throw new Error(data?.error || "Checkout failed");
         }
-        // The API uses the MODIFY path when the user is already
-        // subscribed. There's no Stripe URL to redirect to — the
-        // subscription was updated server-side and Stripe charged or
-        // credited the proration. Show inline confirmation.
-        if (data?.modified) {
-          setModified({
-            message:
-              data.message ||
-              "Subscription updated. Net difference billed or credited immediately.",
-          });
-          return;
-        }
         if (!data?.url) {
           throw new Error("Checkout failed: no redirect URL returned");
         }
@@ -135,28 +122,6 @@ function CheckoutStartInner() {
         setError(e instanceof Error ? e.message : "Checkout failed");
       });
   }, [tosAccepted, status, plan, optionIds]);
-
-  if (modified) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white border border-emerald-200 rounded-2xl p-8 text-center shadow-sm">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center mb-4">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h1 className="text-lg font-bold text-gray-900">Subscription updated</h1>
-          <p className="mt-2 text-sm text-gray-500">{modified.message}</p>
-          <a
-            href="/portal/billing"
-            className="mt-5 inline-block px-4 py-2.5 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700"
-          >
-            Go to billing
-          </a>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (

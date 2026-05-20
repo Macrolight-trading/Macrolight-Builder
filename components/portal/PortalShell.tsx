@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const nav = [
   { label: "Dashboard", href: "/portal", icon: HomeIcon, exact: true },
   { label: "Build a Plan", href: "/portal/build-plan", icon: BuildPlanIcon },
+  { label: "Book a Call", href: "/portal/book-a-call", icon: CalendarIcon },
   { label: "Onboarding", href: "/portal/onboarding", icon: ClipboardIcon },
   { label: "My Project", href: "/portal/project", icon: TimelineIcon },
   { label: "Messages", href: "/portal/messages", icon: ChatIcon },
@@ -207,6 +208,14 @@ function BuildPlanIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z" />
+    </svg>
+  );
+}
+
+function CalendarIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3M16 7V3M3 11h18M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" />
     </svg>
   );
 }

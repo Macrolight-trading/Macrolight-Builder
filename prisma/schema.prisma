@@ -63,6 +63,7 @@ model User {
   sessions      Session[]
   payments      Payment[]
   subscriptions Subscription[]
+  bookings      Booking[]
 
   ownedLeads      Lead[]     @relation("LeadOwner")
   ownedDeals      Deal[]     @relation("DealOwner")
@@ -459,6 +460,7 @@ model PlanOption {
   items               CustomPlanRequestItem[]
   recommendationItems PlanRecommendationItem[]
   subscriptionItems   SubscriptionItem[]
+  defaultTemplateItems DefaultPlanTemplateItem[]
 
   @@index([active, category, sortOrder])
   @@map("plan_options")
@@ -482,13 +484,20 @@ model CustomPlanRequest {
   updatedAt           DateTime          @updatedAt
 
   stripeCheckoutSessionId String?       @unique
-  stripeSubscriptionId    String?       @unique
+  // NOT unique — every modify produces a fresh CustomPlanRequest pointing
+  // at the same Stripe subscription. Idempotency for a single checkout
+  // attempt is keyed off stripeCheckoutSessionId.
+  stripeSubscriptionId    String?
   subscription            Subscription? @relation(fields: [stripeSubscriptionId], references: [stripeSubscriptionId], onDelete: SetNull)
+
+  sowPdfUrl      String?
+  sowGeneratedAt DateTime?
 
   items CustomPlanRequestItem[]
 
   @@index([userId])
   @@index([status, createdAt])
+  @@index([stripeSubscriptionId])
   @@map("custom_plan_requests")
 }
 
@@ -535,6 +544,34 @@ model PlanRecommendationItem {
   @@map("plan_recommendation_items")
 }
 
+/**
+ * Singleton default template applied to every new signup.
+ * There is exactly one row (id = "default").
+ * Admins edit this at /admin/portal/plan-recommendations/default.
+ */
+model DefaultPlanTemplate {
+  id        String   @id @default("default")
+  basePlan  Plan     @default(STARTER)
+  notes     String?  @db.Text
+  updatedAt DateTime @updatedAt
+
+  items DefaultPlanTemplateItem[]
+
+  @@map("default_plan_template")
+}
+
+model DefaultPlanTemplateItem {
+  id         String              @id @default(cuid())
+  templateId String
+  template   DefaultPlanTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  optionId   String
+  option     PlanOption          @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, optionId])
+  @@index([templateId])
+  @@map("default_plan_template_items")
+}
+
 model Subscription {
   id                   String             @id @default(cuid())
   userId               String
@@ -550,8 +587,10 @@ model Subscription {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
-  items       SubscriptionItem[]
-  planRequest CustomPlanRequest?
+  items        SubscriptionItem[]
+  /// Every modify-flow checkout writes a fresh CustomPlanRequest tied to
+  /// the same subscription — one-to-many so the history is queryable.
+  planRequests CustomPlanRequest[]
 
   @@index([userId])
   @@index([status])
@@ -587,4 +626,52 @@ model PlanCategory {
   updatedAt         DateTime @updatedAt
 
   @@map("plan_categories")
+}
+
+// ── Booking (Cal.com mirror) ────────────────────────────────────────────────
+
+enum BookingStatus {
+  CONFIRMED
+  PENDING
+  CANCELED
+  RESCHEDULED
+  COMPLETED
+  NO_SHOW
+}
+
+/// Mirror of a Cal.com (or future provider) booking. Cal.com remains the
+/// system of record — this table exists so the portal can show "Your
+/// upcoming calls" without a round-trip to Cal's API, and so admin / CRM
+/// tooling can query against bookings locally.
+model Booking {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// Cal.com booking UID (e.g. "abc123"). Unique per provider; collisions
+  /// across providers are unlikely but we don't enforce.
+  externalId     String?       @unique
+  /// "cal.com" today. Reserved for future schedulers.
+  externalSource String        @default("cal.com")
+  status         BookingStatus @default(CONFIRMED)
+  startsAt       DateTime
+  endsAt         DateTime
+  title          String?
+  attendeeName   String?
+  attendeeEmail  String?
+  /// Slug of the Cal.com event type that produced the booking (e.g.
+  /// "strategy-call"). Lets us filter by call type later.
+  callType       String?
+  notes          String?       @db.Text
+  /// Conference link (Zoom, Google Meet, Cal video).
+  meetingUrl     String?
+  /// User-facing self-service links provided by Cal.com.
+  cancelUrl      String?
+  rescheduleUrl  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([startsAt])
+  @@index([status, startsAt])
+  @@map("bookings")
 }

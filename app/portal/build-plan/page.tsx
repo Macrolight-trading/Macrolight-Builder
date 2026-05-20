@@ -50,16 +50,24 @@ export default async function BuildPlanPage() {
 
   const recommendedIds = recommendation?.items.map((i) => i.optionId) ?? [];
   const hasRecommendation = Boolean(recommendation);
-  const hasActiveSubscription = Boolean(subState.subscriptionId);
+  // "Active" = the fallback in getUserSubscriptionState set a basePlan.
+  // We can't rely on subscriptionId being non-null because the canonical
+  // Subscription row only exists after customer.subscription.* webhooks
+  // fire — most users will be on the User.plan fallback.
+  const hasActiveSubscription = Boolean(subState.basePlan);
 
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Build your plan</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          {hasActiveSubscription ? "Manage your plan" : "Build your plan"}
+        </h1>
         <p className="mt-1 text-sm text-gray-500">
-          {hasRecommendation
-            ? "We've pre-filled the plan we recommended after our meeting. Review, adjust anything you'd like, and send it back to confirm."
-            : "Pick a base plan and tick the services you want. We'll send back a quote — no charges happen here."}
+          {hasActiveSubscription
+            ? "Add or remove services. We'll prorate the difference and charge or credit your card immediately."
+            : hasRecommendation
+              ? "We've pre-filled the plan we recommended after our meeting. Review, adjust anything you'd like, and send it back to confirm."
+              : "Pick a base plan and tick the services you want. We'll send back a quote — no charges happen here."}
         </p>
       </div>
 

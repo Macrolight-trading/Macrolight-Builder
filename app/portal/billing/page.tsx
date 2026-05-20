@@ -3,6 +3,8 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import ManageBillingButton from "@/components/portal/ManageBillingButton";
+import { getUserSubscriptionState } from "@/lib/plan-selection";
+import { basePlanCents } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +20,37 @@ export default async function BillingPage() {
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) return null;
 
-  const [user, payments, sum] = await Promise.all([
+  const subState = await getUserSubscriptionState(userId);
+
+  // Look up the display names + prices for the user's active monthly
+  // add-ons. We can't trust the option to still exist (admin may have
+  // retired it) so fall back to "Add-on" / $0 in those edge cases.
+  const activeAddons =
+    subState.subscribedOptionIds.length > 0
+      ? await prisma.planOption.findMany({
+          where: { id: { in: subState.subscribedOptionIds } },
+          select: {
+            id: true,
+            name: true,
+            priceCents: true,
+            billingType: true,
+            category: true,
+          },
+        })
+      : [];
+  const activeMonthlyAddons = activeAddons.filter(
+    (o) => o.billingType === "MONTHLY",
+  );
+  const addonMonthlyTotal = activeMonthlyAddons.reduce(
+    (sum, o) => sum + o.priceCents,
+    0,
+  );
+  const baseMonthlyCents = subState.basePlan
+    ? basePlanCents(subState.basePlan)?.monthlyCents ?? 0
+    : 0;
+  const recurringTotal = baseMonthlyCents + addonMonthlyTotal;
+
+  const [user, payments, sum, sows] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
       select: { plan: true, stripeCustomerId: true },
@@ -30,6 +62,24 @@ export default async function BillingPage() {
     prisma.payment.aggregate({
       where: { userId, status: "SUCCEEDED" },
       _sum: { amount: true },
+    }),
+    // Approved plan requests with a generated SOW PDF. We list every one
+    // (not just the latest) so users can grab historical SOWs after they
+    // upgrade or modify.
+    prisma.customPlanRequest.findMany({
+      where: {
+        userId,
+        status: "APPROVED",
+        sowPdfUrl: { not: null },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        basePlan: true,
+        sowPdfUrl: true,
+        sowGeneratedAt: true,
+        createdAt: true,
+      },
     }),
   ]);
 
@@ -52,6 +102,55 @@ export default async function BillingPage() {
           <p className="mt-2 text-2xl font-extrabold text-violet-700">
             {user?.plan ?? "STARTER"}
           </p>
+
+          {/* Active add-ons. We list them inline under the plan name so
+              the user can see what they're paying for at a glance — not
+              just the base tier. */}
+          {activeMonthlyAddons.length > 0 ? (
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1.5">
+                Active add-ons
+              </p>
+              <ul className="space-y-1">
+                {activeMonthlyAddons.map((a) => (
+                  <li
+                    key={a.id}
+                    className="flex items-center justify-between text-xs"
+                  >
+                    <span className="text-gray-700 truncate">{a.name}</span>
+                    <span className="font-mono text-gray-500 ml-2 whitespace-nowrap">
+                      ${(a.priceCents / 100).toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                      })}
+                      <span className="text-gray-400">/mo</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-2 pt-2 border-t border-gray-50 flex items-baseline justify-between text-xs">
+                <span className="text-gray-500 font-semibold">
+                  Monthly total
+                </span>
+                <span className="font-mono text-gray-900 font-semibold">
+                  ${(recurringTotal / 100).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                  })}
+                  <span className="text-gray-400">/mo</span>
+                </span>
+              </div>
+            </div>
+          ) : subState.basePlan ? (
+            <p className="mt-2 text-xs text-gray-400">
+              No active add-ons. Total{" "}
+              <span className="font-mono text-gray-700">
+                ${(baseMonthlyCents / 100).toLocaleString(undefined, {
+                  minimumFractionDigits: 0,
+                })}
+                /mo
+              </span>
+            </p>
+          ) : null}
+
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
             <Link
               href="/pricing"
@@ -63,7 +162,7 @@ export default async function BillingPage() {
               href="/portal/build-plan"
               className="text-xs font-semibold text-violet-600 hover:text-violet-700"
             >
-              Build a custom plan &rarr;
+              {activeMonthlyAddons.length > 0 ? "Manage add-ons" : "Build a custom plan"} &rarr;
             </Link>
             <ManageBillingButton hasStripeCustomer={Boolean(user?.stripeCustomerId)} />
           </div>
@@ -81,6 +180,59 @@ export default async function BillingPage() {
           </p>
         </div>
       </div>
+
+      {sows.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
+          <div className="px-5 py-4 border-b border-gray-100">
+            <h2 className="text-sm font-semibold text-gray-900">Documents</h2>
+            <p className="mt-0.5 text-xs text-gray-500">
+              Signed Statements of Work for your subscription history.
+            </p>
+          </div>
+          <ul className="divide-y divide-gray-50">
+            {sows.map((s) => (
+              <li
+                key={s.id}
+                className="flex items-center justify-between px-5 py-3.5"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-900">
+                    Statement of Work · {s.basePlan}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Issued{" "}
+                    {new Date(
+                      s.sowGeneratedAt ?? s.createdAt,
+                    ).toLocaleDateString()}{" "}
+                    · SOW-{s.id.slice(-10).toUpperCase()}
+                  </p>
+                </div>
+                <a
+                  href={`/api/portal/plan-requests/${s.id}/sow?download=1`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-violet-700 bg-violet-50 hover:bg-violet-100 rounded-lg"
+                >
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"
+                    />
+                  </svg>
+                  Download PDF
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100">

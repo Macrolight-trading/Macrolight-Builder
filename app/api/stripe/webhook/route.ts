@@ -208,6 +208,39 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
         stripeSubscriptionId: subscriptionId,
       },
     });
+    // SOW PDF is generated synchronously in /api/stripe/checkout BEFORE
+    // the user is sent to Stripe — see lib/sow/generate.ts. This handler
+    // only promotes the request to APPROVED; the doc already exists.
+  }
+
+  // Upgrade flow: if the user already had a subscription before this
+  // checkout, cancel it now that the new one is active. We set
+  // cancel_at_period_end=true so they keep service through the period
+  // they've already paid for, then auto-cancel at the boundary.
+  const previousSubscriptionId =
+    session.metadata?.previousSubscriptionId || null;
+  if (
+    previousSubscriptionId &&
+    subscriptionId &&
+    previousSubscriptionId !== subscriptionId
+  ) {
+    try {
+      await stripe.subscriptions.update(previousSubscriptionId, {
+        cancel_at_period_end: true,
+        metadata: {
+          canceledByUpgrade: "true",
+          replacedBy: subscriptionId,
+        },
+      });
+    } catch (err) {
+      // Don't fail the webhook — the user has their new sub. Surface in
+      // logs so admin can clean up manually if needed.
+      console.error(
+        "Failed to schedule cancellation of previous subscription",
+        previousSubscriptionId,
+        err,
+      );
+    }
   }
 
   // Subscription record is created/updated by the subscription.* events,

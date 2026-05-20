@@ -66,6 +66,28 @@ export async function POST(request: Request) {
       select: { id: true, email: true, name: true, role: true },
     });
 
+    // Seed a plan recommendation from the admin-configured default template.
+    // If no template exists yet, fall back to STARTER with no add-ons.
+    const defaultTemplate = await prisma.defaultPlanTemplate.findUnique({
+      where: { id: "default" },
+      include: { items: { select: { optionId: true } } },
+    });
+
+    await prisma.planRecommendation.create({
+      data: {
+        userId: user.id,
+        basePlan: defaultTemplate?.basePlan ?? "STARTER",
+        notes: defaultTemplate?.notes ?? "New signup — review and customize this recommendation after the intro call.",
+        ...(defaultTemplate?.items.length
+          ? {
+              items: {
+                create: defaultTemplate.items.map((i) => ({ optionId: i.optionId })),
+              },
+            }
+          : {}),
+      },
+    });
+
     // Send welcome email to the new user (fire-and-forget)
     sendEmail({
       to: user.email,

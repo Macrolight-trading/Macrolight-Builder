@@ -351,15 +351,11 @@ export default function PlanBuilder({
   }
 
   /**
-   * Direct-checkout path: build a Stripe Checkout session from the current
-   * selection and redirect. The /api/stripe/checkout route snapshots the
-   * selection as a CustomPlanRequest (source = CHECKOUT) before sending the
-   * user to Stripe, so we don't need a separate "save first" call.
-   *
-   * If the user has an active subscription, the API returns
-   * { modified: true } instead of a Stripe URL — Stripe modified the
-   * subscription in place, charging only the net difference, so we show an
-   * inline success rather than a redirect.
+   * Checkout path: every plan change — new signup or upgrade — goes
+   * through Stripe Checkout. The /api/stripe/checkout route snapshots the
+   * selection as a PENDING CustomPlanRequest and creates a fresh Stripe
+   * Checkout Session, returning a redirect URL. For upgrades, the webhook
+   * cancels the previous subscription after the new one activates.
    */
   async function checkout() {
     setError(null);
@@ -377,15 +373,6 @@ export default function PlanBuilder({
       const data = await res.json().catch(() => null);
       if (!res.ok) {
         throw new Error(data?.error ?? "Checkout failed");
-      }
-      if (data?.modified) {
-        // In-place modification — Stripe charged/credited the diff. Show
-        // the success card so the user can see it worked without a Stripe
-        // round-trip.
-        setSubmitted(true);
-        router.refresh();
-        setSubmitting(false);
-        return;
       }
       if (!data?.url) {
         throw new Error("Checkout failed: no redirect URL returned");
@@ -405,13 +392,10 @@ export default function PlanBuilder({
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-lg font-bold text-gray-900">
-          {hasActiveSubscription ? "Subscription updated" : "Request submitted"}
-        </h2>
+        <h2 className="text-lg font-bold text-gray-900">Request submitted</h2>
         <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
-          {hasActiveSubscription
-            ? "Your changes are live. Any net difference will appear on your next invoice — or has already been charged if you added something new."
-            : "We'll review your custom plan and follow up shortly. You can build another one below if you'd like to revise it."}
+          We&apos;ll review your custom plan and follow up shortly. You can
+          build another one below if you&apos;d like to revise it.
         </p>
         <button
           onClick={() => {

@@ -95,12 +95,6 @@ export default function CheckoutButton({
       if (!res.ok) {
         throw new Error(data?.error || "Checkout failed");
       }
-      // MODIFY path returns { modified: true } and no URL. Send the user
-      // to /portal/billing so they can see the new state.
-      if (data?.modified) {
-        window.location.href = "/portal/billing?checkout=updated";
-        return;
-      }
       if (!data?.url) {
         throw new Error("Checkout failed: no redirect URL returned");
       }
