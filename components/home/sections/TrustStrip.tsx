@@ -1,7 +1,7 @@
 "use client";
 
-import { Stagger, StaggerItem } from "../motion/Stagger";
-import Reveal from "../motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import Reveal from "@/components/motion/Reveal";
 import CountUp from "./CountUp";
 
 /**

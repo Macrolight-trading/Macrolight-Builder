@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import Reveal from "../motion/Reveal";
+import Reveal from "@/components/motion/Reveal";
 
 /**
  * Industry breadth strip — Macrolight's replacement for FlowNinja's

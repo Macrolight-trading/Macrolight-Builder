@@ -1,4 +1,4 @@
-import ScrollProgress from "./motion/ScrollProgress";
+import ScrollProgress from "@/components/motion/ScrollProgress";
 import Hero from "./sections/Hero";
 import IndustryStrip from "./sections/IndustryStrip";
 import TrustStrip from "./sections/TrustStrip";

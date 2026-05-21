@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef } from "react";
-import Reveal from "../motion/Reveal";
-import { Stagger, StaggerItem } from "../motion/Stagger";
+import Reveal from "@/components/motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 /**
  * Outcomes / proof band — the page's emotional center.

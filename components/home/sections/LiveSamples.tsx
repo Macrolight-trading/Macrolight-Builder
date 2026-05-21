@@ -9,9 +9,9 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { useRef, useState, type ComponentType, type MouseEvent } from "react";
-import Reveal from "../motion/Reveal";
-import { Stagger, StaggerItem } from "../motion/Stagger";
-import { DUR, EASE } from "../motion/tokens";
+import Reveal from "@/components/motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import { DUR, EASE } from "@/components/motion/tokens";
 import {
   LawnCarePreview,
   LawFirmPreview,
@@ -22,17 +22,16 @@ import {
 
 /**
  * Live samples gallery. Each card wraps a real industry preview
- * component (not a stylized placeholder) inside a browser-chrome
- * frame. On hover, the card tilts in 3D based on cursor position
- * (perspective + rotateX/rotateY via spring-smoothed motion values),
- * with a soft specular highlight that tracks the cursor.
+ * component inside a browser-chrome frame. On hover, the card tilts
+ * in 3D based on cursor position (perspective + rotateX/rotateY via
+ * spring-smoothed motion values), with a soft specular highlight that
+ * tracks the cursor.
  *
  * Layout:
  *   - md+: 2 columns, wide enough that each preview reads clearly
  *   - mobile: 1 column, full-width
  *
- * 3D tilt is disabled under prefers-reduced-motion — falls back to a
- * static card with a subtle lift on hover.
+ * 3D tilt is disabled under prefers-reduced-motion.
  */
 
 interface Sample {
@@ -128,23 +127,17 @@ export default function LiveSamples() {
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────── */
-/*  Card with 3D tilt on hover                                          */
-/* ─────────────────────────────────────────────────────────────────── */
 function SampleCard({ sample }: { sample: Sample }) {
   const reduce = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Normalized cursor position relative to card center (-0.5 to 0.5).
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Convert to tilt degrees. Inverted Y so cursor-up tilts the card forward.
   const rotateXRaw = useTransform(mouseY, [-0.5, 0.5], [6, -6]);
   const rotateYRaw = useTransform(mouseX, [-0.5, 0.5], [-6, 6]);
 
-  // Spring-smooth so the card glides, doesn't snap.
   const rotateX = useSpring(rotateXRaw, {
     stiffness: 220,
     damping: 22,
@@ -156,8 +149,6 @@ function SampleCard({ sample }: { sample: Sample }) {
     mass: 0.4,
   });
 
-  // Specular highlight follows cursor. Computed at top level (not inside
-  // JSX) so hook order is unconditional.
   const highlight = useTransform(
     [mouseX, mouseY],
     ([x, y]: number[]) =>
@@ -184,10 +175,6 @@ function SampleCard({ sample }: { sample: Sample }) {
     <Link
       href={sample.href}
       className="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:ring-stone-900 rounded-2xl"
-      style={{ perspective: 1200 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
     >
       <motion.div
         ref={cardRef}
@@ -198,8 +185,12 @@ function SampleCard({ sample }: { sample: Sample }) {
                 rotateX,
                 rotateY,
                 transformStyle: "preserve-3d",
+                perspective: 1200,
               }
         }
+        onMouseEnter={() => setHovered(true)}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
         animate={{
           y: !reduce && hovered ? -4 : 0,
           boxShadow: hovered
@@ -209,8 +200,6 @@ function SampleCard({ sample }: { sample: Sample }) {
         transition={{ duration: DUR.fast, ease: EASE }}
         className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white"
       >
-        {/* Specular highlight — tracks cursor on hover. Decorative;
-            pointer-events-none so clicks pass through to the Link. */}
         {!reduce && (
           <motion.div
             aria-hidden
@@ -222,7 +211,6 @@ function SampleCard({ sample }: { sample: Sample }) {
           />
         )}
 
-        {/* Browser chrome */}
         <div
           className="relative flex items-center gap-1.5 border-b border-stone-100 bg-stone-50 px-3 py-2.5"
           style={{ transform: "translateZ(20px)" }}
@@ -248,12 +236,10 @@ function SampleCard({ sample }: { sample: Sample }) {
           <div className="w-4" aria-hidden />
         </div>
 
-        {/* Real preview content */}
         <div className="relative overflow-hidden bg-white">
           <Preview />
         </div>
 
-        {/* Footer label */}
         <div
           className="flex items-center justify-between border-t border-stone-100 bg-white px-4 sm:px-5 py-3"
           style={{ transform: "translateZ(15px)" }}

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef } from "react";
-import { DUR, EASE } from "../motion/tokens";
-import Reveal from "../motion/Reveal";
-import Magnetic from "../motion/Magnetic";
+import { DUR, EASE } from "@/components/motion/tokens";
+import Reveal from "@/components/motion/Reveal";
+import Magnetic from "@/components/motion/Magnetic";
 
 /**
  * Final CTA. Bookends the hero — same warm radial gradient (drifting the

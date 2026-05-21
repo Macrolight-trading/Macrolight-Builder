@@ -44,30 +44,31 @@ const columns: Array<{
   },
 ];
 
+const ACCENT = "#C8A24B";
+
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-gray-900 mt-auto">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 py-14">
+    <footer className="bg-stone-900 mt-auto">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 py-16">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
           <div className="col-span-2">
             <Logo onDark />
-            <p className="mt-4 text-sm text-white/50 max-w-xs leading-relaxed">
+            <p className="mt-4 text-sm text-stone-400 max-w-xs leading-relaxed">
               Macrolight Builder installs client acquisition systems for local
               businesses. We build, host, and manage websites engineered to
               convert.
             </p>
 
-            {/* NAP — Name, Address, Phone. Marked up with microdata so Google
-                can pick it up as a LocalBusiness signal. Use real, identical
-                copy everywhere this appears (Google checks for consistency
-                across the web, GBP, citations, etc.). */}
             <address
               itemScope
               itemType="https://schema.org/LocalBusiness"
-              className="mt-5 not-italic text-sm text-white/55 leading-relaxed"
+              className="mt-6 not-italic text-sm text-stone-400 leading-relaxed"
             >
-              <span itemProp="name" className="block font-semibold text-white/80">
+              <span
+                itemProp="name"
+                className="block font-medium text-stone-200"
+              >
                 Macrolight Builder
               </span>
               <span
@@ -84,21 +85,27 @@ export default function Footer() {
               <a
                 itemProp="telephone"
                 href="tel:+12482147957"
-                className="mt-1 inline-block text-white/60 hover:text-white transition-colors"
+                className="mt-1 inline-block text-stone-300 hover:text-white transition-colors"
               >
                 (248) 214-7957
               </a>
             </address>
 
-            <div className="mt-5 flex items-center gap-2 text-white/35">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs">All systems operational</span>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-stone-700/60 bg-stone-800/40 px-3 py-1.5 text-stone-400">
+              <span
+                aria-hidden
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: ACCENT }}
+              />
+              <span className="text-[0.65rem] uppercase tracking-[0.18em] font-medium">
+                All systems operational
+              </span>
             </div>
           </div>
 
           {columns.map((col) => (
             <div key={col.title}>
-              <div className="text-xs font-semibold text-white/40 uppercase tracking-widest">
+              <div className="text-[0.65rem] font-semibold text-stone-400 uppercase tracking-[0.18em]">
                 {col.title}
               </div>
               <ul className="mt-4 space-y-3">
@@ -106,7 +113,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/55 hover:text-white transition-colors"
+                      className="text-sm text-stone-400 hover:text-white transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -117,11 +124,11 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-white/35">
+        <div className="mt-14 pt-8 border-t border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="text-xs text-stone-500">
             &copy; {year} Macrolight Builder. All rights reserved.
           </p>
-          <p className="text-xs text-white/35">
+          <p className="text-xs text-stone-500 italic font-display">
             Built for businesses that value leads over likes.
           </p>
         </div>

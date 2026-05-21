@@ -1,7 +1,7 @@
 "use client";
 
-import Reveal from "../motion/Reveal";
-import { Stagger, StaggerItem } from "../motion/Stagger";
+import Reveal from "@/components/motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 /**
  * "What you get" outcome-stats grid — Macrolight's version of

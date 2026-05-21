@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef } from "react";
-import Reveal from "../motion/Reveal";
-import { DUR, EASE } from "../motion/tokens";
+import Reveal from "@/components/motion/Reveal";
+import { DUR, EASE } from "@/components/motion/tokens";
 
 /**
  * Audit form repeat band — FlowNinja places the inline audit form in

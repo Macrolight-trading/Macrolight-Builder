@@ -15,8 +15,8 @@ import {
   useCallback,
   type ComponentType,
 } from "react";
-import { DUR, EASE, STAGGER } from "../motion/tokens";
-import Magnetic from "../motion/Magnetic";
+import { DUR, EASE, STAGGER } from "@/components/motion/tokens";
+import Magnetic from "@/components/motion/Magnetic";
 import {
   LawnCarePreview,
   LawFirmPreview,

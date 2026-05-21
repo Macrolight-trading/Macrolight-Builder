@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef } from "react";
-import Reveal from "../motion/Reveal";
-import { Stagger, StaggerItem } from "../motion/Stagger";
-import { DUR, EASE } from "../motion/tokens";
+import Reveal from "@/components/motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import { DUR, EASE } from "@/components/motion/tokens";
 
 /**
  * Three-step process with photo, copy, and a scroll-drawn connecting

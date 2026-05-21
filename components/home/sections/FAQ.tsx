@@ -2,8 +2,8 @@
 
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useState } from "react";
-import Reveal from "../motion/Reveal";
-import { DUR, EASE } from "../motion/tokens";
+import Reveal from "@/components/motion/Reveal";
+import { DUR, EASE } from "@/components/motion/tokens";
 
 /**
  * FAQ — six concise items to clear the most common objections before
