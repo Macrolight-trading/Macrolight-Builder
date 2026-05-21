@@ -9,10 +9,10 @@
  * here rather than inlining a magic number — that's how motion drift
  * starts.
  */
-import type { Variants, Transition } from "motion/react";
+import type { Variants } from "motion/react";
 
 /** Smooth out-easing. Used as the default for every reveal in v2. */
-export const EASE: Transition["ease"] = [0.22, 1, 0.36, 1];
+export const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export const DUR = {
   /** Snappy — hover lifts, micro-interactions. */
