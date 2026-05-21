@@ -20,14 +20,16 @@ export default function HeroPrimaryCTA() {
   const [showForm, setShowForm] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {!showForm ? (
         <>
-          {/* ── Primary: Book a call ── */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          {/* ── Primary: Book a call ──
+              On mobile the buttons stack and use slightly tighter padding so
+              they don't push the trust copy and stats off the first fold. */}
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
             <Link
               href="/book"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-violet-200 transition-all active:scale-[0.99] whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-700 hover:to-cyan-700 px-6 sm:px-7 py-3.5 sm:py-4 text-base font-semibold text-white shadow-lg shadow-violet-200 transition-all active:scale-[0.99] whitespace-nowrap"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5" aria-hidden>
                 <path
@@ -40,7 +42,7 @@ export default function HeroPrimaryCTA() {
             </Link>
             <a
               href="tel:+12482147957"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-4 text-base font-semibold text-gray-800 shadow-sm hover:border-violet-300 hover:text-violet-700 transition-all whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-5 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-semibold text-gray-800 shadow-sm hover:border-violet-300 hover:text-violet-700 transition-all whitespace-nowrap"
             >
               <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 text-violet-600" aria-hidden>
                 <path d="M2 3.5A1.5 1.5 0 013.5 2h2.879a1.5 1.5 0 011.06.44l1.829 1.828a1.5 1.5 0 01.328 1.628l-.715 1.788a11.04 11.04 0 005.434 5.434l1.788-.715a1.5 1.5 0 011.628.328l1.829 1.829a1.5 1.5 0 01.439 1.06V16.5A1.5 1.5 0 0116.5 18h-1A13.5 13.5 0 012 4.5v-1z" />
@@ -50,7 +52,7 @@ export default function HeroPrimaryCTA() {
           </div>
 
           {/* Trust microcopy */}
-          <p className="text-xs text-gray-500 pl-1.5">
+          <p className="text-[0.7rem] sm:text-xs text-gray-500 pl-1.5 leading-snug">
             <span className="font-semibold text-gray-700">15 minutes.</span>{" "}
             We screen-share your site, run our 20-point audit live, and tell
             you the 3 biggest leaks. No pitch, no contract.

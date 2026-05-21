@@ -43,20 +43,23 @@ export default function Hero() {
     <section className="relative overflow-hidden bg-white">
       {/* ── Main split layout ── */}
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 lg:min-h-[calc(100vh-64px)] items-center py-16 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 lg:min-h-[calc(100vh-64px)] items-center py-8 sm:py-14 lg:py-20">
 
           {/* ── Left: Text ── */}
           <div className="flex flex-col justify-center">
 
-            {/* Social proof pill — reframed: "new agency" → boutique scarcity */}
-            <div className="flex flex-wrap items-center gap-3 mb-8 animate-fade-in">
-              <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-1.5 shadow-sm">
+            {/* Social proof pill — reframed: "new agency" → boutique scarcity.
+                On mobile we show only the primary boutique pill to save vertical
+                space; the announcement banner above already surfaces the
+                "booking calls this week" message. */}
+            <div className="flex flex-wrap items-center gap-3 mb-5 sm:mb-8 animate-fade-in">
+              <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 sm:px-4 sm:py-1.5 shadow-sm">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-500" aria-hidden />
-                <span className="text-xs font-medium text-gray-600">
+                <span className="text-[0.7rem] sm:text-xs font-medium text-gray-600">
                   Boutique by design. Limited builds per quarter.
                 </span>
               </div>
-              <div className="inline-flex items-center gap-2">
+              <div className="hidden sm:inline-flex items-center gap-2">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden />
                 <span className="text-xs font-medium text-gray-500">
                   Founding cohort — booking calls this week
@@ -64,12 +67,15 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Headline — Playfair Display text art */}
+            {/* Headline — Playfair Display text art.
+                Mobile clamp lower bound reduced from 2.4rem → 1.95rem so the
+                headline takes 3 short lines instead of pushing the CTA below
+                the fold. */}
             <h1 className="animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
               {/* Line 1: large serif */}
               <span
                 className="block font-display font-bold text-gray-900 leading-[1.05] tracking-tight"
-                style={{ fontSize: "clamp(2.4rem, 5.5vw, 4.5rem)" }}
+                style={{ fontSize: "clamp(1.95rem, 5.5vw, 4.5rem)" }}
               >
                 Your Phone Should
               </span>
@@ -77,7 +83,7 @@ export default function Hero() {
               <span
                 className="block font-display font-bold italic leading-[1.05] tracking-tight"
                 style={{
-                  fontSize: "clamp(2.4rem, 5.5vw, 4.5rem)",
+                  fontSize: "clamp(1.95rem, 5.5vw, 4.5rem)",
                   background: "linear-gradient(90deg, #7c3aed 0%, #0891b2 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
@@ -86,18 +92,22 @@ export default function Hero() {
               >
                 Be Ringing More.
               </span>
-              {/* Line 3: smaller, muted */}
+              {/* Line 3: muted. Was text-gray-200 — too faint to read on
+                  mobile against the white background. text-gray-300 reads
+                  cleanly while still de-emphasizing the line vs. the first
+                  two. */}
               <span
-                className="block font-display font-bold text-gray-200 leading-[1.05] tracking-tight"
-                style={{ fontSize: "clamp(2.4rem, 5.5vw, 4.5rem)" }}
+                className="block font-display font-bold text-gray-300 leading-[1.05] tracking-tight"
+                style={{ fontSize: "clamp(1.95rem, 5.5vw, 4.5rem)" }}
               >
                 Every Single Month.
               </span>
             </h1>
 
-            {/* Sub copy */}
+            {/* Sub copy — tighter on mobile so the primary CTA stays above
+                the fold. */}
             <p
-              className="mt-7 text-lg text-gray-500 leading-relaxed max-w-lg animate-fade-in-up"
+              className="mt-5 sm:mt-7 text-base sm:text-lg text-gray-500 leading-relaxed max-w-lg animate-fade-in-up"
               style={{ animationDelay: "0.18s" }}
             >
               We build, host, and manage websites for local businesses that do
@@ -107,9 +117,20 @@ export default function Hero() {
               </span>
             </p>
 
+            {/* ── Mobile photo carousel ──
+                Lives inline here on mobile (between subhead and CTA) to
+                break up the text block. On desktop the photo collage lives
+                in the right column of the grid, so this is hidden. */}
+            <div
+              className="lg:hidden mt-6 animate-fade-in-up"
+              style={{ animationDelay: "0.22s" }}
+            >
+              <HeroPhotoCarousel />
+            </div>
+
             {/* Primary CTA — Book a call (with audit form as fallback toggle) */}
             <div
-              className="mt-9 max-w-xl animate-fade-in-up"
+              className="mt-6 sm:mt-9 max-w-xl animate-fade-in-up"
               style={{ animationDelay: "0.26s" }}
             >
               <HeroPrimaryCTA />
@@ -136,28 +157,36 @@ export default function Hero() {
               </Link>
             </div>
 
-            {/* Stats — reframed around the call commitment */}
+            {/* Stats — reframed around the call commitment.
+                On mobile we shorten "Birmingham, MI" → "Birmingham" so the
+                third column doesn't wrap onto two lines, and use smaller
+                numerals + tighter top spacing. */}
             <div
-              className="mt-10 pt-8 border-t border-gray-100 grid grid-cols-3 gap-6 max-w-sm animate-fade-in-up"
+              className="mt-6 pt-5 sm:mt-10 sm:pt-8 border-t border-gray-100 grid grid-cols-3 gap-3 sm:gap-6 max-w-sm animate-fade-in-up"
               style={{ animationDelay: "0.38s" }}
             >
               {[
-                ["15 min", "Audit call length"],
-                ["Lead-first", "Build approach"],
-                ["Birmingham, MI", "Built locally"],
-              ].map(([num, label]) => (
+                { num: "15 min", numMobile: "15 min", label: "Audit call length" },
+                { num: "Lead-first", numMobile: "Lead-first", label: "Build approach" },
+                { num: "Birmingham, MI", numMobile: "Birmingham", label: "Built locally" },
+              ].map(({ num, numMobile, label }) => (
                 <div key={label}>
-                  <div className="font-display text-2xl font-bold text-gray-900 leading-none">{num}</div>
-                  <div className="mt-1 text-xs text-gray-400 font-medium">{label}</div>
+                  <div className="font-display text-lg sm:text-2xl font-bold text-gray-900 leading-tight">
+                    <span className="sm:hidden">{numMobile}</span>
+                    <span className="hidden sm:inline">{num}</span>
+                  </div>
+                  <div className="mt-1 text-[0.65rem] sm:text-xs text-gray-400 font-medium leading-snug">
+                    {label}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ── Mobile: Photo carousel (shown below text, hidden on desktop) ── */}
-          <div className="lg:hidden -mt-4 pb-2">
-            <HeroPhotoCarousel />
-          </div>
+          {/* Mobile carousel was previously here as a separate row at the
+              bottom of the grid; it's now inlined between the subhead and
+              the CTA inside the text column so the image breaks up the
+              text block instead of trailing it. */}
 
           {/* ── Right: Photo collage (desktop only) ── */}
           <div className="hidden lg:flex flex-col gap-4 h-full items-stretch animate-fade-in" style={{ animationDelay: "0.2s" }}>

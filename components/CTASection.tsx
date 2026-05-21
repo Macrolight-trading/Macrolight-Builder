@@ -37,10 +37,27 @@ export default function CTASection({
   return (
     <section className="bg-gray-900 overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+
+        {/* ── Mobile-only top image banner ──
+            On desktop the image lives in the right column of the grid
+            below. On mobile that column is hidden, so we re-introduce the
+            image here as a top banner — gives the section a visual anchor
+            instead of opening on a wall of dark text. */}
+        <div className="lg:hidden relative h-44 -mx-5 sm:-mx-8 overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80&fit=crop&crop=faces"
+            alt="Professional reviewing website results on a laptop"
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/40 to-gray-900" />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 items-stretch">
 
           {/* Left: CTA content (3/5 width) */}
-          <div className="lg:col-span-3 py-24 sm:py-32 pr-0 lg:pr-16">
+          <div className="lg:col-span-3 py-16 sm:py-24 lg:py-32 pr-0 lg:pr-16">
 
             {/* Section label */}
             <div className="flex items-center justify-between border-b border-white/10 pb-5 mb-14">

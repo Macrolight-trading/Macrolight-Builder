@@ -13,7 +13,7 @@ export default function PricingPreview() {
         accent="amber"
       />
 
-      <div className="mb-12 max-w-2xl">
+      <div className="mb-10 max-w-2xl">
         <h2
           className="font-display font-bold tracking-tight text-gray-900 leading-[1.1]"
           style={{ fontSize: "clamp(1.8rem, 4vw, 3.2rem)" }}
@@ -24,6 +24,33 @@ export default function PricingPreview() {
         <p className="mt-4 text-base text-gray-500 leading-relaxed">
           One build fee. One monthly subscription. Everything included.
         </p>
+      </div>
+
+      {/* ── Industries strip ──
+          Adds visual color to an otherwise text-only section. Each pill
+          uses the industry's signature emoji + a brand-tinted background
+          so the row scans as a quick "who this is for" anchor before the
+          visitor reads price numbers. */}
+      <div className="mb-10 flex flex-wrap gap-2 items-center">
+        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-gray-400 mr-1">
+          Built for:
+        </span>
+        {[
+          { label: "Restaurants", emoji: "🍽️" },
+          { label: "Roofing", emoji: "🏠" },
+          { label: "HVAC", emoji: "🔧" },
+          { label: "Law firms", emoji: "⚖️" },
+          { label: "Dental", emoji: "🦷" },
+          { label: "Lawn care", emoji: "🌿" },
+        ].map(({ label, emoji }) => (
+          <span
+            key={label}
+            className="inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm"
+          >
+            <span aria-hidden>{emoji}</span>
+            {label}
+          </span>
+        ))}
       </div>
 
       <TabbedPricing tiers={pricingTiers} />
