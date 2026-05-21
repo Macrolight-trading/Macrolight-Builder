@@ -275,3 +275,4 @@ function SampleCard({ sample }: { sample: Sample }) {
     </Link>
   );
 }
+}

@@ -7,15 +7,21 @@ import JsonLd from "@/components/JsonLd";
 import { pricingTiers } from "@/lib/pricing";
 import { authOptions } from "@/lib/auth";
 import { getUserSubscriptionState } from "@/lib/plan-selection";
+import NewPricingPage from "@/components/pricing/NewPricingPage";
+
+/**
+ * Runtime feature flag for the /pricing redesign — mirrors the home
+ * page pattern in app/page.tsx. Flip to `false` to instantly revert
+ * to the original design.
+ */
+const USE_NEW_PRICING = true;
 
 // /pricing CTAs change based on whether the visitor is logged in and
-// whether they already have an active subscription, so the page can't be
-// statically pre-rendered. The metadata above still applies.
+// whether they already have an active subscription, so the page can't
+// be statically pre-rendered. The metadata above still applies.
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  // Title length: kept ≤60 chars (template adds " | Macrolight Builder"
-  // — 33 + 22 = 55 chars in SERP).
   title: "Website Pricing for Local Businesses",
   description:
     "Transparent pricing for Macrolight Builder client acquisition systems. Starter, Growth, and Pro tiers — one build fee plus a monthly subscription.",
@@ -77,28 +83,34 @@ const faqSchema = {
 };
 
 export default async function PricingPage() {
-  // Only need sub state for authenticated users — guests get the standard
-  // "Get started" CTAs regardless.
   const session = await getServerSession(authOptions);
   const userId = (session?.user as { id?: string } | undefined)?.id;
   const subState = userId ? await getUserSubscriptionState(userId) : null;
   const currentBasePlan = subState?.basePlan ?? null;
 
+  // FAQ JSON-LD applies to both versions of the page.
+  if (USE_NEW_PRICING) {
+    return (
+      <>
+        <JsonLd data={faqSchema} />
+        <NewPricingPage />
+      </>
+    );
+  }
+
+  // Legacy design preserved verbatim behind the flag.
   return (
     <>
       <JsonLd data={faqSchema} />
-      {/* Page header */}
       <section className="relative overflow-hidden bg-gray-50 border-b border-gray-200 pt-20 pb-14 sm:pt-28">
         <div className="absolute inset-0 dot-bg pointer-events-none" aria-hidden />
         <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-violet-100 opacity-60 blur-3xl pointer-events-none" aria-hidden />
-
         <div className="relative mx-auto max-w-4xl px-5 sm:px-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-violet-600 animate-fade-in">
             Pricing
           </p>
           <h1 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.05] animate-fade-in-up">
-            Simple pricing.{" "}
-            <span className="gradient-text">Serious ROI.</span>
+            Simple pricing. <span className="gradient-text">Serious ROI.</span>
           </h1>
           <p className="mt-5 text-lg text-gray-500 max-w-2xl mx-auto animate-fade-in-up">
             One build fee. One monthly subscription. Everything included. No
@@ -107,22 +119,18 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing tabs */}
       <Section padding="lg" className="bg-white">
         <TabbedPricing tiers={pricingTiers} currentBasePlan={currentBasePlan} />
-
         <p className="mt-10 text-center text-sm text-gray-400">
           All plans include hosting on Vercel, SSL, automatic backups, and
           ongoing security updates.
         </p>
         <p className="mt-2 text-center text-xs text-gray-400 max-w-xl mx-auto">
-          Standard domain registration is included. Premium domains — short,
-          branded, or specialty TLDs (.io, .ai, .co, etc.) — may carry an
-          additional one-time or annual fee at cost.
+          Standard domain registration is included. Premium domains may carry
+          an additional one-time or annual fee at cost.
         </p>
       </Section>
 
-      {/* FAQs */}
       <Section padding="xl" className="bg-gray-50 border-t border-gray-100">
         <div className="mx-auto max-w-2xl text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
@@ -142,7 +150,6 @@ export default async function PricingPage() {
         </div>
       </Section>
 
-      {/* CTA */}
       <CTASection />
     </>
   );

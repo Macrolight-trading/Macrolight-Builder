@@ -3,6 +3,13 @@ import Image from "next/image";
 import Section from "@/components/Section";
 import CTASection from "@/components/CTASection";
 import JsonLd from "@/components/JsonLd";
+import NewAboutPage from "@/components/about/NewAboutPage";
+
+/**
+ * Runtime feature flag for the /about redesign — mirrors the home
+ * page pattern in app/page.tsx. Flip to `false` to revert.
+ */
+const USE_NEW_ABOUT = true;
 
 export const metadata: Metadata = {
   // Keyword-rich title (template appends " | Macrolight Builder").
@@ -127,6 +134,15 @@ const team: Array<{
 ];
 
 export default function AboutPage() {
+  if (USE_NEW_ABOUT) {
+    return (
+      <>
+        <JsonLd data={aboutSchema} />
+        <NewAboutPage />
+      </>
+    );
+  }
+
   return (
     <>
       <JsonLd data={aboutSchema} />
