@@ -49,6 +49,11 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String    @unique
+  // Optional phone number collected at signup (or later). Stored as a
+  // free-form string so we can keep whatever format the user typed —
+  // normalize at the point of use (e.g. when dialing or texting via
+  // Twilio) rather than at write-time.
+  phone         String?
   emailVerified DateTime?
   image         String?
   passwordHash  String?

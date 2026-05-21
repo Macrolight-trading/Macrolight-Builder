@@ -9,8 +9,26 @@ import { welcomeEmailHtml, newSignupAdminEmailHtml } from "@/lib/email-templates
 //  - email is required, must look like an email, lowercased before saving
 //  - password is required, ≥ 8 chars
 //  - name is optional
+//  - phone is optional; we only validate it if provided
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/**
+ * Accepts a free-form phone string and returns it cleaned, or null if it
+ * doesn't look phone-ish. Doesn't reformat to E.164 — we keep the user's
+ * typed format so it reads naturally in the UI. Just sanity-checks that
+ * the input has enough digits to plausibly be a phone number.
+ */
+function normalizePhone(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const digits = trimmed.replace(/\D/g, "");
+  // North-American typical is 10 digits; allow 7+ to accommodate
+  // international formats while still rejecting obvious garbage.
+  if (digits.length < 7 || digits.length > 20) return null;
+  return trimmed;
 }
 
 export async function POST(request: Request) {
@@ -19,6 +37,7 @@ export async function POST(request: Request) {
     const rawEmail: unknown = body?.email;
     const rawPassword: unknown = body?.password;
     const rawName: unknown = body?.name;
+    const rawPhone: unknown = body?.phone;
 
     if (typeof rawEmail !== "string" || typeof rawPassword !== "string") {
       return NextResponse.json(
@@ -31,6 +50,7 @@ export async function POST(request: Request) {
     const password = rawPassword;
     const name =
       typeof rawName === "string" && rawName.trim() ? rawName.trim() : null;
+    const phone = normalizePhone(rawPhone);
 
     if (!isValidEmail(email)) {
       return NextResponse.json(
@@ -42,6 +62,19 @@ export async function POST(request: Request) {
     if (password.length < 8) {
       return NextResponse.json(
         { error: "Password must be at least 8 characters." },
+        { status: 400 }
+      );
+    }
+
+    // If the caller sent a phone field but it failed validation, surface
+    // a friendly error rather than silently dropping it.
+    if (
+      typeof rawPhone === "string" &&
+      rawPhone.trim().length > 0 &&
+      phone === null
+    ) {
+      return NextResponse.json(
+        { error: "Please enter a valid phone number." },
         { status: 400 }
       );
     }
@@ -60,10 +93,11 @@ export async function POST(request: Request) {
       data: {
         email,
         name,
+        phone,
         passwordHash,
         role: "USER",
       },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, email: true, name: true, phone: true, role: true },
     });
 
     // Seed a plan recommendation from the admin-configured default template.

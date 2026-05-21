@@ -25,6 +25,7 @@ export default function SignupForm() {
   const nextPath = safeNext(searchParams.get("next")) ?? "/portal";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,11 +36,17 @@ export default function SignupForm() {
     setLoading(true);
 
     try {
-      // 1. Create the account.
+      // 1. Create the account. Phone is optional — only sent if filled in,
+      // so the server doesn't have to distinguish empty vs. missing.
       const signupRes = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          ...(phone.trim() ? { phone: phone.trim() } : {}),
+        }),
       });
 
       if (!signupRes.ok) {
@@ -123,6 +130,29 @@ export default function SignupForm() {
           className={inputCls}
           placeholder="you@yourcompany.com"
         />
+      </div>
+
+      <div>
+        <label
+          htmlFor="phone"
+          className="flex items-center justify-between text-sm font-medium text-gray-700 mb-1.5"
+        >
+          <span>Phone</span>
+          <span className="text-xs font-normal text-gray-400">Optional</span>
+        </label>
+        <input
+          id="phone"
+          type="tel"
+          autoComplete="tel"
+          inputMode="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className={inputCls}
+          placeholder="(555) 123-4567"
+        />
+        <p className="mt-1 text-xs text-gray-400">
+          So we can text you about your build. Never used for marketing.
+        </p>
       </div>
 
       <div>
