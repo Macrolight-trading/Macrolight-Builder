@@ -29,6 +29,10 @@ export default function Navbar() {
   const isAuthed = status === "authenticated";
   const role = (session?.user as { role?: string } | undefined)?.role;
   const dashboardHref = role === "ADMIN" ? "/admin" : "/portal";
+  // Don't render auth-dependent UI until the session has been checked on
+  // the client — avoids a server/client mismatch ("Open portal" vs
+  // "Book a call") that triggers a full-document hydration replacement.
+  const sessionReady = status !== "loading";
 
   return (
     <div className="sticky top-0 z-50">
@@ -91,7 +95,7 @@ export default function Navbar() {
                 </svg>
                 (248) 214-7957
               </a>
-              {isAuthed ? (
+              {sessionReady && (isAuthed ? (
                 <Link
                   href={dashboardHref}
                   className="inline-flex items-center gap-2 bg-violet-600 text-white px-5 py-2.5 text-sm font-semibold rounded-lg hover:bg-violet-700 transition-colors whitespace-nowrap shadow-sm"
@@ -116,7 +120,7 @@ export default function Navbar() {
                     Book a call
                   </Link>
                 </>
-              )}
+              ))}
             </div>
 
             <button
@@ -157,7 +161,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-5 flex flex-col gap-3">
-                {isAuthed ? (
+                {sessionReady && (isAuthed ? (
                   <Link
                     href={dashboardHref}
                     onClick={() => setMobileOpen(false)}
@@ -195,7 +199,7 @@ export default function Navbar() {
                       Client portal
                     </Link>
                   </>
-                )}
+                ))}
               </div>
             </nav>
           </div>

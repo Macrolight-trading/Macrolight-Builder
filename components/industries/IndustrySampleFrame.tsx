@@ -29,6 +29,9 @@ export default function IndustrySampleFrame({
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState<number>(900);
+  // Keep a ref copy so the interval closure always reads the latest value
+  // without needing to be re-created every time height changes.
+  const heightRef = useRef<number>(900);
 
   useEffect(() => {
     function resize() {
@@ -38,24 +41,24 @@ export default function IndustrySampleFrame({
         doc.documentElement.scrollHeight,
         doc.body?.scrollHeight ?? 0,
       );
-      if (next && Math.abs(next - height) > 4) {
+      if (next && Math.abs(next - heightRef.current) > 4) {
+        heightRef.current = next;
         setHeight(next);
       }
     }
-    // Initial measure + repeated polling — covers async image loads,
-    // font swaps, and content that grows after first paint. The cost
-    // is negligible (one read per second) and the alternative
-    // (postMessage from inside the iframe) is fragile across the
-    // same-origin / cross-origin boundary.
+
+    // Run once on load, then poll to catch async image/font paint.
+    // Effect intentionally has NO dependencies so the interval is created
+    // once and never restarted — height updates go through the ref.
     const id = window.setInterval(resize, 1000);
-    const onLoad = () => resize();
     const node = ref.current;
-    node?.addEventListener("load", onLoad);
+    node?.addEventListener("load", resize);
     return () => {
       window.clearInterval(id);
-      node?.removeEventListener("load", onLoad);
+      node?.removeEventListener("load", resize);
     };
-  }, [height]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="relative">

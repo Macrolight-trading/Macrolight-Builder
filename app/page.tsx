@@ -1,84 +1,22 @@
-import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import SocialProofBand from "@/components/SocialProofBand";
-import HowItWorks from "@/components/HowItWorks";
-import SamplePreviews from "@/components/SamplePreviews";
-import PricingPreview from "@/components/PricingPreview";
-import CTASection from "@/components/CTASection";
-import JsonLd from "@/components/JsonLd";
+import OldHomePage from "@/components/home/OldHomePage";
+import NewHomePage from "@/components/home/NewHomePage";
 
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Macrolight Builder",
-  url: "https://macrolight-builder.com",
-  logo: "https://macrolight-builder.com/logo.png",
-  description:
-    "We build, host, and manage high-converting websites that turn visitors into paying customers for local businesses.",
-  founder: [
-    { "@type": "Person", name: "Bradley Bayley" },
-    { "@type": "Person", name: "Nick Ottoy" },
-  ],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "1902 Villa Rd",
-    addressLocality: "Birmingham",
-    addressRegion: "MI",
-    postalCode: "48009",
-    addressCountry: "US",
-  },
-  telephone: "+1-248-214-7957",
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "sales",
-    telephone: "+1-248-214-7957",
-    url: "https://macrolight-builder.com/contact",
-  },
-  sameAs: [],
-};
-
-const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: "Macrolight Builder",
-  url: "https://macrolight-builder.com",
-  description:
-    "Client acquisition websites for local businesses — built, hosted, and managed so your phone rings more every month.",
-  priceRange: "$$",
-  telephone: "+1-248-214-7957",
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "1902 Villa Rd",
-    addressLocality: "Birmingham",
-    addressRegion: "MI",
-    postalCode: "48009",
-    addressCountry: "US",
-  },
-  areaServed: {
-    "@type": "Country",
-    name: "United States",
-  },
-  serviceType: [
-    "Web Design",
-    "Web Development",
-    "SEO",
-    "Lead Generation",
-    "CRM Integration",
-  ],
-};
+/**
+ * Runtime feature flag for the home page redesign.
+ *
+ * Flip this to `true` to render the new (Framer Motion + premium-minimal)
+ * design. Flip back to `false` to instantly revert to the original live
+ * design — no data loss, no rebuild, just a one-character change.
+ *
+ * Both versions are kept under components/home/. The old version is
+ * preserved verbatim and should not be edited; iterate on the new
+ * version in components/home/NewHomePage.tsx.
+ *
+ * When ready to make the redesign permanent, leave this on `true`,
+ * verify in production, and then (optionally) delete the old files.
+ */
+const USE_NEW_HOMEPAGE = true;
 
 export default function HomePage() {
-  return (
-    <>
-      <JsonLd data={organizationSchema} />
-      <JsonLd data={localBusinessSchema} />
-      <Hero />
-      <SamplePreviews />
-      <SocialProofBand />
-      <HowItWorks />
-      <Features />
-      <PricingPreview />
-      <CTASection />
-    </>
-  );
+  return USE_NEW_HOMEPAGE ? <NewHomePage /> : <OldHomePage />;
 }

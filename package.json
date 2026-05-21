@@ -21,6 +21,7 @@
     "ai": "^6.0.168",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.0.0",
+    "motion": "^11.18.2",
     "next": "14.2.15",
     "next-auth": "^4.24.14",
     "puppeteer-core": "^23.10.0",

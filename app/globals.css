@@ -50,6 +50,25 @@ body {
   -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
 }
 
+/* Lighter variant for use on white / very light backgrounds */
+.grid-bg-light {
+  background-image:
+    linear-gradient(rgba(17, 24, 39, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 24, 39, 0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+/* ── Orb — blurred decorative glow circle ─────────────────────────────────  */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(96px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
 /* ── Subtle dot pattern for hero ─────────────────────────────────────────── */
 .dot-bg {
   background-image: radial-gradient(circle, rgba(17, 24, 39, 0.07) 1px, transparent 1px);
