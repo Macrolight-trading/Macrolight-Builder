@@ -365,7 +365,7 @@ export default function LawnShowcase({
         id="lawn-home"
         style={{
           position: "relative",
-          minHeight: "100vh",
+          minHeight: 620,
           display: "flex",
           alignItems: "center",
           backgroundImage: "url('https://images.unsplash.com/photo-1558904541-efa843a96f01?w=1920&q=80&fit=crop')",

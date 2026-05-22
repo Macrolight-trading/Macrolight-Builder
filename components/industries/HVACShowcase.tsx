@@ -169,7 +169,7 @@ export default function HVACShowcase({ industry: _industry }: { industry: Indust
 
       {/* ── HERO ── */}
       <section id="hvac-home" style={{
-        position: "relative", minHeight: "100vh", display: "flex", alignItems: "center",
+        position: "relative", minHeight: 620, display: "flex", alignItems: "center",
         backgroundImage: "url('https://images.unsplash.com/photo-1449247666642-264389f5f5b1?w=1920&q=80&fit=crop')",
         backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden",
       }}>

@@ -175,7 +175,7 @@ export default function RestaurantsShowcase({ industry }: { industry: IndustryPr
       </header>
 
       {/* ── Hero ── */}
-      <section style={{ position: "relative", height: "100vh", minHeight: 700, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+      <section style={{ position: "relative", minHeight: 620, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=85&fit=crop') center/cover no-repeat" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.3) 40%, rgba(10,10,10,0.6) 70%, rgba(10,10,10,0.95) 100%)" }} />
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: 800, padding: "0 24px" }}>

@@ -164,7 +164,7 @@ export default function DentistsShowcase({ industry: _industry }: { industry: In
 
       {/* ── HERO ── */}
       <section id="dent-home" style={{
-        position: "relative", minHeight: "100vh", display: "flex", alignItems: "center",
+        position: "relative", minHeight: 620, display: "flex", alignItems: "center",
         backgroundImage: "url('https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1920&q=80&fit=crop')",
         backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden",
       }}>

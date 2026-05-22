@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macrolight Builder — Hero Concept v7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf6ef;
+    --bg-grad-1: #fdfaf4;
+    --bg-grad-2: #f3ede1;
+    --ink: #14110d;
+    --ink-soft: #1f1b15;
+    --ink-dim: rgba(20, 17, 13, 0.55);
+    --ink-faint: rgba(20, 17, 13, 0.12);
+    --line: rgba(20, 17, 13, 0.08);
+    --accent: #ff7a2e;
+    --green-deep: #243a2a;
+    --green-mid: #34543c;
+    --burgundy: #5a1e22;
+    --navy: #15233f;
+    --nav-h: 56px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg) 45%, var(--bg-grad-2) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, #b455ff 0%, #ff5e9e 60%, #ff7a2e 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 800; font-size: 14px;
+  }
+  .brand-builder { color: var(--ink-dim); font-weight: 400; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav-right { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+  .phone { display: flex; align-items: center; gap: 7px; color: var(--ink-soft); }
+  .phone-icon { width: 16px; height: 16px; color: var(--accent); }
+  .client-portal { color: var(--ink-dim); }
+  .btn-primary {
+    background: var(--ink); color: var(--bg); border: none;
+    padding: 10px 18px; border-radius: 999px;
+    font-weight: 500; font-size: 13px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  /* ===== HERO — fills viewport ===== */
+  .hero {
+    min-height: calc(100vh - var(--nav-h));
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 48px;
+    padding: 28px 48px 24px;
+    max-width: 1500px;
+    margin: 0 auto;
+    align-items: center;
+    position: relative;
+  }
+
+  .hero-copy { max-width: 560px; }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 11px; color: var(--ink-dim); margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(38px, 4.4vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  h1 em { font-style: italic; }
+  h1 .faded { color: rgba(20, 17, 13, 0.22); display: block; font-style: italic; }
+  .underline { width: 32px; height: 2px; background: var(--ink); margin: 16px 0 16px; }
+
+  .lede {
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin-bottom: 20px;
+  }
+  .lede strong { font-weight: 600; }
+
+  /* scan bar */
+  .scan-bar {
+    display: flex; align-items: center;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px;
+    max-width: 480px;
+    box-shadow: 0 6px 18px rgba(20, 17, 13, 0.04);
+  }
+  .scan-bar .globe { padding: 0 12px; color: var(--ink-dim); display: flex; }
+  .scan-bar input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--ink); font-family: inherit; font-size: 14px; padding: 11px 0;
+  }
+  .scan-bar input::placeholder { color: var(--ink-dim); }
+  .scan-btn {
+    background: var(--ink); color: var(--bg); border: none;
+    padding: 10px 18px; border-radius: 9px;
+    font-weight: 500; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .meta {
+    margin-top: 12px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .meta .dot { color: var(--accent); font-size: 16px; line-height: 0; }
+
+  /* secondary CTA — replaces the proof row, keeps the column balanced */
+  .alt-cta {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+    max-width: 480px;
+  }
+  .alt-cta a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink-faint);
+    padding-bottom: 1px;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+
+  /* ============================== */
+  /*  RIGHT: shuffle stage          */
+  /* ============================== */
+  .stage {
+    position: relative;
+    height: 480px;
+    width: 100%;
+    max-width: 700px;
+    justify-self: center;
+  }
+
+  .browser {
+    position: absolute;
+    width: 360px;
+    height: 250px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 14px 32px rgba(20, 17, 13, 0.10), 0 2px 6px rgba(20, 17, 13, 0.04);
+    overflow: hidden;
+    transform-origin: center center;
+    transition:
+      top 0.7s cubic-bezier(0.22, 0.85, 0.25, 1),
+      left 0.7s cubic-bezier(0.22, 0.85, 0.25, 1),
+      transform 0.7s cubic-bezier(0.22, 0.85, 0.25, 1),
+      box-shadow 0.5s ease,
+      opacity 0.5s ease,
+      filter 0.5s ease;
+    will-change: transform, top, left;
+  }
+
+  .browser-bar {
+    height: 28px;
+    background: white;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; padding: 0 10px; gap: 7px;
+    flex-shrink: 0;
+  }
+  .browser-dots { display: flex; gap: 4px; }
+  .browser-dots span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(20,17,13,0.12);
+  }
+  .browser-url {
+    flex: 1; background: #f4f0e8; border-radius: 4px;
+    padding: 2px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--ink-dim);
+    display: flex; align-items: center; gap: 5px;
+    max-width: 220px; margin: 0 auto;
+  }
+  .browser-url::before {
+    content: ''; width: 6px; height: 6px;
+    border: 1.3px solid var(--ink-dim);
+    border-radius: 2px; border-bottom: none; border-left: none;
+    margin-right: 2px;
+  }
+
+  /* ===== REST positions ===== */
+  .card-lawn       { top: 10px;  left: 0;     transform: rotate(-4deg) scale(0.7); z-index: 2; }
+  .card-hvac       { top: 0;     left: 320px; transform: rotate(3deg)  scale(0.7); z-index: 2; }
+  .card-dental     { top: 220px; left: 20px;  transform: rotate(-3deg) scale(0.7); z-index: 2; }
+  .card-restaurant { top: 230px; left: 340px; transform: rotate(5deg)  scale(0.7); z-index: 2; }
+
+  .browser:not(.is-front) {
+    opacity: 0.78;
+    filter: saturate(0.85);
+  }
+
+  /* ===== FRONT (main display, centered + scaled up) ===== */
+  .browser.is-front {
+    top: 50%   !important;
+    left: 50%  !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) rotate(-1.5deg) scale(1.18) !important;
+    z-index: 20 !important;
+    opacity: 1 !important;
+    filter: none !important;
+    box-shadow:
+      0 30px 60px rgba(20, 17, 13, 0.22),
+      0 6px 16px rgba(20, 17, 13, 0.06);
+  }
+
+  /* ============ CARD BODIES (designed for 360x250) ============ */
+
+  /* LAWN */
+  .card-lawn .browser-body {
+    height: calc(100% - 28px);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+  }
+  .card-lawn .hero-img {
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.35)),
+      url('https://images.unsplash.com/photo-1558904541-efa843a96f01?w=600&q=80') center/cover;
+    position: relative;
+  }
+  .card-lawn-nav {
+    position: absolute; top: 8px; right: 10px;
+    display: flex; gap: 8px; font-size: 8px; color: white; z-index: 2;
+  }
+  .card-lawn .panel {
+    background: var(--green-deep);
+    color: #e8e0c8;
+    padding: 14px 14px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .card-lawn .panel h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px; line-height: 1.1;
+    font-weight: 400; color: white;
+    margin-bottom: 10px;
+  }
+  .card-lawn .stats {
+    display: flex; gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+  }
+  .card-lawn .stats div { font-size: 8px; }
+  .card-lawn .stats .num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 15px; color: #d4e3b3; display: block;
+  }
+
+  /* HVAC */
+  .card-hvac .browser-body {
+    height: calc(100% - 28px);
+    background: var(--navy);
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-hvac .hvac-img {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(21,35,63,0.96) 0%, rgba(21,35,63,0.5) 55%, transparent 100%),
+      url('https://images.unsplash.com/photo-1631545806609-37945ec88e02?w=600&q=80') right center/cover;
+  }
+  .card-hvac .hvac-content {
+    position: relative; z-index: 1;
+    padding: 18px; height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+    width: 65%;
+  }
+  .card-hvac .hvac-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; text-transform: uppercase;
+    letter-spacing: 0.12em; color: #6ec1ff;
+  }
+  .card-hvac h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px; line-height: 1.05;
+    font-weight: 400; margin-top: 6px;
+  }
+  .card-hvac .btn-mini {
+    background: #6ec1ff; color: var(--navy);
+    padding: 6px 10px; border-radius: 999px;
+    font-size: 9px; width: fit-content; font-weight: 600;
+  }
+
+  /* DENTAL */
+  .card-dental .browser-body {
+    height: calc(100% - 28px);
+    background: #f8f5ee;
+    padding: 14px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    align-items: stretch;
+  }
+  .card-dental .left-col {
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .card-dental .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--burgundy);
+    margin-bottom: 6px;
+  }
+  .card-dental h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px; line-height: 1.05;
+    color: var(--burgundy); font-weight: 400;
+  }
+  .card-dental .btn-mini {
+    background: var(--burgundy); color: white;
+    padding: 6px 10px; border-radius: 999px;
+    font-size: 9px; width: fit-content; font-weight: 500;
+  }
+  .card-dental .img {
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.05), rgba(90,30,34,0.25)),
+      url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=400&q=80') center/cover;
+  }
+
+  /* RESTAURANT */
+  .card-restaurant .browser-body {
+    height: calc(100% - 28px);
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0.78) 100%),
+      url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80') center/cover;
+    padding: 14px;
+    color: white;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative;
+  }
+  .card-restaurant .topbar {
+    position: absolute; top: 10px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic; font-size: 13px;
+  }
+  .card-restaurant .topbar .links {
+    font-family: 'Inter', sans-serif; font-style: normal;
+    display: flex; gap: 8px; font-size: 9px;
+  }
+  .card-restaurant h3 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 24px; line-height: 1;
+    font-weight: 400; position: relative; z-index: 1;
+  }
+  .card-restaurant .sub {
+    font-size: 10px; opacity: 0.85;
+    margin-top: 4px; position: relative; z-index: 1;
+  }
+
+  /* ===== BADGES — kept inside stage bounds ===== */
+  .badge {
+    position: absolute;
+    background: white;
+    border-radius: 999px;
+    padding: 8px 12px;
+    box-shadow: 0 8px 22px rgba(20,17,13,0.14);
+    display: flex; align-items: center; gap: 8px;
+    z-index: 22;
+    transition: opacity 0.3s ease, transform 0.4s ease;
+  }
+  .badge .num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 17px; color: var(--ink); line-height: 1;
+  }
+  .badge .label {
+    color: var(--ink-dim); font-size: 10px; line-height: 1.2;
+  }
+  .badge .pill {
+    background: #e8f4dc; color: var(--green-mid);
+    padding: 2px 6px; border-radius: 999px;
+    font-size: 8px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 3px;
+  }
+  .badge-1 {
+    bottom: 60px;
+    left: 0;
+    transform: rotate(-5deg);
+  }
+  .badge-2 {
+    top: 70px; right: 0;
+    transform: rotate(5deg);
+    background: var(--ink); color: white;
+  }
+  .badge-2 .num { color: white; }
+  .badge-2 .label { color: rgba(255,255,255,0.6); }
+
+  /* chip row */
+  .chips {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 6px;
+    z-index: 30;
+    flex-wrap: nowrap;
+    background: rgba(250, 246, 239, 0.75);
+    padding: 5px;
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--line);
+  }
+  .chip {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .chip:hover { transform: translateY(-1px); }
+  .chip.active {
+    background: var(--ink); color: white; border-color: var(--ink);
+    box-shadow: 0 4px 12px rgba(20,17,13,0.15);
+  }
+  .chip-dot { width: 5px; height: 5px; border-radius: 50%; background: #6ba84f; }
+  .chip.active .chip-dot { background: white; }
+  .chip .progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--accent);
+    width: 0;
+    transition: width 3.5s linear;
+  }
+  .chip.active.is-counting .progress { width: 100%; }
+
+  /* bottom band */
+  .band {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 14px 48px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    gap: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ink-dim);
+  }
+  .band-item { display: flex; align-items: center; gap: 8px; }
+  .band-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+
+  @media (max-width: 1100px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 20px 20px 20px;
+      min-height: auto;
+      gap: 24px;
+    }
+    .stage { height: 460px; max-width: 100%; }
+    .card-hvac { left: auto; right: 0; }
+    .card-restaurant { left: auto; right: 0; }
+    .nav-links, .client-portal { display: none; }
+    nav { padding: 0 20px; }
+    .band { flex-wrap: wrap; gap: 16px; padding: 12px 20px; }
+  }
+
+  @media (max-height: 720px) {
+    h1 { font-size: clamp(34px, 4vw, 50px); }
+    .stage { height: 420px; }
+    .lede { display: none; }
+    .alt-cta { margin-top: 16px; padding-top: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <span>Macrolight <span class="brand-builder">Builder</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">Case Studies</a>
+    <a href="#">Pricing</a>
+    <a href="#">Blog</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-right">
+    <div class="phone">
+      <svg class="phone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.86 19.86 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.37 1.9.72 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0122 16.92z"/></svg>
+      (248) 214&#8209;7957
+    </div>
+    <span class="client-portal">Client portal</span>
+    <button class="btn-primary">Book a call &rarr;</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">Macrolight Builder &middot; Birmingham, MI</div>
+
+    <h1>
+      Your phone should<br>
+      <em>be ringing more.</em>
+      <span class="faded">Every single month.</span>
+    </h1>
+    <div class="underline"></div>
+
+    <p class="lede">
+      We design, build, and host conversion-engineered websites for local businesses — so every visitor that lands becomes a real shot at <strong>winning a customer</strong>, not just a bounce metric.
+    </p>
+
+    <div class="scan-bar">
+      <span class="globe">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/>
+        </svg>
+      </span>
+      <input type="text" placeholder="yourbusiness.com">
+      <button class="scan-btn">
+        Scan my website
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="meta">
+      <span class="dot">&bull;</span>
+      <span>Free 20-point audit &middot; delivered to your inbox in under 24 hours.</span>
+    </div>
+
+    <div class="alt-cta">
+      Prefer to talk?<a href="#">Book a free 15-min audit call &rarr;</a>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="badge badge-1">
+      <div>
+        <div class="num" id="badge1-num">+312%</div>
+        <div class="label" id="badge1-label">Calls per month <span class="pill" id="badge1-pill">Lawn care</span></div>
+      </div>
+    </div>
+
+    <div class="badge badge-2">
+      <div>
+        <div class="num" id="badge2-num">412/mo</div>
+        <div class="label" id="badge2-label">Booked appointments</div>
+      </div>
+    </div>
+
+    <div class="browser card-lawn is-front" data-industry="lawn">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">greenfield-lawn.com</div>
+      </div>
+      <div class="browser-body">
+        <div class="hero-img">
+          <div class="card-lawn-nav">
+            <span>Services</span><span>Gallery</span><span>Contact</span>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Your Yard Deserves the Best Care.</h3>
+          <div class="stats">
+            <div><span class="num">30+</span>YEARS</div>
+            <div><span class="num">2,500+</span>CLIENTS</div>
+            <div><span class="num">Free</span>EST.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="browser card-hvac" data-industry="hvac">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">northpoint-hvac.com</div>
+      </div>
+      <div class="browser-body">
+        <div class="hvac-img"></div>
+        <div class="hvac-content">
+          <div>
+            <div class="hvac-tag">24/7 Emergency</div>
+            <h3>Heat back on, fast.</h3>
+          </div>
+          <div class="btn-mini">Same-day quote &rarr;</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="browser card-dental" data-industry="dental">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">birminghamdental.com</div>
+      </div>
+      <div class="browser-body">
+        <div class="left-col">
+          <div>
+            <div class="tag">New Patients Welcome</div>
+            <h3>Smiles, made here.</h3>
+          </div>
+          <div class="btn-mini">Book a visit &rarr;</div>
+        </div>
+        <div class="img"></div>
+      </div>
+    </div>
+
+    <div class="browser card-restaurant" data-industry="restaurant">
+      <div class="browser-bar">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">mercato-ferndale.com</div>
+      </div>
+      <div class="browser-body">
+        <div class="topbar">
+          <span>Mercato</span>
+          <span class="links"><span>Menu</span><span>Reserve</span></span>
+        </div>
+        <h3>Slow food.<br>Loud table.</h3>
+        <div class="sub">Wood-fired. Family-run. Since 2014.</div>
+      </div>
+    </div>
+
+    <div class="chips" id="chips">
+      <div class="chip active is-counting" data-target="lawn">
+        <span class="chip-dot"></span>Lawn care
+        <span class="progress"></span>
+      </div>
+      <div class="chip" data-target="hvac">
+        HVAC<span class="progress"></span>
+      </div>
+      <div class="chip" data-target="dental">
+        Dentists<span class="progress"></span>
+      </div>
+      <div class="chip" data-target="restaurant">
+        Restaurants<span class="progress"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="band-item"><span class="band-dot"></span>20-point audit &middot; 24 hr turnaround</div>
+  <div class="band-item"><span class="band-dot"></span>21-day launch window</div>
+  <div class="band-item"><span class="band-dot"></span>Month-to-month</div>
+</div>
+
+<script>
+  (function() {
+    const SHUFFLE_MS = 3500;
+    const order = ['lawn', 'hvac', 'dental', 'restaurant'];
+    const data = {
+      lawn:       { b1: '+312%', b1l: 'Calls per month', b1p: 'Lawn care',   b2: '412/mo', b2l: 'Booked jobs',         pillBg: '#e8f4dc', pillFg: '#34543c' },
+      hvac:       { b1: '+248%', b1l: 'Service calls',   b1p: 'HVAC',        b2: '241/mo', b2l: 'Same-day quotes',     pillBg: '#dde9f8', pillFg: '#15233f' },
+      dental:     { b1: '+187%', b1l: 'New patients',    b1p: 'Dental',      b2: '287/mo', b2l: 'Booked appointments', pillBg: '#f3dadc', pillFg: '#5a1e22' },
+      restaurant: { b1: '+221%', b1l: 'Reservations',    b1p: 'Restaurant',  b2: '198/mo', b2l: 'Tables booked',       pillBg: '#f4e6d4', pillFg: '#7a4a1a' }
+    };
+
+    const cards  = document.querySelectorAll('.browser');
+    const chips  = document.querySelectorAll('.chip');
+    const stage  = document.getElementById('stage');
+    const b1num  = document.getElementById('badge1-num');
+    const b1lab  = document.getElementById('badge1-label');
+    const b2num  = document.getElementById('badge2-num');
+    const b2lab  = document.getElementById('badge2-label');
+
+    let idx = 0;
+    let timer = null;
+    let paused = false;
+
+    function show(industry) {
+      idx = order.indexOf(industry);
+      if (idx < 0) idx = 0;
+
+      cards.forEach(c => c.classList.toggle('is-front', c.dataset.industry === industry));
+
+      chips.forEach(c => {
+        const isActive = c.dataset.target === industry;
+        c.classList.toggle('active', isActive);
+        c.classList.remove('is-counting');
+      });
+
+      const d = data[industry];
+      b1num.textContent = d.b1;
+      b1lab.innerHTML = d.b1l + ' <span class="pill" style="background:' + d.pillBg + '; color:' + d.pillFg + ';">' + d.b1p + '</span>';
+      b2num.textContent = d.b2;
+      b2lab.textContent = d.b2l;
+
+      const activeChip = document.querySelector('.chip.active');
+      if (activeChip && !paused) {
+        void activeChip.offsetWidth;
+        activeChip.classList.add('is-counting');
+      }
+    }
+
+    function advance() {
+      if (paused) return;
+      const next = (idx + 1) % order.length;
+      show(order[next]);
+    }
+
+    function startTimer() {
+      stopTimer();
+      timer = setInterval(advance, SHUFFLE_MS);
+      const activeChip = document.querySelector('.chip.active');
+      if (activeChip) {
+        activeChip.classList.remove('is-counting');
+        void activeChip.offsetWidth;
+        activeChip.classList.add('is-counting');
+      }
+    }
+
+    function stopTimer() {
+      if (timer) clearInterval(timer);
+      timer = null;
+      chips.forEach(c => c.classList.remove('is-counting'));
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        show(chip.dataset.target);
+        if (!paused) startTimer();
+      });
+    });
+
+    stage.addEventListener('mouseenter', () => { paused = true; stopTimer(); });
+    stage.addEventListener('mouseleave', () => { paused = false; startTimer(); });
+
+    startTimer();
+  })();
+</script>
+
+</body>
+</html>

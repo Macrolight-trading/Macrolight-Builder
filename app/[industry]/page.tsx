@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -9,7 +10,13 @@ import {
 } from "@/lib/industries";
 import { caseStudies } from "@/lib/case-studies";
 import { getAllPosts } from "@/lib/blog";
-import IndustrySampleFrame from "@/components/industries/IndustrySampleFrame";
+import RoofingShowcase from "@/components/industries/RoofingShowcase";
+import RestaurantsShowcase from "@/components/industries/RestaurantsShowcase";
+import LawFirmsShowcase from "@/components/industries/LawFirmsShowcase";
+import HVACShowcase from "@/components/industries/HVACShowcase";
+import DentistsShowcase from "@/components/industries/DentistsShowcase";
+import LawnShowcase from "@/components/industries/LawnShowcase";
+import RelatedIndustries from "@/components/industries/RelatedIndustries";
 import JsonLd from "@/components/JsonLd";
 
 interface PageProps {
@@ -105,6 +112,22 @@ function relatedPostsFor(industry: IndustryProfile, max = 2) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Showcase map — slug → showcase component                           */
+/* ------------------------------------------------------------------ */
+
+const showcases: Record<
+  string,
+  React.ComponentType<{ industry: IndustryProfile }>
+> = {
+  roofing: RoofingShowcase,
+  restaurants: RestaurantsShowcase,
+  "law-firms": LawFirmsShowcase,
+  hvac: HVACShowcase,
+  dentists: DentistsShowcase,
+  "lawn-care": LawnShowcase,
+};
+
+/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -163,83 +186,52 @@ export default function IndustryPage({ params }: PageProps) {
   );
 
   const relatedPosts = relatedPostsFor(industry);
+  const Showcase = showcases[params.industry];
+  if (!Showcase) notFound();
 
   return (
     <>
       <JsonLd data={serviceSchema} />
       <JsonLd data={webPageSchema} />
 
-      <header className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-5xl px-5 sm:px-8 py-10 sm:py-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-violet-600">
-            Macrolight Builder &middot; {industry.name}
-          </p>
-          <h1 className="mt-3 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-[1.1]">
-            Websites That Get More {industry.clientsLabel} —{" "}
-            <span className="text-violet-600">Built &amp; Managed for You.</span>
-          </h1>
-          <p className="mt-4 max-w-2xl text-base sm:text-lg text-gray-600 leading-relaxed">
-            {industry.heroTagline} Below you&apos;ll see a full sample site
-            we&apos;d build for a {industry.name.toLowerCase()} business —
-            then exactly how the system turns visits into{" "}
-            {industry.clientsLabel.toLowerCase()}.
-          </p>
-
-          {/* Primary CTAs + cross-links into case study / blog */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-            <Link
-              href="/contact"
-              className="inline-flex items-center rounded-lg bg-violet-600 px-4 py-2 font-semibold text-white shadow-sm hover:bg-violet-700 transition-colors"
-            >
-              Request a free audit →
-            </Link>
-            <Link
-              href="/pricing"
-              className="font-semibold text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              See pricing
-            </Link>
-            {caseStudy && (
-              <Link
-                href={`/case-studies/${caseStudy.slug}`}
-                className="font-semibold text-violet-600 hover:text-violet-800 transition-colors"
-              >
-                See how we&apos;d build for {industry.name.toLowerCase()} →
-              </Link>
-            )}
-          </div>
-
-          {/* Related blog posts — small, contextual, crawlable */}
-          {relatedPosts.length > 0 && (
-            <div className="mt-8 border-t border-gray-100 pt-6">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
-                Related reading
-              </p>
-              <ul className="space-y-2">
-                {relatedPosts.map((post) => (
-                  <li key={post.slug}>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-sm font-medium text-gray-700 hover:text-violet-600 transition-colors"
-                    >
-                      → {post.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </header>
+      {/* Visually-hidden H1 + cross-links — kept for SEO, accessibility,
+          and crawlable internal links. The previous full marketing
+          <header> sat between the Macrolight Navbar (from the layout)
+          and the iframed showcase, reading as a second header on top
+          of the page. Per UX feedback we removed it; the showcase
+          itself now carries the visual hero. */}
+      <div className="sr-only">
+        <h1>
+          Websites That Get More {industry.clientsLabel} — Built &amp;
+          Managed for You.
+        </h1>
+        <p>
+          {industry.heroTagline} Below is a sample site we&apos;d build
+          for a {industry.name.toLowerCase()} business.
+        </p>
+        <Link href="/contact">Request a free audit</Link>
+        <Link href="/pricing">See pricing</Link>
+        {caseStudy && (
+          <Link href={`/case-studies/${caseStudy.slug}`}>
+            See how we&apos;d build for {industry.name.toLowerCase()}
+          </Link>
+        )}
+        {relatedPosts.length > 0 && (
+          <ul>
+            {relatedPosts.map((post) => (
+              <li key={post.slug}>
+                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <section aria-label={`Sample ${industry.name} website preview`}>
-        {/* The mockup lives at /sample/[industry] (noindex'd, blocked in
-            robots.txt) so the fake business names, reviews and addresses
-            never get indexed against macrolight-builder.com. The iframe
-            also resolves the duplicate-H1 issue: the showcase has its
-            own H1 and now lives in a separate document. */}
-        <IndustrySampleFrame industry={industry} slug={params.industry} />
+        <Showcase industry={industry} />
       </section>
+
+      <RelatedIndustries current={industry} />
     </>
   );
 }

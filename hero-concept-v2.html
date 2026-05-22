@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macrolight Builder — Hero Concept v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e0c;
+    --bg-elev: #111614;
+    --ink: #f5f1ea;
+    --ink-dim: rgba(245, 241, 234, 0.55);
+    --ink-faint: rgba(245, 241, 234, 0.12);
+    --accent: #c9ff4d;
+    --accent-warm: #ff8a3d;
+    --good: #6ee7a3;
+    --line: rgba(245, 241, 234, 0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* subtle radial glow */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    right: -10%;
+    width: 70vw;
+    height: 70vw;
+    background: radial-gradient(circle, rgba(201, 255, 77, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    left: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(255, 138, 61, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* nav */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 56px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--bg);
+    font-size: 14px;
+  }
+  .brand-builder { color: var(--ink-dim); font-weight: 400; }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .phone {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-dim);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .phone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 8px var(--good);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+
+  /* hero */
+  .hero {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 64px;
+    padding: 64px 56px 80px;
+    max-width: 1500px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+  }
+  .eyebrow-tag {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 10px;
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(48px, 5.8vw, 84px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin-bottom: 28px;
+  }
+  h1 .crossed {
+    position: relative;
+    color: var(--ink-dim);
+    font-style: italic;
+  }
+  h1 .crossed::after {
+    content: '';
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    top: 52%;
+    height: 3px;
+    background: var(--accent-warm);
+    transform: rotate(-2deg);
+  }
+  h1 .ink {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 520px;
+    margin-bottom: 36px;
+  }
+  .lede strong { color: var(--ink); font-weight: 500; }
+
+  /* scan bar */
+  .scan-bar {
+    display: flex;
+    align-items: center;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 6px;
+    max-width: 540px;
+    transition: border-color 0.2s;
+  }
+  .scan-bar:focus-within { border-color: var(--accent); }
+  .scan-bar .globe {
+    padding: 0 14px;
+    color: var(--ink-dim);
+    display: flex;
+  }
+  .scan-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 0;
+  }
+  .scan-bar input::placeholder { color: var(--ink-dim); }
+  .scan-btn {
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .scan-btn:hover { background: var(--accent); }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-dim);
+  }
+  .meta-row .dot { color: var(--accent); font-weight: 700; }
+  .meta-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--line);
+  }
+  .meta-row a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink-faint);
+    padding-bottom: 1px;
+  }
+
+  /* right side — live performance card */
+  .perf {
+    position: relative;
+  }
+  .perf-card {
+    background: linear-gradient(180deg, #141a17 0%, #0d1210 100%);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .perf-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .perf-title {
+    font-size: 12px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .perf-live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--good);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .perf-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--good);
+    animation: pulse 1.5s infinite;
+  }
+
+  .perf-headline {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--accent);
+    margin: 14px 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .perf-sub {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 22px;
+  }
+  .perf-sub strong { color: var(--good); font-weight: 600; }
+
+  /* chart */
+  .chart {
+    height: 90px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .chart svg { width: 100%; height: 100%; display: block; }
+
+  /* client rows */
+  .clients {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .client-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .client-row:last-child { border-bottom: none; }
+  .client-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .client-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .client-type {
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .client-calls {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .client-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--good);
+    padding: 3px 7px;
+    background: rgba(110, 231, 163, 0.1);
+    border-radius: 6px;
+    min-width: 50px;
+    text-align: center;
+  }
+  .client-delta.warm {
+    color: var(--accent-warm);
+    background: rgba(255, 138, 61, 0.1);
+  }
+
+  /* floating tag */
+  .float-tag {
+    position: absolute;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .float-tag.t1 {
+    top: -28px;
+    right: 40px;
+    transform: rotate(3deg);
+  }
+  .float-tag.t2 {
+    bottom: -22px;
+    left: -30px;
+    transform: rotate(-2deg);
+    background: var(--accent);
+  }
+  .float-emoji {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-weight: 800;
+  }
+  .float-tag.t2 .float-emoji {
+    background: var(--bg);
+    color: var(--accent);
+  }
+
+  /* footer strip */
+  .strip {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 22px 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    color: var(--ink-dim);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  .strip-item { display: flex; align-items: center; gap: 10px; }
+  .strip-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 24px; }
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .strip { flex-wrap: wrap; padding: 18px 24px; }
+    .float-tag.t1, .float-tag.t2 { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <span>Macrolight <span class="brand-builder">Builder</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">Case Studies</a>
+    <a href="#">Pricing</a>
+    <a href="#">Blog</a>
+    <a href="#">About</a>
+  </div>
+  <div class="nav-right">
+    <div class="phone">
+      <span class="phone-dot"></span>
+      (248) 214&#8209;7957
+    </div>
+    <button class="btn-primary">Book a call &rarr;</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">
+      <span class="eyebrow-tag">Live</span>
+      <span>3,847 calls booked across client sites &middot; May 2026</span>
+    </div>
+
+    <h1>
+      We don't build<br>
+      <span class="crossed">pretty websites.</span><br>
+      We build <span class="ink">phone calls.</span>
+    </h1>
+
+    <p class="lede">
+      Every site we ship is judged by one number: <strong>booked appointments per month.</strong>
+      If it doesn't move that number, it doesn't ship. No vanity metrics, no "brand refreshes," no excuses.
+    </p>
+
+    <div class="scan-bar">
+      <span class="globe">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/>
+        </svg>
+      </span>
+      <input type="text" placeholder="yourbusiness.com">
+      <button class="scan-btn">
+        Grade my site
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="meta-row">
+      <span><span class="dot">&bull;</span> 20-point audit, in your inbox in 24 hrs</span>
+      <div class="meta-divider"></div>
+      <span>Rather talk? <a href="#">Book a 15-min call &rarr;</a></span>
+    </div>
+  </div>
+
+  <div class="perf">
+    <div class="float-tag t1">
+      <div class="float-emoji">&#9650;</div>
+      <div>
+        <div style="font-size: 11px; color: var(--ink-dim); font-family: 'JetBrains Mono', monospace;">CONVERSION</div>
+        <div style="font-weight: 600;">+312% vs. old site</div>
+      </div>
+    </div>
+
+    <div class="perf-card">
+      <div class="perf-head">
+        <span class="perf-title">This month &middot; client leaderboard</span>
+        <span class="perf-live"><span class="perf-live-dot"></span> LIVE</span>
+      </div>
+
+      <div class="perf-headline">3,847</div>
+      <div class="perf-sub">calls booked across 30 client sites &middot; <strong>+24% MoM</strong></div>
+
+      <div class="chart">
+        <svg viewBox="0 0 400 90" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c9ff4d" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#c9ff4d" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,70 L25,65 L50,68 L75,55 L100,58 L125,48 L150,52 L175,40 L200,44 L225,35 L250,38 L275,28 L300,30 L325,22 L350,25 L375,15 L400,18 L400,90 L0,90 Z" fill="url(#g)"/>
+          <path d="M0,70 L25,65 L50,68 L75,55 L100,58 L125,48 L150,52 L175,40 L200,44 L225,35 L250,38 L275,28 L300,30 L325,22 L350,25 L375,15 L400,18" fill="none" stroke="#c9ff4d" stroke-width="2"/>
+          <circle cx="400" cy="18" r="4" fill="#c9ff4d"/>
+          <circle cx="400" cy="18" r="8" fill="#c9ff4d" opacity="0.3"/>
+        </svg>
+      </div>
+
+      <div class="clients">
+        <div class="client-row">
+          <span class="client-rank">01</span>
+          <div>
+            <div class="client-name">Greenfield Lawn Care</div>
+            <div class="client-type">Lawn care &middot; Royal Oak</div>
+          </div>
+          <span class="client-calls">412</span>
+          <span class="client-delta">+38%</span>
+        </div>
+        <div class="client-row">
+          <span class="client-rank">02</span>
+          <div>
+            <div class="client-name">Birmingham Dental Group</div>
+            <div class="client-type">Dentist &middot; Birmingham</div>
+          </div>
+          <span class="client-calls">287</span>
+          <span class="client-delta">+19%</span>
+        </div>
+        <div class="client-row">
+          <span class="client-rank">03</span>
+          <div>
+            <div class="client-name">Northpoint HVAC</div>
+            <div class="client-type">HVAC &middot; Troy</div>
+          </div>
+          <span class="client-calls">241</span>
+          <span class="client-delta warm">+11%</span>
+        </div>
+        <div class="client-row">
+          <span class="client-rank">04</span>
+          <div>
+            <div class="client-name">Mercato Italiano</div>
+            <div class="client-type">Restaurant &middot; Ferndale</div>
+          </div>
+          <span class="client-calls">198</span>
+          <span class="client-delta">+27%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="float-tag t2">
+      <div class="float-emoji">&#10003;</div>
+      <div>
+        <div style="font-size: 11px; opacity: 0.7; font-family: 'JetBrains Mono', monospace;">SHIPS IN</div>
+        <div style="font-weight: 700;">21 days, flat</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="strip-item"><span class="strip-dot"></span> Pay-for-performance pricing</div>
+  <div class="strip-item"><span class="strip-dot"></span> 21-day launch, or it's free</div>
+  <div class="strip-item"><span class="strip-dot"></span> Hosting + maintenance included</div>
+  <div class="strip-item"><span class="strip-dot"></span> Cancel any month</div>
+</div>
+
+</body>
+</html>
