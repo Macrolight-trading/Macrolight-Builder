@@ -1,9 +1,15 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { PlanSelector } from "@/components/admin/PlanSelector";
+import { RoleSelector } from "@/components/admin/RoleSelector";
 
 export const dynamic = "force-dynamic";
 
 export default async function UsersPage() {
+  const session = await getServerSession(authOptions);
+  const currentUserId = (session?.user as { id?: string } | undefined)?.id;
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     include: {
@@ -67,15 +73,12 @@ export default async function UsersPage() {
                     </div>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                        user.role === "ADMIN"
-                          ? "bg-violet-50 text-violet-700"
-                          : "bg-gray-100 text-gray-500"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
+                    <RoleSelector
+                      userId={user.id}
+                      initialRole={user.role as "USER" | "ADMIN"}
+                      userLabel={user.name || user.email}
+                      isSelf={user.id === currentUserId}
+                    />
                   </td>
                   <td className="px-5 py-3.5">
                     <PlanSelector
