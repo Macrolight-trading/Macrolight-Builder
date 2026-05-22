@@ -10,36 +10,39 @@ interface EmailOptions {
   replyTo?: string;
 }
 
+/**
+ * Options for sending an email using a Resend-hosted template (created in
+ * the Resend dashboard). Variable keys must match the {{placeholders}} in
+ * the template body. Subject is optional — if omitted, Resend uses the
+ * template's default subject.
+ */
+interface TemplateEmailOptions {
+  to: string | string[];
+  templateId: string;
+  variables?: Record<string, string | number>;
+  subject?: string;
+  replyTo?: string;
+}
+
 export type SendResult =
   | { ok: true; id?: string; raw: unknown }
   | { ok: false; status: number; error: string; raw?: unknown };
 
-async function sendOnce({
-  to,
-  subject,
-  html,
-  replyTo,
-}: EmailOptions): Promise<SendResult> {
+/**
+ * Single POST to Resend's /emails endpoint. Shared by sendOnce and
+ * sendTemplateOnce so the response-parsing and error-reporting logic
+ * lives in exactly one place.
+ */
+async function postToResend(payload: Record<string, unknown>): Promise<SendResult> {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      from: FROM_ADDRESS,
-      to,
-      subject,
-      html,
-      // Resend's REST API expects snake_case. The previous camelCase
-      // version was silently dropping the reply-to header.
-      ...(replyTo ? { reply_to: replyTo } : {}),
-    }),
+    body: JSON.stringify(payload),
   });
 
-  // Parse the body either way — Resend returns JSON for both success
-  // and error responses, and the error message is the most useful
-  // signal we have.
   const text = await res.text();
   let parsed: unknown = null;
   try {
@@ -65,6 +68,40 @@ async function sendOnce({
       ? String((parsed as { id: unknown }).id)
       : undefined;
   return { ok: true, id, raw: parsed };
+}
+
+async function sendOnce({
+  to,
+  subject,
+  html,
+  replyTo,
+}: EmailOptions): Promise<SendResult> {
+  return postToResend({
+    from: FROM_ADDRESS,
+    to,
+    subject,
+    html,
+    ...(replyTo ? { reply_to: replyTo } : {}),
+  });
+}
+
+async function sendTemplateOnce({
+  to,
+  templateId,
+  variables,
+  subject,
+  replyTo,
+}: TemplateEmailOptions): Promise<SendResult> {
+  return postToResend({
+    from: FROM_ADDRESS,
+    to,
+    ...(subject ? { subject } : {}),
+    template: {
+      id: templateId,
+      ...(variables ? { variables } : {}),
+    },
+    ...(replyTo ? { reply_to: replyTo } : {}),
+  });
 }
 
 /**
@@ -115,10 +152,48 @@ export async function sendEmailDetailed(
   const first = await sendOnce(options);
   if (first.ok) return first;
 
-  // Only retry transient failures (5xx, network). 4xx is configuration —
-  // retrying won't help.
   if (first.status < 500) return first;
 
   console.warn("Retrying email send (transient failure)…");
   return sendOnce(options);
+}
+
+/**
+ * Send an email rendered from a Resend-hosted template. The template is
+ * created in Resend's dashboard and referenced by its `templateId` (UUID
+ * or alias of a published template). Variable keys must match the
+ * {{placeholders}} declared in the template body.
+ *
+ * Returns a discriminated SendResult so callers can detect failure and
+ * fall back to an inline HTML send if needed.
+ */
+export async function sendTemplateEmailDetailed(
+  options: TemplateEmailOptions,
+): Promise<SendResult> {
+  if (!RESEND_API_KEY) {
+    const error =
+      "RESEND_API_KEY not set — email skipped. Add it to .env.local / Vercel env.";
+    console.warn(error);
+    return { ok: false, status: 0, error };
+  }
+
+  const first = await sendTemplateOnce(options);
+  if (first.ok) return first;
+
+  if (first.status < 500) return first;
+
+  console.warn("Retrying template email send (transient failure)…");
+  return sendTemplateOnce(options);
+}
+
+/**
+ * Backward-compatible wrapper around sendTemplateEmailDetailed: returns
+ * the raw response on success, null on failure. Use the *Detailed variant
+ * when the caller wants to fall back to a different send on failure.
+ */
+export async function sendTemplateEmail(
+  options: TemplateEmailOptions,
+): Promise<unknown | null> {
+  const result = await sendTemplateEmailDetailed(options);
+  return result.ok ? result.raw : null;
 }

@@ -1,8 +1,31 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { sendEmail, getNotificationEmails } from "@/lib/email";
+import {
+  sendEmail,
+  sendTemplateEmailDetailed,
+  getNotificationEmails,
+} from "@/lib/email";
 import { welcomeEmailHtml, newSignupAdminEmailHtml } from "@/lib/email-templates";
+
+// Resend-hosted welcome template (created in the Resend dashboard as
+// "welcome-email"). The UUID is the default; allow override via env so
+// the same code can point at a staging template without a code change.
+const WELCOME_TEMPLATE_ID =
+  process.env.RESEND_WELCOME_TEMPLATE_ID ??
+  "6d9e480c-9f79-415f-bc13-a3715e03c4d2";
+
+/**
+ * Extracts a first-name token from the user's stored display name.
+ * The template uses {{first_name}} as a greeting, so we want just the
+ * leading word. Falls back to "there" when no name is on file so the
+ * template never renders an empty greeting.
+ */
+function firstNameFor(name: string | null): string {
+  if (!name) return "there";
+  const first = name.trim().split(/\s+/)[0];
+  return first || "there";
+}
 
 // Minimal validation. We avoid pulling in zod here to keep the route
 // dependency-light, but the rules are:
@@ -25,8 +48,6 @@ function normalizePhone(raw: unknown): string | null {
   const trimmed = raw.trim();
   if (!trimmed) return null;
   const digits = trimmed.replace(/\D/g, "");
-  // North-American typical is 10 digits; allow 7+ to accommodate
-  // international formats while still rejecting obvious garbage.
   if (digits.length < 7 || digits.length > 20) return null;
   return trimmed;
 }
@@ -66,8 +87,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // If the caller sent a phone field but it failed validation, surface
-    // a friendly error rather than silently dropping it.
     if (
       typeof rawPhone === "string" &&
       rawPhone.trim().length > 0 &&
@@ -122,12 +141,31 @@ export async function POST(request: Request) {
       },
     });
 
-    // Send welcome email to the new user (fire-and-forget)
-    sendEmail({
-      to: user.email,
-      subject: "Welcome to Macrolight",
-      html: welcomeEmailHtml({ name: user.name }),
-    }).catch((err) => console.error("Welcome email failed:", err));
+    // Send welcome email to the new user (fire-and-forget).
+    // Primary path: render the Resend-hosted "welcome-email" template
+    // with the user's first name. If Resend rejects the template send
+    // (missing env, unpublished template, missing variable, etc.) fall
+    // back to the inline HTML template so signups never silently lose
+    // the welcome email.
+    (async () => {
+      const templateResult = await sendTemplateEmailDetailed({
+        to: user.email,
+        templateId: WELCOME_TEMPLATE_ID,
+        variables: { first_name: firstNameFor(user.name) },
+      });
+
+      if (templateResult.ok) return;
+
+      console.warn(
+        `Welcome template send failed (${templateResult.status}): ${templateResult.error}. Falling back to inline HTML.`,
+      );
+
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Macrolight",
+        html: welcomeEmailHtml({ name: user.name }),
+      });
+    })().catch((err) => console.error("Welcome email failed:", err));
 
     // Notify admin of the new signup
     const notificationEmails = getNotificationEmails();

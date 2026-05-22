@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
-import { sendEmailDetailed, getNotificationEmails } from "@/lib/email";
+import {
+  sendEmailDetailed,
+  sendTemplateEmailDetailed,
+  getNotificationEmails,
+} from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const WELCOME_TEMPLATE_ID =
+  process.env.RESEND_WELCOME_TEMPLATE_ID ??
+  "6d9e480c-9f79-415f-bc13-a3715e03c4d2";
 
 /**
  * POST /api/admin/email/test
@@ -13,14 +21,32 @@ export const dynamic = "force-dynamic";
  * Sends a test email via Resend and returns the raw API response so the
  * exact failure (or success) is inspectable from the browser. Admin-only.
  *
- * Body (optional):
- *   { to?: string | string[], subject?: string }
+ * Body (all optional):
+ *   {
+ *     to?: string | string[],          // defaults to LEAD_NOTIFICATION_EMAIL
+ *     subject?: string,
+ *     template?: "welcome" | string,   // "welcome" sends the welcome-email
+ *                                      // template; any other string is
+ *                                      // treated as an explicit template ID
+ *     variables?: Record<string, string | number>,
+ *                                      // template variable values
+ *   }
  *
- * If `to` is omitted, the LEAD_NOTIFICATION_EMAIL env var is used.
+ * Examples (browser console, signed in as admin):
  *
- * Example from the browser console while signed in as admin:
- *   await fetch("/api/admin/email/test", { method: "POST" })
- *     .then(r => r.json())
+ *   // 1. Plain inline HTML test (original behavior)
+ *   await fetch("/api/admin/email/test", { method: "POST" }).then(r => r.json())
+ *
+ *   // 2. Send the welcome-email template to yourself
+ *   await fetch("/api/admin/email/test", {
+ *     method: "POST",
+ *     headers: { "Content-Type": "application/json" },
+ *     body: JSON.stringify({
+ *       to: "you@example.com",
+ *       template: "welcome",
+ *       variables: { first_name: "Bradley" },
+ *     }),
+ *   }).then(r => r.json())
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -57,6 +83,47 @@ export async function POST(req: NextRequest) {
       ? body.subject
       : `Test email · ${new Date().toISOString()}`;
 
+  // Template path: caller passed `template: "welcome"` (or another template
+  // ID directly). Resolve the alias and forward to sendTemplateEmailDetailed.
+  if (typeof body?.template === "string" && body.template.length > 0) {
+    const templateId =
+      body.template === "welcome" ? WELCOME_TEMPLATE_ID : body.template;
+    const variables =
+      body?.variables && typeof body.variables === "object"
+        ? (body.variables as Record<string, string | number>)
+        : undefined;
+
+    const result = await sendTemplateEmailDetailed({
+      to,
+      templateId,
+      variables,
+      // Only forward subject if the caller explicitly set one; otherwise let
+      // the template's own subject win.
+      ...(typeof body?.subject === "string" ? { subject } : {}),
+    });
+
+    return NextResponse.json(
+      {
+        ...result,
+        mode: "template",
+        templateId,
+        variables,
+        sentTo: to,
+        fromAddress:
+          process.env.RESEND_FROM_ADDRESS ??
+          "Macrolight <notifications@macrolight-builder.com>",
+        envCheck: {
+          RESEND_API_KEY: Boolean(process.env.RESEND_API_KEY),
+          RESEND_WELCOME_TEMPLATE_ID: Boolean(
+            process.env.RESEND_WELCOME_TEMPLATE_ID,
+          ),
+        },
+      },
+      { status: result.ok ? 200 : 502 },
+    );
+  }
+
+  // Default path: inline HTML test (unchanged).
   const result = await sendEmailDetailed({
     to,
     subject,
@@ -72,6 +139,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(
     {
       ...result,
+      mode: "inline",
       sentTo: to,
       fromAddress:
         process.env.RESEND_FROM_ADDRESS ??
