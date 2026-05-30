@@ -126,7 +126,7 @@ export default async function ProjectPage() {
                       href="/portal/onboarding"
                       className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-violet-600 text-sm font-semibold text-white hover:bg-violet-700 transition-colors"
                     >
-                      Complete Onboarding →
+                      Complete Onboarding Chat →
                     </Link>
                   )}
                   {stage.key === "ONBOARDING" && onboardingDone && (

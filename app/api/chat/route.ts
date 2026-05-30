@@ -1,4 +1,5 @@
 import { streamText, convertToModelMessages } from 'ai';
+import { getChatModel } from '@/lib/ai/model';
 
 export const runtime = 'edge';
 
@@ -7,7 +8,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages ?? []);
 
   const result = streamText({
-    model: 'openai/gpt-4o-mini', // routed through Vercel AI Gateway
+    model: getChatModel(),
     system: 'You are a helpful assistant. Be concise and friendly.',
     messages: modelMessages,
   });

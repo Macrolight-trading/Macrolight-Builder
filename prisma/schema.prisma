@@ -394,23 +394,28 @@ model MediaFile {
 }
 
 model OnboardingData {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  businessName    String?
-  tagline         String?
-  primaryColor    String?
-  secondaryColor  String?
-  targetAudience  String?   @db.Text
-  keyServices     String?   @db.Text
-  competitors     String?   @db.Text
-  tone            String?
-  themePicks      String?
-  inspirationUrls String?   @db.Text
-  additionalNotes String?   @db.Text
-  completedAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contactName      String?
+  phone            String?
+  address          String?   @db.Text
+  businessName     String?
+  tagline          String?
+  primaryColor     String?
+  secondaryColor   String?
+  targetAudience   String?   @db.Text
+  keyServices      String?   @db.Text
+  competitors      String?   @db.Text
+  tone             String?
+  themePicks       String?
+  inspirationUrls  String?   @db.Text
+  additionalNotes  String?   @db.Text
+  briefMarkdownUrl String?
+  chatMessages     Json?
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   @@map("onboarding_data")
 }

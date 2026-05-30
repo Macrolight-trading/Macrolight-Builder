@@ -20,6 +20,9 @@ export default async function AdminProjectDetailPage({
   type OnboardingRow = {
     id: string;
     userId: string;
+    contactName: string | null;
+    phone: string | null;
+    address: string | null;
     businessName: string | null;
     tagline: string | null;
     primaryColor: string | null;
@@ -31,6 +34,7 @@ export default async function AdminProjectDetailPage({
     themePicks: string | null;
     inspirationUrls: string | null;
     additionalNotes: string | null;
+    briefMarkdownUrl: string | null;
     completedAt: Date | null;
   };
 
@@ -105,8 +109,29 @@ export default async function AdminProjectDetailPage({
 
             return (
               <dl className="space-y-4 text-sm">
+                {onboarding.briefMarkdownUrl && (
+                  <div>
+                    <dt className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">
+                      Build Brief
+                    </dt>
+                    <dd>
+                      <a
+                        href={`/api/portal/onboarding/brief?userId=${params.userId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-medium text-violet-600 hover:text-violet-700"
+                      >
+                        Download markdown brief →
+                      </a>
+                    </dd>
+                  </div>
+                )}
+
                 {/* Text fields */}
                 {[
+                  ["Contact Name", onboarding.contactName],
+                  ["Phone", onboarding.phone],
+                  ["Address / Service Area", onboarding.address],
                   ["Business Name", onboarding.businessName],
                   ["Tagline", onboarding.tagline],
                   ["Target Audience", onboarding.targetAudience],

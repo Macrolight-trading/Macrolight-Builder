@@ -16,6 +16,7 @@
 # misc
 .DS_Store
 *.pem
+.git-rewrite/
 
 # debug
 npm-debug.log*

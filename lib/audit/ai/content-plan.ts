@@ -14,6 +14,7 @@
 import { generateObject } from "ai";
 import { z } from "zod";
 import type { AuditRunResult } from "../types";
+import { getLanguageModel } from "@/lib/ai/model";
 
 // ── Output schema ────────────────────────────────────────────────────────
 
@@ -116,7 +117,7 @@ export interface ContentPlanWithMeta extends ContentPlan {
   model: string;
 }
 
-const MODEL = "openai/gpt-4o";
+const MODEL = "gpt-4o";
 
 export async function generateContentPlan(
   input: GenerateContentPlanInput
@@ -124,7 +125,7 @@ export async function generateContentPlan(
   const context = buildAuditContext(input);
 
   const { object } = await generateObject({
-    model: MODEL,
+    model: getLanguageModel(MODEL),
     schema: ContentPlanSchema,
     system: SYSTEM_PROMPT,
     prompt: context,

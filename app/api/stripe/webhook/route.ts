@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
-import { enqueueHermesEvent } from "@/lib/hermes";
+import { enqueuePaymentConfirmedForUser } from "@/lib/onboarding/payment-confirmed";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -194,12 +194,14 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   }
 
   // Enqueue Hermes event for payment confirmation automation
-  enqueueHermesEvent("payment_confirmed", user.id, {
-    plan: basePlan,
+  await enqueuePaymentConfirmedForUser(user.id, {
+    sessionId: session.id,
     amountTotal: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
+    plan: basePlan !== "NONE" ? basePlan : undefined,
     stripeCustomerId: customerId,
-    sessionId: session.id,
+  }).catch((err) => {
+    console.error("[stripe/webhook] payment_confirmed enqueue failed:", err);
   });
 
   // Promote the pending plan request, if there is one.

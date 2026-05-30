@@ -2,24 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
-import { sendEmail, getNotificationEmails } from "@/lib/email";
-import { onboardingCompleteAdminEmailHtml } from "@/lib/email-templates";
-import { enqueueHermesEvent } from "@/lib/hermes";
 
-const schema = z.object({
-  businessName: z.string().max(200).optional(),
-  tagline: z.string().max(300).optional(),
-  primaryColor: z.string().max(20).optional(),
-  secondaryColor: z.string().max(20).optional(),
-  targetAudience: z.string().max(1000).optional(),
-  keyServices: z.string().max(1000).optional(),
-  competitors: z.string().max(1000).optional(),
-  tone: z.string().max(50).optional(),
-  themePicks: z.string().max(500).optional(),
-  inspirationUrls: z.string().max(2000).optional(),
-  additionalNotes: z.string().max(2000).optional(),
-  completed: z.boolean().optional(),
+const patchSchema = z.object({
+  chatMessages: z.array(z.unknown()),
 });
 
 export async function GET() {
@@ -31,87 +18,29 @@ export async function GET() {
   return NextResponse.json(data ?? {});
 }
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   const session = await getServerSession(authOptions);
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const parsed = schema.safeParse(body);
+  const parsed = patchSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
   }
 
-  const { completed, themePicks, inspirationUrls, ...knownFields } = parsed.data;
+  const chatMessages = parsed.data.chatMessages as Prisma.InputJsonValue;
 
-  // Upsert with the fields the current Prisma client knows about.
   const data = await prisma.onboardingData.upsert({
     where: { userId },
     create: {
       userId,
-      ...knownFields,
-      completedAt: completed ? new Date() : null,
+      chatMessages,
     },
     update: {
-      ...knownFields,
-      ...(completed !== undefined
-        ? { completedAt: completed ? new Date() : null }
-        : {}),
+      chatMessages,
     },
   });
-
-  // Write the two newer columns (themePicks, inspirationUrls) via raw SQL
-  // until the Prisma client is regenerated to include them.
-  if (themePicks !== undefined || inspirationUrls !== undefined) {
-    await prisma.$executeRaw`
-      UPDATE onboarding_data
-      SET
-        "themePicks"      = COALESCE(${themePicks      ?? null}, "themePicks"),
-        "inspirationUrls" = COALESCE(${inspirationUrls ?? null}, "inspirationUrls")
-      WHERE "userId" = ${userId}
-    `;
-  }
-
-  // Auto-advance project stage from ONBOARDING → DESIGN when completed
-  if (completed) {
-    await prisma.project.upsert({
-      where: { userId },
-      create: { userId, stage: "DESIGN" },
-      update: { stage: "DESIGN" },
-    });
-
-    // Notify admin that the client submitted their brief
-    const notificationEmails = getNotificationEmails();
-    if (notificationEmails.length > 0) {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { name: true, email: true },
-      });
-      if (user) {
-        sendEmail({
-          to: notificationEmails,
-          subject: `Onboarding complete: ${user.name ?? user.email}`,
-          html: onboardingCompleteAdminEmailHtml({
-            name: user.name,
-            email: user.email,
-            businessName: knownFields.businessName ?? null,
-          }),
-        }).catch((err) => console.error("Onboarding complete email failed:", err));
-      }
-    }
-
-    // Enqueue Hermes event for project bootstrap automation
-    enqueueHermesEvent("onboarding_complete", userId, {
-      businessName: knownFields.businessName ?? null,
-      tagline: knownFields.tagline ?? null,
-      primaryColor: knownFields.primaryColor ?? null,
-      secondaryColor: knownFields.secondaryColor ?? null,
-      targetAudience: knownFields.targetAudience ?? null,
-      keyServices: knownFields.keyServices ?? null,
-      competitors: knownFields.competitors ?? null,
-      tone: knownFields.tone ?? null,
-    });
-  }
 
   return NextResponse.json(data);
 }

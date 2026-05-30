@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import PlanBuilder from "@/components/portal/PlanBuilder";
+import OnboardingRequiredGate from "@/components/portal/OnboardingRequiredGate";
 import { getUserSubscriptionState } from "@/lib/plan-selection";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +14,15 @@ export default async function BuildPlanPage() {
   const userId = (session?.user as { id?: string } | undefined)?.id;
   if (!userId) redirect("/login?callbackUrl=/portal/build-plan");
 
-  const [user, options, latestPending, categories, recommendation, subState] =
+  const [user, onboarding, options, latestPending, categories, recommendation, subState] =
     await Promise.all([
       prisma.user.findUnique({
         where: { id: userId },
         select: { plan: true },
+      }),
+      prisma.onboardingData.findUnique({
+        where: { userId },
+        select: { completedAt: true },
       }),
       prisma.planOption.findMany({
         where: { active: true },
@@ -47,6 +52,10 @@ export default async function BuildPlanPage() {
       // (rather than "Checkout now") when one exists.
       getUserSubscriptionState(userId),
     ]);
+
+  if (!onboarding?.completedAt) {
+    return <OnboardingRequiredGate />;
+  }
 
   const recommendedIds = recommendation?.items.map((i) => i.optionId) ?? [];
   const hasRecommendation = Boolean(recommendation);
