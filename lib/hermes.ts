@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export type HermesEventType =
   | "onboarding_complete"
@@ -13,7 +14,7 @@ export type HermesEventType =
 export async function enqueueHermesEvent(
   event: HermesEventType,
   userId: string | null,
-  payload: Record<string, unknown>,
+  payload: Prisma.InputJsonValue,
 ): Promise<void> {
   try {
     await prisma.hermesEvent.create({
