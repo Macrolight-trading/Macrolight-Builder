@@ -20,3 +20,5 @@ CREATE TABLE "hermes_events" (
 );
 
 CREATE INDEX "hermes_events_status_createdAt_idx" ON "hermes_events"("status", "createdAt");
+
+ALTER TABLE "hermes_events" ADD CONSTRAINT "hermes_events_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -81,6 +81,7 @@ model User {
   onboarding         OnboardingData?
   planRequests       CustomPlanRequest[]
   planRecommendation PlanRecommendation?
+  hermesEvents       HermesEvent[]
 
   @@map("users")
 }
@@ -632,6 +633,8 @@ model HermesEvent {
   processedAt DateTime?
   error       String?           @db.Text
   createdAt   DateTime          @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@map("hermes_events")
