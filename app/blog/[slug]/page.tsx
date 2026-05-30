@@ -201,7 +201,6 @@ export default function BlogPostPage({
       <section className="bg-stone-50 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <article className="max-w-none">
-            {/* @ts-expect-error Async Server Component */}
             <MDXRemote
               source={post.content}
               components={mdxComponents}
