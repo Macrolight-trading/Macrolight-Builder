@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { getAuthor } from "@/lib/authors";
 import JsonLd from "@/components/JsonLd";
 import CTASection from "@/components/CTASection";
+import { mdxComponents } from "@/components/mdx/MdxComponents";
 
 const ACCENT = "#C8A24B";
 
@@ -59,72 +62,6 @@ export function generateMetadata({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Simple markdown → HTML converter — themed to v2 stone/gold         */
-/* ------------------------------------------------------------------ */
-
-function markdownToHtml(md: string): string {
-  let html = md
-    // Headings (must come before paragraph handling)
-    .replace(
-      /^### (.+)$/gm,
-      '<h3 class="font-display font-semibold text-stone-900 leading-snug tracking-tight mt-10 mb-3" style="font-size: clamp(1.05rem, 1.5vw, 1.25rem)">$1</h3>'
-    )
-    .replace(
-      /^## (.+)$/gm,
-      '<h2 class="font-display font-semibold text-stone-900 leading-[1.15] tracking-tight mt-14 mb-5" style="font-size: clamp(1.45rem, 2.4vw, 1.9rem)">$1</h2>'
-    )
-    .replace(
-      /^# (.+)$/gm,
-      '<h1 class="font-display font-semibold text-stone-900 leading-[1.05] tracking-tight mb-6" style="font-size: clamp(1.85rem, 3.4vw, 2.5rem)">$1</h1>'
-    )
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-stone-900">$1</strong>')
-    // Italic
-    .replace(/\*(.+?)\*/g, '<em class="text-stone-700">$1</em>')
-    // Links
-    .replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" class="text-stone-900 underline decoration-stone-300 decoration-from-font underline-offset-4 hover:decoration-stone-900 transition-colors">$1</a>'
-    )
-    // Horizontal rule
-    .replace(/^---$/gm, '<hr class="my-12 border-stone-200" />');
-
-  // Unordered lists
-  html = html.replace(/(^- .+\n?)+/gm, (match) => {
-    const items = match
-      .trim()
-      .split("\n")
-      .map(
-        (line) =>
-          `<li class="text-stone-600 leading-relaxed pl-2">${line.replace(/^- /, "")}</li>`
-      )
-      .join("\n");
-    return `<ul class="my-5 space-y-2 list-disc pl-5 marker:text-stone-300">\n${items}\n</ul>`;
-  });
-
-  // Paragraphs: wrap remaining bare lines
-  html = html
-    .split("\n\n")
-    .map((block) => {
-      const trimmed = block.trim();
-      if (!trimmed) return "";
-      if (
-        trimmed.startsWith("<h") ||
-        trimmed.startsWith("<ul") ||
-        trimmed.startsWith("<ol") ||
-        trimmed.startsWith("<hr") ||
-        trimmed.startsWith("<blockquote")
-      ) {
-        return trimmed;
-      }
-      return `<p class="text-[1.0625rem] text-stone-600 leading-[1.75] mb-5">${trimmed}</p>`;
-    })
-    .join("\n\n");
-
-  return html;
-}
-
-/* ------------------------------------------------------------------ */
 /*  Date formatter                                                     */
 /* ------------------------------------------------------------------ */
 
@@ -148,12 +85,6 @@ export default function BlogPostPage({
   const post = getPostBySlug(params.slug);
   if (!post) notFound();
 
-  // The post layout already renders the title as the page H1, and the
-  // markdown source files start with `# Title`. Strip that leading H1 so
-  // the rendered article body starts at H2 (avoids duplicate H1s — see
-  // SEO audit Finding 4).
-  const bodyMarkdown = post.content.replace(/^\s*#\s+.+\n+/, "");
-  const articleHtml = markdownToHtml(bodyMarkdown);
   const author = post.authorKey ? getAuthor(post.authorKey) : undefined;
 
   const blogPostingSchema = {
@@ -269,10 +200,19 @@ export default function BlogPostPage({
       {/* ── Article body ── */}
       <section className="bg-stone-50 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
-          <div
-            className="max-w-none"
-            dangerouslySetInnerHTML={{ __html: articleHtml }}
-          />
+          <article className="max-w-none">
+            {/* @ts-expect-error Async Server Component */}
+            <MDXRemote
+              source={post.content}
+              components={mdxComponents}
+              options={{
+                mdxOptions: {
+                  remarkPlugins: [remarkGfm],
+                },
+                parseFrontmatter: false,
+              }}
+            />
+          </article>
         </div>
       </section>
 
