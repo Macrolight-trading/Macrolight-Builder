@@ -3,6 +3,7 @@ import Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
+import { enqueueHermesEvent } from "@/lib/hermes";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -191,6 +192,15 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
       data: { plan: basePlan },
     });
   }
+
+  // Enqueue Hermes event for payment confirmation automation
+  enqueueHermesEvent("payment_confirmed", user.id, {
+    plan: basePlan,
+    amountTotal: session.amount_total ?? 0,
+    currency: session.currency ?? "usd",
+    stripeCustomerId: customerId,
+    sessionId: session.id,
+  });
 
   // Promote the pending plan request, if there is one.
   const planRequestId = session.metadata?.planRequestId ?? null;

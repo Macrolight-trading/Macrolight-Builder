@@ -619,6 +619,31 @@ model SubscriptionItem {
   @@map("subscription_items")
 }
 
+// ── Hermes Event Queue ──────────────────────────────────────────────────────
+// Durable queue for app → Hermes agent notifications.
+// Hermes polls /api/hermes/events, processes each pending event, then ACKs.
+
+model HermesEvent {
+  id          String            @id @default(cuid())
+  event       String            // e.g. "onboarding_complete", "payment_confirmed"
+  userId      String?
+  payload     Json              // event-specific context
+  status      HermesEventStatus @default(PENDING)
+  processedAt DateTime?
+  error       String?           @db.Text
+  createdAt   DateTime          @default(now())
+
+  @@index([status, createdAt])
+  @@map("hermes_events")
+}
+
+enum HermesEventStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
 model PlanCategory {
   id                String   @id @default(cuid())
   name              String   @unique

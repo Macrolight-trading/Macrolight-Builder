@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { sendEmail, getNotificationEmails } from "@/lib/email";
 import { onboardingCompleteAdminEmailHtml } from "@/lib/email-templates";
+import { enqueueHermesEvent } from "@/lib/hermes";
 
 const schema = z.object({
   businessName: z.string().max(200).optional(),
@@ -98,6 +99,18 @@ export async function POST(req: NextRequest) {
         }).catch((err) => console.error("Onboarding complete email failed:", err));
       }
     }
+
+    // Enqueue Hermes event for project bootstrap automation
+    enqueueHermesEvent("onboarding_complete", userId, {
+      businessName: knownFields.businessName ?? null,
+      tagline: knownFields.tagline ?? null,
+      primaryColor: knownFields.primaryColor ?? null,
+      secondaryColor: knownFields.secondaryColor ?? null,
+      targetAudience: knownFields.targetAudience ?? null,
+      keyServices: knownFields.keyServices ?? null,
+      competitors: knownFields.competitors ?? null,
+      tone: knownFields.tone ?? null,
+    });
   }
 
   return NextResponse.json(data);
