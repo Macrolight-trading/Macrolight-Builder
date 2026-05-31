@@ -11,12 +11,22 @@ export default function ReviewFeedbackForm() {
     if (!body.trim()) return;
     setStatus("sending");
     try {
-      const res = await fetch("/api/portal/messages", {
+      // Post to messages thread (existing — keeps the portal message history)
+      const msgRes = await fetch("/api/portal/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body: body.trim() }),
       });
-      if (!res.ok) throw new Error();
+      if (!msgRes.ok) throw new Error("message post failed");
+
+      // Also enqueue a revision_submitted HermesEvent so the agent picks it up
+      const revRes = await fetch("/api/portal/revisions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ feedback: body.trim() }),
+      });
+      if (!revRes.ok) throw new Error("revision enqueue failed");
+
       setStatus("sent");
       setBody("");
     } catch {
@@ -29,7 +39,8 @@ export default function ReviewFeedbackForm() {
       <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-5 py-4 text-sm text-emerald-800">
         <p className="font-semibold">Feedback sent!</p>
         <p className="mt-0.5 text-emerald-700">
-          We&apos;ll review your notes and be in touch.{" "}
+          Our agent will apply your changes and notify you when the update is
+          live.{" "}
           <button
             type="button"
             onClick={() => setStatus("idle")}
