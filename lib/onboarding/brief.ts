@@ -11,6 +11,8 @@ export type OnboardingBriefFields = {
   secondaryColor?: string | null;
   targetAudience: string;
   keyServices: string;
+  websiteGoals?: string | null;
+  websiteVision?: string | null;
   competitors?: string | null;
   tone?: string | null;
   themePicks?: string[] | null;
@@ -48,7 +50,11 @@ export function buildMarkdownBrief(fields: OnboardingBriefFields): string {
       bullet("Brand Voice", fields.tone),
     ]),
     section("Services & Offerings", [fields.keyServices.trim()]),
-    section("Target Audience & Goals", [fields.targetAudience.trim()]),
+    section("Target Audience", [fields.targetAudience.trim()]),
+    section("Website Goals & Requirements", [
+      fields.websiteGoals?.trim() ?? "",
+    ]),
+    section("Website Vision", [fields.websiteVision?.trim() ?? ""]),
     section("Brand & Design Direction", [
       bullet("Primary Color", fields.primaryColor),
       bullet("Secondary Color", fields.secondaryColor),

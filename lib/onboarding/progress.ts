@@ -3,9 +3,10 @@ import type { UIMessage } from "ai";
 export const ONBOARDING_PHASES = [
   { id: "contact", label: "Contact & location" },
   { id: "business", label: "Business basics" },
-  { id: "services", label: "Services & goals" },
+  { id: "vision", label: "Website vision & goals" },
+  { id: "services", label: "Services & audience" },
+  { id: "content", label: "Pages & content" },
   { id: "brand", label: "Brand & design" },
-  { id: "content", label: "Content & pages" },
   { id: "review", label: "Review & submit" },
 ] as const;
 
@@ -35,7 +36,7 @@ function getPhaseFromUserCount(userCount: number) {
   if (userCount <= 2) {
     return { label: ONBOARDING_PHASES[0].label, index: 0 };
   }
-  if (userCount <= 4) {
+  if (userCount <= 3) {
     return { label: ONBOARDING_PHASES[1].label, index: 1 };
   }
   if (userCount <= 6) {
@@ -47,11 +48,14 @@ function getPhaseFromUserCount(userCount: number) {
   if (userCount <= 10) {
     return { label: ONBOARDING_PHASES[4].label, index: 4 };
   }
-  return { label: ONBOARDING_PHASES[5].label, index: 5 };
+  if (userCount <= 12) {
+    return { label: ONBOARDING_PHASES[5].label, index: 5 };
+  }
+  return { label: ONBOARDING_PHASES[6].label, index: 6 };
 }
 
-/** Roughly 11 user answers before the final confirmation step. */
-const ESTIMATED_ANSWERS = 11;
+/** Roughly 13 user answers before the final confirmation step. */
+const ESTIMATED_ANSWERS = 13;
 
 export function calculateOnboardingProgress(
   messages: UIMessage[],
@@ -68,8 +72,8 @@ export function calculateOnboardingProgress(
   if (isReviewPhase) {
     return {
       percent: 92,
-      phase: ONBOARDING_PHASES[5].label,
-      phaseIndex: 5,
+      phase: ONBOARDING_PHASES[6].label,
+      phaseIndex: 6,
     };
   }
 

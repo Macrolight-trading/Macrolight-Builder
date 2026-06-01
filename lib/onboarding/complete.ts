@@ -14,6 +14,8 @@ export const completeOnboardingSchema = z.object({
   secondaryColor: z.string().max(20).optional(),
   targetAudience: z.string().min(10).max(2000),
   keyServices: z.string().min(10).max(2000),
+  websiteGoals: z.string().min(10).max(2000),
+  websiteVision: z.string().min(20).max(4000),
   competitors: z.string().max(2000).optional(),
   tone: z
     .enum(["professional", "friendly", "bold", "technical", "casual"])
