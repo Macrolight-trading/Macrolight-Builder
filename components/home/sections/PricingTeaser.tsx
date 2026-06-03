@@ -6,48 +6,19 @@ import { useState } from "react";
 import Reveal from "@/components/motion/Reveal";
 import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 import { DUR, EASE } from "@/components/motion/tokens";
+import { pricingTiers } from "@/lib/pricing";
 
 /**
- * Two-card pricing teaser. Compact view — full comparison lives at
- * /pricing. The "Growth" card is the recommended tier; it lifts on
- * hover (only this card lifts, not both, so the recommendation reads).
+ * Two-card pricing teaser (Starter + Growth). Feature lists, fees, and
+ * CTAs are sourced from lib/pricing.ts so they stay in sync with /pricing.
+ * The Growth card is the recommended tier; it lifts on hover.
  */
 
 const ACCENT = "#C8A24B";
 
-const TIERS = [
-  {
-    name: "Starter",
-    tagline:
-      "For businesses launching their first real website — or replacing a Wix.",
-    buildFee: 1000,
-    monthlyFee: 79,
-    highlights: [
-      "3–5 page conversion-focused site",
-      "Edge hosting on Vercel — sub-second loads",
-      "Click-to-call & lead capture form",
-    ],
-    cta: "Book a call about Starter",
-    href: "/book?plan=starter",
-    highlighted: false,
-  },
-  {
-    name: "Growth",
-    tagline:
-      "For businesses ready to make the website their #1 sales channel.",
-    buildFee: 1500,
-    monthlyFee: 149,
-    highlights: [
-      "5–8 pages with conversion copywriting",
-      "Lead capture wired into your CRM or inbox",
-      "Analytics, A/B testing, monthly reporting",
-      "Unlimited content edits · 48 hr turnaround",
-    ],
-    cta: "Book a call to get started",
-    href: "/book?plan=growth",
-    highlighted: true,
-  },
-] as const;
+const TEASER_TIERS = pricingTiers.filter(
+  (t) => t.name === "Starter" || t.name === "Growth",
+);
 
 export default function PricingTeaser() {
   return (
@@ -78,7 +49,7 @@ export default function PricingTeaser() {
           className="mt-10 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
           delayChildren={0.15}
         >
-          {TIERS.map((tier) => (
+          {TEASER_TIERS.map((tier) => (
             <StaggerItem key={tier.name}>
               <TierCard tier={tier} />
             </StaggerItem>
@@ -104,12 +75,13 @@ export default function PricingTeaser() {
   );
 }
 
-function TierCard({ tier }: { tier: (typeof TIERS)[number] }) {
+function TierCard({ tier }: { tier: (typeof TEASER_TIERS)[number] }) {
   const reduce = useReducedMotion();
   const [hover, setHover] = useState(false);
+  const highlighted = tier.highlighted === true;
 
   // Only the recommended tier lifts on hover.
-  const lift = !reduce && tier.highlighted && hover ? -6 : 0;
+  const lift = !reduce && highlighted && hover ? -6 : 0;
 
   return (
     <motion.div
@@ -118,17 +90,17 @@ function TierCard({ tier }: { tier: (typeof TIERS)[number] }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className={`relative rounded-2xl bg-white p-6 sm:p-8 border ${
-        tier.highlighted
+        highlighted
           ? "border-stone-900 shadow-md"
           : "border-stone-200 shadow-sm"
       }`}
     >
-      {tier.highlighted && (
+      {highlighted && (
         <span
           className="absolute -top-3 left-6 sm:left-8 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-900"
           style={{ background: ACCENT }}
         >
-          Most popular
+          {tier.badge ?? "Most popular"}
         </span>
       )}
 
@@ -153,8 +125,8 @@ function TierCard({ tier }: { tier: (typeof TIERS)[number] }) {
       </div>
 
       <ul className="mt-7 space-y-3">
-        {tier.highlights.map((h) => (
-          <li key={h} className="flex items-start gap-3 text-sm text-stone-700">
+        {tier.features.map((f) => (
+          <li key={f} className="flex items-start gap-3 text-sm text-stone-700">
             <svg
               viewBox="0 0 20 20"
               fill="none"
@@ -170,20 +142,20 @@ function TierCard({ tier }: { tier: (typeof TIERS)[number] }) {
                 className="text-stone-900"
               />
             </svg>
-            {h}
+            {f}
           </li>
         ))}
       </ul>
 
       <Link
-        href={tier.href}
+        href={tier.ctaHref}
         className={`mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors ${
-          tier.highlighted
+          highlighted
             ? "bg-stone-900 text-stone-50 hover:bg-stone-800"
             : "border border-stone-300 text-stone-900 hover:bg-stone-100"
         }`}
       >
-        {tier.cta}
+        {tier.ctaLabel}
       </Link>
     </motion.div>
   );
