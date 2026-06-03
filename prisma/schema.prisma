@@ -69,6 +69,7 @@ model User {
   planRecommendation PlanRecommendation?
   project            Project?
   subscriptions      Subscription[]
+  hermesEvents       HermesEvent[]
 
   @@map("users")
 }
@@ -498,6 +499,7 @@ model HermesEvent {
   processedAt DateTime?
   error       String?
   createdAt   DateTime          @default(now())
+  user        User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@map("hermes_events")
