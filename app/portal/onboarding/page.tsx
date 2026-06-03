@@ -2,16 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import OnboardingChat from "@/components/portal/OnboardingChat";
-import OnboardingAdminTestButton from "@/components/portal/OnboardingAdminTestButton";
-import type { UIMessage } from "ai";
+import OnboardingAdminToolbar from "@/components/portal/OnboardingAdminTestButton";
+import { parseChatMessages } from "@/lib/onboarding/parse-chat-messages";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Onboarding" };
-
-function parseChatMessages(raw: unknown): UIMessage[] {
-  if (!Array.isArray(raw)) return [];
-  return raw as UIMessage[];
-}
 
 export default async function OnboardingPage() {
   const session = await getServerSession(authOptions);
@@ -35,7 +30,7 @@ export default async function OnboardingPage() {
 
       <div className="flex h-[calc(100dvh-11.5rem)] min-h-[420px] flex-col overflow-hidden border-y border-gray-200 bg-white sm:h-[min(72vh,720px)] sm:rounded-xl sm:border">
         {isAdmin && (
-          <OnboardingAdminTestButton hasBrief={!!data?.briefMarkdownUrl} />
+          <OnboardingAdminToolbar hasBrief={!!data?.briefMarkdownUrl} />
         )}
         <OnboardingChat
           initialMessages={parseChatMessages(data?.chatMessages)}

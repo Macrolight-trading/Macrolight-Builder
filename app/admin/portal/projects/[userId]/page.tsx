@@ -3,7 +3,10 @@ import { authOptions } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import ProjectEditor from "@/components/admin/portal/ProjectEditor";
+import OnboardingStatusControl from "@/components/admin/portal/OnboardingStatusControl";
+import OnboardingChat from "@/components/portal/OnboardingChat";
 import MessageThread from "@/components/portal/MessageThread";
+import { parseChatMessages } from "@/lib/onboarding/parse-chat-messages";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -17,36 +20,13 @@ export default async function AdminProjectDetailPage({
   const role = (session?.user as { role?: string } | undefined)?.role;
   if (role !== "ADMIN") redirect("/admin");
 
-  type OnboardingRow = {
-    id: string;
-    userId: string;
-    contactName: string | null;
-    phone: string | null;
-    address: string | null;
-    businessName: string | null;
-    tagline: string | null;
-    primaryColor: string | null;
-    secondaryColor: string | null;
-    targetAudience: string | null;
-    keyServices: string | null;
-    competitors: string | null;
-    tone: string | null;
-    themePicks: string | null;
-    inspirationUrls: string | null;
-    additionalNotes: string | null;
-    briefMarkdownUrl: string | null;
-    completedAt: Date | null;
-  };
-
-  const [user, project, onboardingRows, messages, mediaFiles] = await Promise.all([
+  const [user, project, onboarding, messages, mediaFiles] = await Promise.all([
     prisma.user.findUnique({
       where: { id: params.userId },
       select: { id: true, name: true, email: true, plan: true },
     }),
     prisma.project.findUnique({ where: { userId: params.userId } }),
-    prisma.$queryRaw<OnboardingRow[]>`
-      SELECT * FROM onboarding_data WHERE "userId" = ${params.userId} LIMIT 1
-    `,
+    prisma.onboardingData.findUnique({ where: { userId: params.userId } }),
     prisma.message.findMany({
       where: { userId: params.userId },
       orderBy: { createdAt: "asc" },
@@ -56,8 +36,6 @@ export default async function AdminProjectDetailPage({
       orderBy: { createdAt: "desc" },
     }),
   ]);
-
-  const onboarding = onboardingRows[0] ?? null;
 
   if (!user) notFound();
 
@@ -91,9 +69,18 @@ export default async function AdminProjectDetailPage({
 
         {/* Onboarding brief */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-sm font-semibold text-gray-900 mb-4">Onboarding Brief</h2>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <h2 className="text-sm font-semibold text-gray-900">Onboarding Brief</h2>
+            <OnboardingStatusControl
+              userId={user.id}
+              completedAt={onboarding?.completedAt ?? null}
+            />
+          </div>
           {!onboarding ? (
-            <p className="text-sm text-gray-400">Client hasn&apos;t submitted onboarding yet.</p>
+            <p className="text-sm text-gray-400">
+              No onboarding data yet. Mark complete above to unlock Build a Plan,
+              or wait for the client to finish the onboarding chat.
+            </p>
           ) : (() => {
             const THEME_LABELS: Record<string, { name: string; swatches: string[] }> = {
               "bold-trade":      { name: "Bold & Professional", swatches: ["#0f4f90", "#1a6fc4", "#e85d04"] },
@@ -240,6 +227,27 @@ export default async function AdminProjectDetailPage({
               </dl>
             );
           })()}
+        </div>
+
+        {/* Onboarding chat (admin on behalf of client) */}
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden lg:col-span-2">
+          <div className="border-b border-gray-100 px-5 py-4">
+            <h2 className="text-sm font-semibold text-gray-900">Onboarding Chat</h2>
+            <p className="mt-1 text-xs text-gray-500">
+              Run the same onboarding assistant for this client. Answers are saved to
+              their account and appear in their portal.
+            </p>
+          </div>
+          <div className="h-[min(72vh,640px)]">
+            <OnboardingChat
+              targetUserId={user.id}
+              clientLabel={user.name ?? user.email}
+              initialMessages={parseChatMessages(onboarding?.chatMessages)}
+              completedAt={onboarding?.completedAt ?? null}
+              hasBrief={!!onboarding?.briefMarkdownUrl}
+              businessName={onboarding?.businessName ?? null}
+            />
+          </div>
         </div>
 
         {/* Message thread */}

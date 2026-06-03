@@ -24,6 +24,9 @@ type OnboardingChatProps = {
   completedAt: Date | null;
   hasBrief: boolean;
   businessName: string | null;
+  /** When set, chat runs on behalf of this client (admin mode). */
+  targetUserId?: string;
+  clientLabel?: string;
 };
 
 function getMessageText(message: UIMessage): string {
@@ -38,23 +41,39 @@ export default function OnboardingChat({
   completedAt,
   hasBrief,
   businessName,
+  targetUserId,
+  clientLabel,
 }: OnboardingChatProps) {
   const router = useRouter();
   const bottomRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState("");
+  const isAdminMode = !!targetUserId;
+
+  const chatApi = isAdminMode
+    ? `/api/admin/portal/onboarding/${targetUserId}/chat`
+    : "/api/portal/onboarding/chat";
+  const transcriptApi = isAdminMode
+    ? `/api/admin/portal/onboarding/${targetUserId}`
+    : "/api/portal/onboarding";
+  const briefHref = isAdminMode
+    ? `/api/portal/onboarding/brief?userId=${encodeURIComponent(targetUserId)}`
+    : "/api/portal/onboarding/brief";
 
   const seedMessages = useMemo(() => {
     if (initialMessages.length > 0) return initialMessages;
     return [WELCOME_MESSAGE];
   }, [initialMessages]);
 
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: chatApi }),
+    [chatApi],
+  );
+
   const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/portal/onboarding/chat",
-    }),
+    transport,
     messages: seedMessages,
     onFinish: ({ messages: updatedMessages }) => {
-      fetch("/api/portal/onboarding", {
+      fetch(transcriptApi, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatMessages: updatedMessages }),
@@ -77,6 +96,17 @@ export default function OnboardingChat({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
+      {isAdminMode && (
+        <div className="shrink-0 border-b border-violet-200 bg-violet-50 px-3 py-2.5 text-sm text-violet-900 sm:px-4">
+          <p className="font-semibold">Admin: onboarding on behalf of client</p>
+          <p className="mt-0.5 text-xs leading-snug text-violet-800 sm:text-sm">
+            Type {clientLabel ? `${clientLabel}'s` : "the client's"} answers as
+            if you were them. The assistant saves the brief to this client&apos;s
+            account.
+          </p>
+        </div>
+      )}
+
       <OnboardingProgressBar
         percent={progress.percent}
         phase={progress.phase}
@@ -89,12 +119,14 @@ export default function OnboardingChat({
             Brief submitted{businessName ? ` for ${businessName}` : ""}.
           </p>
           <p className="mt-0.5 text-xs leading-snug text-emerald-800 sm:mt-1 sm:text-sm">
-            You can keep chatting to update details.
+            {isAdminMode
+              ? "The client can review and update this in their portal."
+              : "You can keep chatting to update details."}
           </p>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium">
             {hasBrief && (
               <a
-                href="/api/portal/onboarding/brief"
+                href={briefHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-700 underline hover:text-emerald-900"
@@ -102,18 +134,22 @@ export default function OnboardingChat({
                 View brief
               </a>
             )}
-            <Link
-              href="/portal/media"
-              className="text-emerald-700 underline hover:text-emerald-900"
-            >
-              Upload media
-            </Link>
-            <Link
-              href="/portal/project"
-              className="text-emerald-700 underline hover:text-emerald-900"
-            >
-              My project
-            </Link>
+            {!isAdminMode && (
+              <>
+                <Link
+                  href="/portal/media"
+                  className="text-emerald-700 underline hover:text-emerald-900"
+                >
+                  Upload media
+                </Link>
+                <Link
+                  href="/portal/project"
+                  className="text-emerald-700 underline hover:text-emerald-900"
+                >
+                  My project
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -134,6 +170,11 @@ export default function OnboardingChat({
               {message.role === "assistant" && (
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-violet-600">
                   Macrolight Assistant
+                </p>
+              )}
+              {message.role === "user" && isAdminMode && (
+                <p className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-violet-200">
+                  Client response
                 </p>
               )}
               {getMessageText(message)}
@@ -174,7 +215,11 @@ export default function OnboardingChat({
                 e.currentTarget.form?.requestSubmit();
               }
             }}
-            placeholder="Type your answer…"
+            placeholder={
+              isAdminMode
+                ? `Type ${clientLabel ? `${clientLabel}'s` : "the client's"} answer…`
+                : "Type your answer…"
+            }
             rows={2}
             className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-base outline-none focus:ring-2 focus:ring-violet-500/30 sm:px-4 sm:py-3 sm:text-sm"
             disabled={isLoading}

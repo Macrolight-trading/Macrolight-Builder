@@ -7,23 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// NextAuth models
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -33,8 +30,7 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
@@ -46,42 +42,33 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  // Optional phone number collected at signup (or later). Stored as a
-  // free-form string so we can keep whatever format the user typed —
-  // normalize at the point of use (e.g. when dialing or texting via
-  // Twilio) rather than at write-time.
-  phone         String?
-  emailVerified DateTime?
-  image         String?
-  passwordHash  String?
-  role          Role      @default(USER)
-  plan          Plan      @default(NONE)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  stripeCustomerId String? @unique
-
-  accounts      Account[]
-  sessions      Session[]
-  payments      Payment[]
-  subscriptions Subscription[]
-  bookings      Booking[]
-
-  ownedLeads      Lead[]     @relation("LeadOwner")
-  ownedDeals      Deal[]     @relation("DealOwner")
-  ownedActivities Activity[] @relation("ActivityOwner")
-  authoredNotes   Note[]     @relation("NoteAuthor")
-
-  project            Project?
-  messages           Message[]
-  mediaFiles         MediaFile[]
-  onboarding         OnboardingData?
+  id                 String              @id @default(cuid())
+  name               String?
+  email              String              @unique
+  emailVerified      DateTime?
+  image              String?
+  passwordHash       String?
+  role               Role                @default(USER)
+  plan               Plan                @default(NONE)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  stripeCustomerId   String?             @unique
+  phone              String?
+  accounts           Account[]
+  sessions           Session[]
+  ownedActivities    Activity[]          @relation("ActivityOwner")
+  bookings           Booking[]
   planRequests       CustomPlanRequest[]
+  ownedDeals         Deal[]              @relation("DealOwner")
+  ownedLeads         Lead[]              @relation("LeadOwner")
+  mediaFiles         MediaFile[]
+  messages           Message[]
+  authoredNotes      Note[]              @relation("NoteAuthor")
+  onboarding         OnboardingData?
+  payments           Payment[]
   planRecommendation PlanRecommendation?
-  hermesEvents       HermesEvent[]
+  project            Project?
+  subscriptions      Subscription[]
 
   @@map("users")
 }
@@ -94,8 +81,7 @@ model Payment {
   description String?
   userId      String
   createdAt   DateTime      @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
@@ -107,12 +93,11 @@ model Contact {
   phone       String?
   company     String?
   industry    String?
-  message     String        @db.Text
+  message     String
   status      ContactStatus @default(NEW)
   emailSentAt DateTime?
   createdAt   DateTime      @default(now())
-
-  lead Lead?
+  lead        Lead?
 
   @@map("contacts")
 }
@@ -129,33 +114,29 @@ model PageView {
 }
 
 model Lead {
-  id          String     @id @default(cuid())
-  name        String
-  email       String
-  phone       String?
-  company     String?
-  jobTitle    String?
-  industry    String?
-  website     String?
-  source      String?
-  status      LeadStatus @default(NEW)
-  value       Int?
-  description String?    @db.Text
-
-  contactId String?  @unique
-  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
-
-  ownerId String?
-  owner   User?   @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-
-  deals       Deal[]
-  activities  Activity[]
-  noteRecords Note[]
-  tags        TagsOnLeads[]
-
+  id              String        @id @default(cuid())
+  name            String
+  email           String
+  phone           String?
+  company         String?
+  jobTitle        String?
+  industry        String?
+  website         String?
+  source          String?
+  status          LeadStatus    @default(NEW)
+  value           Int?
+  description     String?
+  contactId       String?       @unique
+  ownerId         String?
   lastContactedAt DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  activities      Activity[]
+  deals           Deal[]
+  contact         Contact?      @relation(fields: [contactId], references: [id])
+  owner           User?         @relation("LeadOwner", fields: [ownerId], references: [id])
+  noteRecords     Note[]
+  tags            TagsOnLeads[]
 
   @@index([status])
   @@index([createdAt])
@@ -163,26 +144,23 @@ model Lead {
 }
 
 model Deal {
-  id                String    @id @default(cuid())
+  id                String     @id @default(cuid())
   title             String
   value             Int
-  currency          String    @default("usd")
-  stage             DealStage @default(PROSPECT)
-  probability       Int       @default(10)
+  currency          String     @default("usd")
+  stage             DealStage  @default(PROSPECT)
+  probability       Int        @default(10)
   expectedCloseDate DateTime?
   closedAt          DateTime?
   lostReason        String?
-
-  leadId  String?
-  lead    Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  ownerId String?
-  owner   User?   @relation("DealOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-
-  activities  Activity[]
-  noteRecords Note[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  leadId            String?
+  ownerId           String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  activities        Activity[]
+  lead              Lead?      @relation(fields: [leadId], references: [id])
+  owner             User?      @relation("DealOwner", fields: [ownerId], references: [id])
+  noteRecords       Note[]
 
   @@index([stage])
   @@index([createdAt])
@@ -193,19 +171,17 @@ model Activity {
   id          String       @id @default(cuid())
   type        ActivityType
   subject     String
-  description String?      @db.Text
+  description String?
   dueDate     DateTime?
   completedAt DateTime?
-
-  leadId  String?
-  lead    Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  dealId  String?
-  deal    Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  ownerId String?
-  owner   User?   @relation("ActivityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  leadId      String?
+  dealId      String?
+  ownerId     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deal        Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  lead        Lead?        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  owner       User?        @relation("ActivityOwner", fields: [ownerId], references: [id])
 
   @@index([dueDate])
   @@index([completedAt])
@@ -213,18 +189,16 @@ model Activity {
 }
 
 model Note {
-  id   String @id @default(cuid())
-  body String @db.Text
-
-  leadId   String?
-  lead     Lead?   @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  dealId   String?
-  deal     Deal?   @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  authorId String?
-  author   User?   @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
-
+  id        String   @id @default(cuid())
+  body      String
+  leadId    String?
+  dealId    String?
+  authorId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  author    User?    @relation("NoteAuthor", fields: [authorId], references: [id])
+  deal      Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
   @@map("notes")
 }
@@ -249,18 +223,17 @@ model TagsOnLeads {
 }
 
 model AuditJob {
-  id          String      @id @default(cuid())
+  id          String       @id @default(cuid())
   url         String
   clientName  String
-  status      AuditStatus @default(PENDING)
+  status      AuditStatus  @default(PENDING)
   startedAt   DateTime?
   completedAt DateTime?
-  error       String?     @db.Text
+  error       String?
   createdBy   String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  result AuditResult?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  result      AuditResult?
 
   @@index([status])
   @@index([createdAt])
@@ -270,24 +243,380 @@ model AuditJob {
 model AuditResult {
   id                   String    @id @default(cuid())
   jobId                String    @unique
-  job                  AuditJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
   overallScore         Int
   technicalScore       Int
   onPageScore          Int
   backlinkScore        Int
   localSeoScore        Int
+  issues               Json
+  rawData              Json
+  pdfUrl               String?
+  createdAt            DateTime  @default(now())
   domainAnalyticsScore Int       @default(0)
   serpScore            Int       @default(0)
   localPackScore       Int?
   reputationScore      Int?
-  issues               Json
-  rawData              Json
-  pdfUrl               String?
   aiContentPlan        Json?
   aiContentPlanAt      DateTime?
-  createdAt            DateTime  @default(now())
+  job                  AuditJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   @@map("audit_results")
+}
+
+model Project {
+  id         String       @id @default(cuid())
+  userId     String       @unique
+  stage      ProjectStage @default(ONBOARDING)
+  liveUrl    String?
+  notes      String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  previewUrl String?
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("projects")
+}
+
+model Message {
+  id        String    @id @default(cuid())
+  userId    String
+  fromAdmin Boolean   @default(false)
+  body      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model MediaFile {
+  id          String   @id @default(cuid())
+  userId      String
+  filename    String
+  url         String
+  contentType String
+  size        Int
+  category    String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("media_files")
+}
+
+model OnboardingData {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  businessName     String?
+  tagline          String?
+  primaryColor     String?
+  secondaryColor   String?
+  targetAudience   String?
+  keyServices      String?
+  competitors      String?
+  tone             String?
+  additionalNotes  String?
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  themePicks       String?
+  inspirationUrls  String?
+  contactName      String?
+  phone            String?
+  address          String?
+  briefMarkdownUrl String?
+  chatMessages     Json?
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("onboarding_data")
+}
+
+model PlanOption {
+  id                   String                    @id @default(cuid())
+  name                 String
+  description          String?
+  category             String
+  priceCents           Int
+  billingType          BillingType
+  active               Boolean                   @default(true)
+  sortOrder            Int                       @default(0)
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  items                CustomPlanRequestItem[]
+  defaultTemplateItems DefaultPlanTemplateItem[]
+  recommendationItems  PlanRecommendationItem[]
+  subscriptionItems    SubscriptionItem[]
+
+  @@index([active, category, sortOrder])
+  @@map("plan_options")
+}
+
+model CustomPlanRequest {
+  id                      String                  @id @default(cuid())
+  userId                  String
+  basePlan                Plan                    @default(STARTER)
+  status                  PlanRequestStatus       @default(PENDING)
+  monthlyCents            Int                     @default(0)
+  oneTimeCents            Int                     @default(0)
+  notes                   String?
+  adminNotes              String?
+  reviewedAt              DateTime?
+  reviewedById            String?
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+  bundleDiscountCents     Int                     @default(0)
+  source                  PlanRequestSource       @default(QUOTE)
+  stripeCheckoutSessionId String?                 @unique
+  stripeSubscriptionId    String?
+  sowGeneratedAt          DateTime?
+  sowPdfUrl               String?
+  items                   CustomPlanRequestItem[]
+  subscription            Subscription?           @relation(fields: [stripeSubscriptionId], references: [stripeSubscriptionId])
+  user                    User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@index([stripeSubscriptionId])
+  @@map("custom_plan_requests")
+}
+
+model CustomPlanRequestItem {
+  id                 String            @id @default(cuid())
+  requestId          String
+  optionId           String?
+  nameSnapshot       String
+  priceCents         Int
+  billingType        BillingType
+  category           String
+  includedInBasePlan Boolean           @default(false)
+  option             PlanOption?       @relation(fields: [optionId], references: [id])
+  request            CustomPlanRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+  @@map("custom_plan_request_items")
+}
+
+model PlanRecommendation {
+  id          String                   @id @default(cuid())
+  userId      String                   @unique
+  basePlan    Plan                     @default(NONE)
+  notes       String?
+  createdById String?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  items       PlanRecommendationItem[]
+  user        User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("plan_recommendations")
+}
+
+model PlanRecommendationItem {
+  id               String             @id @default(cuid())
+  recommendationId String
+  optionId         String
+  option           PlanOption         @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  recommendation   PlanRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+
+  @@unique([recommendationId, optionId])
+  @@index([recommendationId])
+  @@map("plan_recommendation_items")
+}
+
+/// *
+///  * Singleton default template applied to every new signup.
+///  * There is exactly one row (id = "default").
+///  * Admins edit this at /admin/portal/plan-recommendations/default.
+model DefaultPlanTemplate {
+  id        String                    @id @default("default")
+  basePlan  Plan                      @default(STARTER)
+  notes     String?
+  updatedAt DateTime                  @updatedAt
+  items     DefaultPlanTemplateItem[]
+
+  @@map("default_plan_template")
+}
+
+model DefaultPlanTemplateItem {
+  id         String              @id @default(cuid())
+  templateId String
+  optionId   String
+  option     PlanOption          @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  template   DefaultPlanTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, optionId])
+  @@index([templateId])
+  @@map("default_plan_template_items")
+}
+
+model Subscription {
+  id                   String              @id @default(cuid())
+  userId               String
+  stripeSubscriptionId String              @unique
+  stripeCustomerId     String
+  status               SubscriptionStatus  @default(INCOMPLETE)
+  basePlan             Plan                @default(NONE)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean             @default(false)
+  canceledAt           DateTime?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  planRequests         CustomPlanRequest[]
+  items                SubscriptionItem[]
+  user                 User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model SubscriptionItem {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  stripeItemId   String       @unique
+  optionId       String?
+  nameSnapshot   String
+  priceCents     Int
+  billingType    BillingType  @default(MONTHLY)
+  quantity       Int          @default(1)
+  kind           String       @default("addon")
+  option         PlanOption?  @relation(fields: [optionId], references: [id])
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@map("subscription_items")
+}
+
+model HermesEvent {
+  id          String            @id @default(cuid())
+  event       String
+  userId      String?
+  payload     Json
+  status      HermesEventStatus @default(PENDING)
+  processedAt DateTime?
+  error       String?
+  createdAt   DateTime          @default(now())
+
+  @@index([status, createdAt])
+  @@map("hermes_events")
+}
+
+model PlanCategory {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  label             String?
+  bundleDiscountPct Int      @default(0)
+  sortOrder         Int      @default(0)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  includedFromTier  Plan?
+
+  @@map("plan_categories")
+}
+
+/// Mirror of a Cal.com (or future provider) booking. Cal.com remains the
+/// system of record — this table exists so the portal can show "Your
+/// upcoming calls" without a round-trip to Cal's API, and so admin / CRM
+/// tooling can query against bookings locally.
+model Booking {
+  id             String        @id @default(cuid())
+  userId         String
+  /// Cal.com booking UID (e.g. "abc123"). Unique per provider; collisions
+  /// across providers are unlikely but we don't enforce.
+  externalId     String?       @unique
+  /// "cal.com" today. Reserved for future schedulers.
+  externalSource String        @default("cal.com")
+  status         BookingStatus @default(CONFIRMED)
+  startsAt       DateTime
+  endsAt         DateTime
+  title          String?
+  attendeeName   String?
+  attendeeEmail  String?
+  /// Slug of the Cal.com event type that produced the booking (e.g.
+  /// "strategy-call"). Lets us filter by call type later.
+  callType       String?
+  notes          String?
+  /// Conference link (Zoom, Google Meet, Cal video).
+  meetingUrl     String?
+  /// User-facing self-service links provided by Cal.com.
+  cancelUrl      String?
+  rescheduleUrl  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([startsAt])
+  @@index([status, startsAt])
+  @@map("bookings")
+}
+
+model account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([provider, providerAccountId])
+}
+
+model organization_members {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organization_id String        @db.Uuid
+  user_id         String
+  role            String        @default("member")
+  created_at      DateTime      @default(now())
+  organizations   organizations @relation(fields: [organization_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user            user          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([organization_id], map: "organization_members_org_id_idx")
+  @@index([user_id])
+}
+
+model organizations {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String
+  slug                 String                 @unique
+  created_at           DateTime               @default(now())
+  organization_members organization_members[]
+}
+
+model session {
+  sessionToken String   @id
+  userId       String
+  expires      DateTime
+  user         user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model user {
+  id                   String                 @id
+  name                 String?
+  email                String                 @unique
+  emailVerified        DateTime?
+  image                String?
+  password_hash        String?
+  account              account[]
+  organization_members organization_members[]
+  session              session[]
+}
+
+model verificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 enum Role {
@@ -296,10 +625,10 @@ enum Role {
 }
 
 enum Plan {
-  NONE
   STARTER
   GROWTH
   PRO
+  NONE
   CUSTOM
 }
 
@@ -350,76 +679,6 @@ enum ActivityType {
   NOTE
 }
 
-model Project {
-  id         String       @id @default(cuid())
-  userId     String       @unique
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stage      ProjectStage @default(ONBOARDING)
-  liveUrl    String?
-  previewUrl String?
-  notes      String?      @db.Text
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-
-  @@map("projects")
-}
-
-model Message {
-  id        String    @id @default(cuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fromAdmin Boolean   @default(false)
-  body      String    @db.Text
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  @@index([userId])
-  @@index([createdAt])
-  @@map("messages")
-}
-
-model MediaFile {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  filename    String
-  url         String
-  contentType String
-  size        Int
-  category    String?
-  createdAt   DateTime @default(now())
-
-  @@index([userId])
-  @@map("media_files")
-}
-
-model OnboardingData {
-  id               String    @id @default(cuid())
-  userId           String    @unique
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  contactName      String?
-  phone            String?
-  address          String?   @db.Text
-  businessName     String?
-  tagline          String?
-  primaryColor     String?
-  secondaryColor   String?
-  targetAudience   String?   @db.Text
-  keyServices      String?   @db.Text
-  competitors      String?   @db.Text
-  tone             String?
-  themePicks       String?
-  inspirationUrls  String?   @db.Text
-  additionalNotes  String?   @db.Text
-  briefMarkdownUrl String?
-  chatMessages     Json?
-  completedAt      DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  @@map("onboarding_data")
-}
-
 enum ProjectStage {
   ONBOARDING
   DESIGN
@@ -456,217 +715,12 @@ enum SubscriptionStatus {
   PAUSED
 }
 
-model PlanOption {
-  id          String      @id @default(cuid())
-  name        String
-  description String?     @db.Text
-  category    String
-  priceCents  Int
-  billingType BillingType
-  active      Boolean     @default(true)
-  sortOrder   Int         @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  items               CustomPlanRequestItem[]
-  recommendationItems PlanRecommendationItem[]
-  subscriptionItems   SubscriptionItem[]
-  defaultTemplateItems DefaultPlanTemplateItem[]
-
-  @@index([active, category, sortOrder])
-  @@map("plan_options")
-}
-
-model CustomPlanRequest {
-  id                  String            @id @default(cuid())
-  userId              String
-  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  basePlan            Plan              @default(STARTER)
-  status              PlanRequestStatus @default(PENDING)
-  source              PlanRequestSource @default(QUOTE)
-  monthlyCents        Int               @default(0)
-  oneTimeCents        Int               @default(0)
-  bundleDiscountCents Int               @default(0)
-  notes               String?           @db.Text
-  adminNotes          String?           @db.Text
-  reviewedAt          DateTime?
-  reviewedById        String?
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-
-  stripeCheckoutSessionId String?       @unique
-  // NOT unique — every modify produces a fresh CustomPlanRequest pointing
-  // at the same Stripe subscription. Idempotency for a single checkout
-  // attempt is keyed off stripeCheckoutSessionId.
-  stripeSubscriptionId    String?
-  subscription            Subscription? @relation(fields: [stripeSubscriptionId], references: [stripeSubscriptionId], onDelete: SetNull)
-
-  sowPdfUrl      String?
-  sowGeneratedAt DateTime?
-
-  items CustomPlanRequestItem[]
-
-  @@index([userId])
-  @@index([status, createdAt])
-  @@index([stripeSubscriptionId])
-  @@map("custom_plan_requests")
-}
-
-model CustomPlanRequestItem {
-  id                 String            @id @default(cuid())
-  requestId          String
-  request            CustomPlanRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  optionId           String?
-  option             PlanOption?       @relation(fields: [optionId], references: [id], onDelete: SetNull)
-  nameSnapshot       String
-  priceCents         Int
-  billingType        BillingType
-  category           String
-  includedInBasePlan Boolean           @default(false)
-
-  @@index([requestId])
-  @@map("custom_plan_request_items")
-}
-
-model PlanRecommendation {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  basePlan    Plan     @default(NONE)
-  notes       String?  @db.Text
-  createdById String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  items PlanRecommendationItem[]
-
-  @@map("plan_recommendations")
-}
-
-model PlanRecommendationItem {
-  id               String             @id @default(cuid())
-  recommendationId String
-  recommendation   PlanRecommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
-  optionId         String
-  option           PlanOption         @relation(fields: [optionId], references: [id], onDelete: Cascade)
-
-  @@unique([recommendationId, optionId])
-  @@index([recommendationId])
-  @@map("plan_recommendation_items")
-}
-
-/**
- * Singleton default template applied to every new signup.
- * There is exactly one row (id = "default").
- * Admins edit this at /admin/portal/plan-recommendations/default.
- */
-model DefaultPlanTemplate {
-  id        String   @id @default("default")
-  basePlan  Plan     @default(STARTER)
-  notes     String?  @db.Text
-  updatedAt DateTime @updatedAt
-
-  items DefaultPlanTemplateItem[]
-
-  @@map("default_plan_template")
-}
-
-model DefaultPlanTemplateItem {
-  id         String              @id @default(cuid())
-  templateId String
-  template   DefaultPlanTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  optionId   String
-  option     PlanOption          @relation(fields: [optionId], references: [id], onDelete: Cascade)
-
-  @@unique([templateId, optionId])
-  @@index([templateId])
-  @@map("default_plan_template_items")
-}
-
-model Subscription {
-  id                   String             @id @default(cuid())
-  userId               String
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stripeSubscriptionId String             @unique
-  stripeCustomerId     String
-  status               SubscriptionStatus @default(INCOMPLETE)
-  basePlan             Plan               @default(NONE)
-  currentPeriodStart   DateTime?
-  currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean            @default(false)
-  canceledAt           DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-
-  items        SubscriptionItem[]
-  /// Every modify-flow checkout writes a fresh CustomPlanRequest tied to
-  /// the same subscription — one-to-many so the history is queryable.
-  planRequests CustomPlanRequest[]
-
-  @@index([userId])
-  @@index([status])
-  @@map("subscriptions")
-}
-
-model SubscriptionItem {
-  id             String       @id @default(cuid())
-  subscriptionId String
-  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  stripeItemId   String       @unique
-  optionId       String?
-  option         PlanOption?  @relation(fields: [optionId], references: [id], onDelete: SetNull)
-  nameSnapshot   String
-  priceCents     Int
-  billingType    BillingType  @default(MONTHLY)
-  quantity       Int          @default(1)
-  kind           String       @default("addon")
-
-  @@index([subscriptionId])
-  @@map("subscription_items")
-}
-
-// ── Hermes Event Queue ──────────────────────────────────────────────────────
-// Durable queue for app → Hermes agent notifications.
-// Hermes polls /api/hermes/events, processes each pending event, then ACKs.
-
-model HermesEvent {
-  id          String            @id @default(cuid())
-  event       String            // e.g. "onboarding_complete", "payment_confirmed"
-  userId      String?
-  payload     Json              // event-specific context
-  status      HermesEventStatus @default(PENDING)
-  processedAt DateTime?
-  error       String?           @db.Text
-  createdAt   DateTime          @default(now())
-
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([status, createdAt])
-  @@map("hermes_events")
-}
-
 enum HermesEventStatus {
   PENDING
   PROCESSING
   DONE
   FAILED
 }
-
-model PlanCategory {
-  id                String   @id @default(cuid())
-  name              String   @unique
-  label             String?
-  bundleDiscountPct Int      @default(0)
-  includedFromTier  Plan?
-  sortOrder         Int      @default(0)
-  active            Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  @@map("plan_categories")
-}
-
-// ── Booking (Cal.com mirror) ────────────────────────────────────────────────
 
 enum BookingStatus {
   CONFIRMED
@@ -675,41 +729,4 @@ enum BookingStatus {
   RESCHEDULED
   COMPLETED
   NO_SHOW
-}
-
-/// Mirror of a Cal.com (or future provider) booking. Cal.com remains the
-/// system of record — this table exists so the portal can show "Your
-/// upcoming calls" without a round-trip to Cal's API, and so admin / CRM
-/// tooling can query against bookings locally.
-model Booking {
-  id             String        @id @default(cuid())
-  userId         String
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  /// Cal.com booking UID (e.g. "abc123"). Unique per provider; collisions
-  /// across providers are unlikely but we don't enforce.
-  externalId     String?       @unique
-  /// "cal.com" today. Reserved for future schedulers.
-  externalSource String        @default("cal.com")
-  status         BookingStatus @default(CONFIRMED)
-  startsAt       DateTime
-  endsAt         DateTime
-  title          String?
-  attendeeName   String?
-  attendeeEmail  String?
-  /// Slug of the Cal.com event type that produced the booking (e.g.
-  /// "strategy-call"). Lets us filter by call type later.
-  callType       String?
-  notes          String?       @db.Text
-  /// Conference link (Zoom, Google Meet, Cal video).
-  meetingUrl     String?
-  /// User-facing self-service links provided by Cal.com.
-  cancelUrl      String?
-  rescheduleUrl  String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-
-  @@index([userId])
-  @@index([startsAt])
-  @@index([status, startsAt])
-  @@map("bookings")
 }

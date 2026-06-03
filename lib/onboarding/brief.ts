@@ -1,4 +1,5 @@
-import { put } from "@vercel/blob";
+import { put, del } from "@vercel/blob";
+import prisma from "@/lib/prisma";
 
 export type OnboardingBriefFields = {
   contactName: string;
@@ -81,6 +82,43 @@ export async function storeOnboardingBrief(
   });
 
   return { url: blob.url, pathname };
+}
+
+/** Remove the stored markdown brief and reset onboarding completion for a user. */
+export async function clearOnboardingBrief(userId: string): Promise<void> {
+  const onboarding = await prisma.onboardingData.findUnique({
+    where: { userId },
+    select: { briefMarkdownUrl: true },
+  });
+
+  if (!onboarding?.briefMarkdownUrl) {
+    throw new Error("No onboarding brief to clear");
+  }
+
+  try {
+    await del(onboarding.briefMarkdownUrl);
+  } catch (err) {
+    console.error("[onboarding/brief] Failed to delete blob:", err);
+  }
+
+  await prisma.onboardingData.update({
+    where: { userId },
+    data: {
+      briefMarkdownUrl: null,
+      completedAt: null,
+    },
+  });
+
+  const project = await prisma.project.findUnique({
+    where: { userId },
+    select: { stage: true },
+  });
+  if (project?.stage === "DESIGN") {
+    await prisma.project.update({
+      where: { userId },
+      data: { stage: "ONBOARDING" },
+    });
+  }
 }
 
 export async function fetchPrivateBlob(url: string): Promise<Response> {
