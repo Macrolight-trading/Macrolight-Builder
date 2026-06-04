@@ -9,6 +9,10 @@ import MessageThread from "@/components/portal/MessageThread";
 import { parseChatMessages } from "@/lib/onboarding/parse-chat-messages";
 import { loadClientCheckoutPlanForAdmin } from "@/lib/admin/client-checkout-plan";
 import ClientCheckoutPlan from "@/components/admin/portal/ClientCheckoutPlan";
+import ClientDeliveryChecklist from "@/components/admin/portal/ClientDeliveryChecklist";
+import { loadDeliveryTasksForUser } from "@/lib/delivery/load-tasks";
+import { syncDeliveryScheduleForUser } from "@/lib/delivery/sync";
+import { loadPaidPlanSnapshot } from "@/lib/delivery/load-plan";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +26,7 @@ export default async function AdminProjectDetailPage({
   const role = (session?.user as { role?: string } | undefined)?.role;
   if (role !== "ADMIN") redirect("/admin");
 
-  const [user, project, onboarding, messages, mediaFiles, checkoutPlan] =
+  const [user, project, onboarding, messages, mediaFiles, checkoutPlan, paidPlan] =
     await Promise.all([
       prisma.user.findUnique({
         where: { id: params.userId },
@@ -39,9 +43,30 @@ export default async function AdminProjectDetailPage({
         orderBy: { createdAt: "desc" },
       }),
       loadClientCheckoutPlanForAdmin(params.userId),
+      loadPaidPlanSnapshot(params.userId),
     ]);
 
   if (!user) notFound();
+
+  if (paidPlan) {
+    const existing = await loadDeliveryTasksForUser(params.userId);
+    if (!existing) {
+      await syncDeliveryScheduleForUser(params.userId);
+    }
+  }
+
+  const deliverySchedule = await loadDeliveryTasksForUser(params.userId);
+  const deliveryTasks = deliverySchedule?.tasks.map((t) => ({
+    id: t.id,
+    title: t.title,
+    category: t.category,
+    kind: t.kind,
+    dueAt: t.dueAt?.toISOString() ?? null,
+    nextDueAt: t.nextDueAt?.toISOString() ?? null,
+    completedAt: t.completedAt?.toISOString() ?? null,
+    lastCompletedAt: t.lastCompletedAt?.toISOString() ?? null,
+    recurrence: t.recurrence,
+  })) ?? [];
 
   return (
     <>
@@ -59,6 +84,14 @@ export default async function AdminProjectDetailPage({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {paidPlan && (
+          <ClientDeliveryChecklist
+            userId={user.id}
+            initialTasks={deliveryTasks}
+            lastSyncedAt={deliverySchedule?.lastSyncedAt.toISOString() ?? null}
+          />
+        )}
+
         {checkoutPlan ? (
           <ClientCheckoutPlan plan={checkoutPlan} />
         ) : (

@@ -70,6 +70,8 @@ model User {
   project            Project?
   subscriptions      Subscription[]
   hermesEvents       HermesEvent[]
+  deliverySchedule   ClientDeliverySchedule?
+  deliveryTasks      DeliveryTask[]
 
   @@map("users")
 }
@@ -505,6 +507,55 @@ model HermesEvent {
   @@map("hermes_events")
 }
 
+/// Fulfillment schedule for a paid client — checklist + calendar dates.
+model ClientDeliverySchedule {
+  id                   String         @id @default(cuid())
+  userId               String         @unique
+  anchorAt             DateTime
+  basePlan             Plan           @default(NONE)
+  planRequestId        String?
+  subscriptionId       String?
+  lastSyncedAt         DateTime       @default(now())
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks                DeliveryTask[]
+
+  @@index([anchorAt])
+  @@map("client_delivery_schedules")
+}
+
+model DeliveryTask {
+  id                 String                 @id @default(cuid())
+  scheduleId         String
+  userId             String
+  sourceKey          String
+  title              String
+  category           String                 @default("General")
+  kind               DeliveryTaskKind       @default(ONE_TIME)
+  billingType        BillingType            @default(ONE_TIME)
+  optionId           String?
+  includedInBasePlan Boolean                @default(false)
+  dueAt              DateTime?
+  recurrence         DeliveryRecurrence     @default(NONE)
+  nextDueAt          DateTime?
+  completedAt        DateTime?
+  lastCompletedAt    DateTime?
+  sortOrder          Int                    @default(0)
+  active             Boolean                @default(true)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  schedule           ClientDeliverySchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, sourceKey])
+  @@index([userId, active, dueAt])
+  @@index([userId, active, nextDueAt])
+  @@index([active, dueAt])
+  @@index([active, nextDueAt])
+  @@map("delivery_tasks")
+}
+
 model PlanCategory {
   id                String   @id @default(cuid())
   name              String   @unique
@@ -731,4 +782,14 @@ enum BookingStatus {
   RESCHEDULED
   COMPLETED
   NO_SHOW
+}
+
+enum DeliveryTaskKind {
+  ONE_TIME
+  RECURRING
+}
+
+enum DeliveryRecurrence {
+  NONE
+  MONTHLY
 }

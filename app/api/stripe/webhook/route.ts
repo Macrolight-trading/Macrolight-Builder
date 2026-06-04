@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
 import { enqueuePaymentConfirmedForUser } from "@/lib/onboarding/payment-confirmed";
+import { syncDeliveryScheduleForUser } from "@/lib/delivery/sync";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -259,6 +260,12 @@ async function onCheckoutCompleted(session: Stripe.Checkout.Session) {
   // which usually fire alongside checkout.session.completed. We don't
   // create one here to avoid races — the subscription handler is the
   // single owner of the Subscription row.
+
+  if (basePlan !== "NONE" || planRequestId) {
+    await syncDeliveryScheduleForUser(user.id).catch((err) => {
+      console.error("[stripe/webhook] delivery schedule sync (checkout):", err);
+    });
+  }
 }
 
 async function onSubscriptionUpserted(sub: Stripe.Subscription) {
@@ -355,6 +362,12 @@ async function onSubscriptionUpserted(sub: Stripe.Subscription) {
         optionId: !isBase && meta.optionId ? meta.optionId : null,
         kind: isBase ? "base" : "addon",
       },
+    });
+  }
+
+  if (status === "ACTIVE" || status === "TRIALING" || status === "PAST_DUE") {
+    await syncDeliveryScheduleForUser(user.id).catch((err) => {
+      console.error("[stripe/webhook] delivery schedule sync failed:", err);
     });
   }
 }
