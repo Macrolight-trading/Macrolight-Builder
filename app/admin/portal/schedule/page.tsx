@@ -7,15 +7,13 @@ import {
   expandTasksToCalendar,
   monthRange,
 } from "@/lib/delivery/calendar";
-import { syncAllPaidDeliverySchedules } from "@/lib/delivery/sync";
-
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Delivery Schedule" };
 
 export default async function AdminDeliverySchedulePage({
   searchParams,
 }: {
-  searchParams?: { year?: string; month?: string; sync?: string };
+  searchParams?: { year?: string; month?: string };
 }) {
   const session = await getServerSession(authOptions);
   const role = (session?.user as { role?: string } | undefined)?.role;
@@ -26,10 +24,6 @@ export default async function AdminDeliverySchedulePage({
   const month =
     Number(searchParams?.month) ||
     now.getUTCMonth() + 1;
-
-  if (searchParams?.sync === "1") {
-    await syncAllPaidDeliverySchedules();
-  }
 
   const { start, end } = monthRange(year, month);
 
@@ -81,13 +75,9 @@ export default async function AdminDeliverySchedulePage({
         </p>
         <p className="mt-2 text-xs text-gray-400">
           {scheduleCount} of {paidCount} paid client
-          {paidCount === 1 ? "" : "s"} have schedules.{" "}
-          <a
-            href="/admin/portal/schedule?sync=1"
-            className="text-violet-600 hover:text-violet-700 font-medium"
-          >
-            Run initial backfill
-          </a>
+          {paidCount === 1 ? "" : "s"} have schedules. Use{" "}
+          <span className="font-medium text-gray-600">Sync all paid clients</span>{" "}
+          above to backfill.
         </p>
       </div>
 

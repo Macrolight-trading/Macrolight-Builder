@@ -102,7 +102,3 @@ export async function loadPaidPlanSnapshot(
     items,
   };
 }
-
-export function isPaidUser(plan: Plan): boolean {
-  return plan !== "NONE" && plan !== "CUSTOM";
-}

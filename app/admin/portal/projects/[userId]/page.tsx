@@ -10,8 +10,7 @@ import { parseChatMessages } from "@/lib/onboarding/parse-chat-messages";
 import { loadClientCheckoutPlanForAdmin } from "@/lib/admin/client-checkout-plan";
 import ClientCheckoutPlan from "@/components/admin/portal/ClientCheckoutPlan";
 import ClientDeliveryChecklist from "@/components/admin/portal/ClientDeliveryChecklist";
-import { loadDeliveryTasksForUser } from "@/lib/delivery/load-tasks";
-import { syncDeliveryScheduleForUser } from "@/lib/delivery/sync";
+import { loadOrSyncDeliverySchedule } from "@/lib/delivery/load-tasks";
 import { loadPaidPlanSnapshot } from "@/lib/delivery/load-plan";
 import Link from "next/link";
 
@@ -48,14 +47,9 @@ export default async function AdminProjectDetailPage({
 
   if (!user) notFound();
 
-  if (paidPlan) {
-    const existing = await loadDeliveryTasksForUser(params.userId);
-    if (!existing) {
-      await syncDeliveryScheduleForUser(params.userId);
-    }
-  }
-
-  const deliverySchedule = await loadDeliveryTasksForUser(params.userId);
+  const deliverySchedule = paidPlan
+    ? await loadOrSyncDeliverySchedule(params.userId)
+    : null;
   const deliveryTasks = deliverySchedule?.tasks.map((t) => ({
     id: t.id,
     title: t.title,

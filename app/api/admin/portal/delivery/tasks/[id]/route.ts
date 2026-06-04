@@ -5,8 +5,6 @@ import { requireAdminSession } from "@/lib/admin/require-admin";
 
 const patchSchema = z.object({
   completed: z.boolean(),
-  /** For recurring tasks — ISO date of the occurrence being marked done. */
-  occurrenceDate: z.string().optional(),
 });
 
 export async function PATCH(

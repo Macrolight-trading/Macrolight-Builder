@@ -17,6 +17,7 @@
 .DS_Store
 *.pem
 .git-rewrite/
+nano-banana-mcp/
 
 # debug
 npm-debug.log*
