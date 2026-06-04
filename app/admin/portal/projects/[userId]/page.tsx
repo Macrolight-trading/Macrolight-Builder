@@ -7,6 +7,8 @@ import OnboardingStatusControl from "@/components/admin/portal/OnboardingStatusC
 import OnboardingChat from "@/components/portal/OnboardingChat";
 import MessageThread from "@/components/portal/MessageThread";
 import { parseChatMessages } from "@/lib/onboarding/parse-chat-messages";
+import { loadClientCheckoutPlanForAdmin } from "@/lib/admin/client-checkout-plan";
+import ClientCheckoutPlan from "@/components/admin/portal/ClientCheckoutPlan";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -20,22 +22,24 @@ export default async function AdminProjectDetailPage({
   const role = (session?.user as { role?: string } | undefined)?.role;
   if (role !== "ADMIN") redirect("/admin");
 
-  const [user, project, onboarding, messages, mediaFiles] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: params.userId },
-      select: { id: true, name: true, email: true, plan: true },
-    }),
-    prisma.project.findUnique({ where: { userId: params.userId } }),
-    prisma.onboardingData.findUnique({ where: { userId: params.userId } }),
-    prisma.message.findMany({
-      where: { userId: params.userId },
-      orderBy: { createdAt: "asc" },
-    }),
-    prisma.mediaFile.findMany({
-      where: { userId: params.userId },
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  const [user, project, onboarding, messages, mediaFiles, checkoutPlan] =
+    await Promise.all([
+      prisma.user.findUnique({
+        where: { id: params.userId },
+        select: { id: true, name: true, email: true, plan: true },
+      }),
+      prisma.project.findUnique({ where: { userId: params.userId } }),
+      prisma.onboardingData.findUnique({ where: { userId: params.userId } }),
+      prisma.message.findMany({
+        where: { userId: params.userId },
+        orderBy: { createdAt: "asc" },
+      }),
+      prisma.mediaFile.findMany({
+        where: { userId: params.userId },
+        orderBy: { createdAt: "desc" },
+      }),
+      loadClientCheckoutPlanForAdmin(params.userId),
+    ]);
 
   if (!user) notFound();
 
@@ -55,6 +59,20 @@ export default async function AdminProjectDetailPage({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {checkoutPlan ? (
+          <ClientCheckoutPlan plan={checkoutPlan} />
+        ) : (
+          <div className="bg-white rounded-xl border border-dashed border-gray-200 p-6 lg:col-span-2">
+            <h2 className="text-sm font-semibold text-gray-900">
+              Subscription &amp; checkout plan
+            </h2>
+            <p className="mt-2 text-sm text-gray-500">
+              No Stripe checkout yet. When the client completes checkout on Build
+              a Plan, their full selection will appear here.
+            </p>
+          </div>
+        )}
+
         {/* Project stage editor */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-sm font-semibold text-gray-900 mb-4">Build Stage</h2>

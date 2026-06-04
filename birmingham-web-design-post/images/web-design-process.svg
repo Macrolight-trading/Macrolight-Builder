@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 620" role="img" aria-label="Four-step web design process: Discovery, Design, Build, and Launch">
+  <defs>
+    <linearGradient id="p-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7F4EC"/>
+      <stop offset="1" stop-color="#EDE7D8"/>
+    </linearGradient>
+    <linearGradient id="p-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E4C77B"/>
+      <stop offset="1" stop-color="#C8A24A"/>
+    </linearGradient>
+    <filter id="p-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F1B2D" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="620" fill="url(#p-bg)"/>
+
+  <text x="800" y="90" text-anchor="middle" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#0F1B2D">How We Build Your Website</text>
+  <rect x="700" y="112" width="200" height="4" rx="2" fill="url(#p-gold)"/>
+
+  <!-- connecting line -->
+  <line x1="240" y1="330" x2="1360" y2="330" stroke="#C8A24A" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round"/>
+
+  <!-- step template -->
+  <g font-family="Helvetica, Arial, sans-serif">
+    <!-- Step 1 -->
+    <g transform="translate(140,200)">
+      <rect width="280" height="280" rx="20" fill="#FFFFFF" filter="url(#p-soft)"/>
+      <circle cx="140" cy="86" r="44" fill="url(#p-gold)"/>
+      <!-- magnifier -->
+      <circle cx="132" cy="78" r="18" fill="none" stroke="#0F1B2D" stroke-width="6"/>
+      <line x1="146" y1="92" x2="162" y2="108" stroke="#0F1B2D" stroke-width="6" stroke-linecap="round"/>
+      <text x="140" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#0F1B2D">1. Discovery</text>
+      <text x="140" y="206" text-anchor="middle" font-size="15" fill="#5B6B7F">We learn your goals,</text>
+      <text x="140" y="228" text-anchor="middle" font-size="15" fill="#5B6B7F">brand &amp; local market.</text>
+    </g>
+    <!-- Step 2 -->
+    <g transform="translate(500,200)">
+      <rect width="280" height="280" rx="20" fill="#FFFFFF" filter="url(#p-soft)"/>
+      <circle cx="140" cy="86" r="44" fill="url(#p-gold)"/>
+      <!-- pen -->
+      <rect x="120" y="64" width="14" height="40" rx="3" fill="#0F1B2D" transform="rotate(45 127 84)"/>
+      <polygon points="150,100 160,110 146,114" fill="#0F1B2D"/>
+      <text x="140" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#0F1B2D">2. Design</text>
+      <text x="140" y="206" text-anchor="middle" font-size="15" fill="#5B6B7F">Custom layouts crafted</text>
+      <text x="140" y="228" text-anchor="middle" font-size="15" fill="#5B6B7F">for your audience.</text>
+    </g>
+    <!-- Step 3 -->
+    <g transform="translate(860,200)">
+      <rect width="280" height="280" rx="20" fill="#FFFFFF" filter="url(#p-soft)"/>
+      <circle cx="140" cy="86" r="44" fill="url(#p-gold)"/>
+      <!-- code brackets -->
+      <text x="140" y="98" text-anchor="middle" font-family="monospace" font-size="40" font-weight="800" fill="#0F1B2D">&lt;/&gt;</text>
+      <text x="140" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#0F1B2D">3. Build</text>
+      <text x="140" y="206" text-anchor="middle" font-size="15" fill="#5B6B7F">Fast, responsive code</text>
+      <text x="140" y="228" text-anchor="middle" font-size="15" fill="#5B6B7F">&amp; on-page SEO.</text>
+    </g>
+    <!-- Step 4 -->
+    <g transform="translate(1220,200)">
+      <rect width="280" height="280" rx="20" fill="#FFFFFF" filter="url(#p-soft)"/>
+      <circle cx="140" cy="86" r="44" fill="url(#p-gold)"/>
+      <!-- rocket -->
+      <path d="M140 60 C156 76 156 96 140 116 C124 96 124 76 140 60 Z" fill="#0F1B2D"/>
+      <circle cx="140" cy="84" r="6" fill="#E4C77B"/>
+      <polygon points="128,108 140,120 152,108" fill="#0F1B2D"/>
+      <text x="140" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#0F1B2D">4. Launch</text>
+      <text x="140" y="206" text-anchor="middle" font-size="15" fill="#5B6B7F">Go live, then track</text>
+      <text x="140" y="228" text-anchor="middle" font-size="15" fill="#5B6B7F">&amp; grow your results.</text>
+    </g>
+  </g>
+</svg>
