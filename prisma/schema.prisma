@@ -541,6 +541,9 @@ model DeliveryTask {
   nextDueAt          DateTime?
   completedAt        DateTime?
   lastCompletedAt    DateTime?
+  googleCalendarEventId   String?
+  googleCalendarHtmlLink  String?
+  googleCalendarSyncedAt  DateTime?
   sortOrder          Int                    @default(0)
   active             Boolean                @default(true)
   createdAt          DateTime               @default(now())
@@ -549,6 +552,7 @@ model DeliveryTask {
   user               User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, sourceKey])
+  @@unique([googleCalendarEventId])
   @@index([userId, active, dueAt])
   @@index([userId, active, nextDueAt])
   @@index([active, dueAt])

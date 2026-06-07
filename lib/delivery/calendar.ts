@@ -6,9 +6,12 @@ export type CalendarOccurrence = {
   title: string;
   category: string;
   kind: "ONE_TIME" | "RECURRING";
+  recurrence?: "NONE" | "MONTHLY";
   date: string;
   completed: boolean;
-  projectHref: string;
+  projectHref?: string | null;
+  htmlLink?: string | null;
+  source?: "internal" | "google";
 };
 
 type TaskRow = {
@@ -69,9 +72,12 @@ function expandRecurring(
       title: task.title,
       category: task.category,
       kind: task.kind,
+      recurrence: task.recurrence,
       date: toDateKey(cursor),
       completed,
       projectHref: `/admin/portal/projects/${task.userId}`,
+      htmlLink: null,
+      source: "internal",
     });
     cursor = addMonths(cursor, 1);
     guard++;
@@ -98,9 +104,12 @@ export function expandTasksToCalendar(
           title: task.title,
           category: task.category,
           kind: task.kind,
+          recurrence: task.recurrence,
           date: toDateKey(day),
           completed: !!task.completedAt,
           projectHref: `/admin/portal/projects/${task.userId}`,
+          htmlLink: null,
+          source: "internal",
         });
       }
     } else if (task.kind === "RECURRING" && task.recurrence === "MONTHLY") {

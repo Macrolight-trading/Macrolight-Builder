@@ -1,6 +1,12 @@
 import prisma from "@/lib/prisma";
 import type { BillingType } from "@prisma/client";
 import {
+  deleteGoogleCalendarEventForTask,
+  hasGoogleCalendarConfig,
+  isGoogleCalendarAccessError,
+  syncGoogleCalendarEventForTask,
+} from "@/lib/google-calendar";
+import {
   basePlanMilestones,
   baseSourceKey,
   lineItemSourceKey,
@@ -101,6 +107,25 @@ function buildDesiredTasks(snapshot: Awaited<ReturnType<typeof loadPaidPlanSnaps
   return tasks;
 }
 
+async function syncGoogleCalendarForTaskIds(taskIds: string[]) {
+  if (!hasGoogleCalendarConfig()) return;
+  for (const taskId of taskIds) {
+    try {
+      await syncGoogleCalendarEventForTask(taskId);
+    } catch (error) {
+      console.error(`Google Calendar sync failed for task ${taskId}:`, error);
+      if (isGoogleCalendarAccessError(error)) break;
+    }
+  }
+}
+
+async function deleteGoogleCalendarForTaskIds(taskIds: string[]) {
+  if (!taskIds.length) return;
+  for (const taskId of taskIds) {
+    await deleteGoogleCalendarEventForTask(taskId);
+  }
+}
+
 /**
  * Reconcile delivery checklist + calendar tasks from the client's current
  * paid plan. Adds/updates active tasks and deactivates removed line items.
@@ -115,9 +140,24 @@ export async function syncDeliveryScheduleForUser(
       select: { id: true },
     });
     if (schedule) {
+      const taskIdsToDelete = hasGoogleCalendarConfig()
+        ? (
+            await prisma.deliveryTask.findMany({
+              where: { scheduleId: schedule.id, googleCalendarEventId: { not: null } },
+              select: { id: true },
+            })
+          ).map((task) => task.id)
+        : [];
+
+      await deleteGoogleCalendarForTaskIds(taskIdsToDelete);
       await prisma.deliveryTask.updateMany({
         where: { scheduleId: schedule.id, active: true },
-        data: { active: false },
+        data: {
+          active: false,
+          googleCalendarEventId: null,
+          googleCalendarHtmlLink: null,
+          googleCalendarSyncedAt: null,
+        },
       });
     }
     return null;
@@ -197,18 +237,33 @@ export async function syncDeliveryScheduleForUser(
     }
   }
 
+  const staleTaskIds = existing
+    .filter((task) => task.active && !desiredKeys.has(task.sourceKey) && !!task.googleCalendarEventId)
+    .map((task) => task.id);
+
+  await deleteGoogleCalendarForTaskIds(staleTaskIds);
   await prisma.deliveryTask.updateMany({
     where: {
       scheduleId: schedule.id,
       sourceKey: { notIn: [...desiredKeys] },
       active: true,
     },
-    data: { active: false },
+    data: {
+      active: false,
+      googleCalendarEventId: null,
+      googleCalendarHtmlLink: null,
+      googleCalendarSyncedAt: null,
+    },
   });
 
-  const activeCount = await prisma.deliveryTask.count({
+  const activeTasks = await prisma.deliveryTask.findMany({
     where: { scheduleId: schedule.id, active: true },
+    select: { id: true },
   });
+
+  await syncGoogleCalendarForTaskIds(activeTasks.map((task) => task.id));
+
+  const activeCount = activeTasks.length;
 
   return { scheduleId: schedule.id, taskCount: activeCount };
 }

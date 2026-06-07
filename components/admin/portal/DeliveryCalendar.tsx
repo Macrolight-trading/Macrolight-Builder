@@ -2,13 +2,49 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, type ReactNode, useState } from "react";
 import type { CalendarOccurrence } from "@/lib/delivery/calendar";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
+}
+
+function EventLink({
+  event,
+  className,
+  children,
+  title,
+}: {
+  event: CalendarOccurrence;
+  className: string;
+  children: ReactNode;
+  title?: string;
+}) {
+  if (event.projectHref) {
+    return (
+      <Link href={event.projectHref} className={className} title={title}>
+        {children}
+      </Link>
+    );
+  }
+
+  if (event.htmlLink) {
+    return (
+      <a
+        href={event.htmlLink}
+        target="_blank"
+        rel="noreferrer"
+        className={className}
+        title={title}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return <span className={className}>{children}</span>;
 }
 
 export default function DeliveryCalendar({
@@ -117,6 +153,10 @@ export default function DeliveryCalendar({
           <span className="w-3 h-3 rounded bg-amber-50 border border-amber-200" />
           Monthly recurring
         </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded bg-sky-50 border border-sky-200" />
+          Google Calendar event
+        </span>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -152,24 +192,28 @@ export default function DeliveryCalendar({
                       {day}
                     </p>
                     <ul className="space-y-1">
-                      {events.slice(0, 4).map((e) => (
-                        <li key={`${e.taskId}-${e.date}`}>
-                          <Link
-                            href={e.projectHref}
-                            className={`block rounded px-1 py-0.5 text-[10px] leading-tight truncate ${
-                              e.completed
-                                ? "bg-gray-100 text-gray-400 line-through"
-                                : e.kind === "RECURRING"
-                                  ? "bg-amber-50 text-amber-900 hover:bg-amber-100"
-                                  : "bg-violet-50 text-violet-900 hover:bg-violet-100"
-                            }`}
-                            title={`${e.userName ?? e.userEmail}: ${e.title}`}
-                          >
-                            {e.userName?.split(" ")[0] ?? e.userEmail.split("@")[0]}
-                            : {e.title}
-                          </Link>
-                        </li>
-                      ))}
+                      {events.slice(0, 4).map((e) => {
+                        const eventClass = e.completed
+                          ? "bg-gray-100 text-gray-400 line-through"
+                          : e.kind === "RECURRING"
+                            ? "bg-amber-50 text-amber-900 hover:bg-amber-100"
+                            : e.source === "google"
+                              ? "bg-sky-50 text-sky-900 hover:bg-sky-100"
+                              : "bg-violet-50 text-violet-900 hover:bg-violet-100";
+
+                        return (
+                          <li key={`${e.taskId}-${e.date}`}>
+                            <EventLink
+                              event={e}
+                              className={`block rounded px-1 py-0.5 text-[10px] leading-tight truncate ${eventClass}`}
+                              title={`${e.userName ?? e.userEmail}: ${e.title}`}
+                            >
+                              {e.userName?.split(" ")[0] ?? e.userEmail.split("@")[0]}
+                              : {e.title}
+                            </EventLink>
+                          </li>
+                        );
+                      })}
                       {events.length > 4 && (
                         <li className="text-[9px] text-gray-400 px-1">
                           +{events.length - 4} more
@@ -197,21 +241,29 @@ export default function DeliveryCalendar({
                 key={`${e.taskId}-${e.date}`}
                 className="flex items-center justify-between gap-2 text-sm"
               >
-                <Link
-                  href={e.projectHref}
+                <EventLink
+                  event={e}
                   className="text-violet-600 hover:text-violet-800 truncate"
                 >
-                  <span className="text-gray-500">{e.date}</span>{" "}
-                  {e.userName ?? e.userEmail} — {e.title}
-                </Link>
+                  <Fragment>
+                    <span className="text-gray-500">{e.date}</span>{" "}
+                    {e.userName ?? e.userEmail} — {e.title}
+                  </Fragment>
+                </EventLink>
                 <span
                   className={`shrink-0 text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ${
                     e.kind === "RECURRING"
                       ? "bg-amber-50 text-amber-700"
-                      : "bg-violet-50 text-violet-700"
+                      : e.source === "google"
+                        ? "bg-sky-50 text-sky-700"
+                        : "bg-violet-50 text-violet-700"
                   }`}
                 >
-                  {e.kind === "RECURRING" ? "Monthly" : "One-time"}
+                  {e.kind === "RECURRING"
+                    ? "Monthly"
+                    : e.source === "google"
+                      ? "Google"
+                      : "One-time"}
                 </span>
               </li>
             ))}
