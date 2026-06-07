@@ -128,7 +128,7 @@ export default function RootLayout({
             calls, otherwise tags may set cookies before the visitor has had
             a chance to choose. CookieConsent calls gtag('consent', 'update',
             ...) when the visitor accepts. */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTNP6PZVJE" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SSTFSXRNSB" />
         <script
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer = window.dataLayer || [];
@@ -141,7 +141,7 @@ gtag('consent', 'default', {
   wait_for_update: 500
 });
 gtag('js', new Date());
-gtag('config', 'G-KTNP6PZVJE');
+gtag('config', 'G-SSTFSXRNSB');
 gtag('config', 'AW-18165743878');`,
           }}
         />

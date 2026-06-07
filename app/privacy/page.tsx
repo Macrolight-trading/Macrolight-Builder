@@ -151,7 +151,7 @@ export default function PrivacyPage() {
             cookies and does not collect personally identifiable information.
             No consent is required for this. When you consent, we also load
             Google Analytics 4 via <code>gtag.js</code> (measurement ID{" "}
-            <code>G-KTNP6PZVJE</code>) to measure site usage, page views, and
+            <code>G-SSTFSXRNSB</code>) to measure site usage, page views, and
             traffic sources. GA4 may set first-party cookies on our domain and
             send pseudonymous usage data to Google. See{" "}
             <a
