@@ -89,7 +89,7 @@ export default function CookieConsent() {
         </p>
         <p className="mt-2 text-sm text-gray-600 leading-relaxed">
           We use essential cookies to run this site. With your consent, we
-          also use cookies to measure ad performance. See our{" "}
+          also use cookies to measure site usage and ad performance. See our{" "}
           <Link
             href="/privacy#cookies"
             className="text-violet-600 hover:underline font-medium"

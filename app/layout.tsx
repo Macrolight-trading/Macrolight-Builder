@@ -123,12 +123,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google Ads — Global site tag.
-            Consent Mode v2 default state MUST be set *before* the AW config
-            call, otherwise the tag may set advertising cookies before the
-            visitor has had a chance to choose. The CookieConsent component
-            calls gtag('consent', 'update', ...) when the visitor accepts. */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18165743878" />
+        {/* Google tag (gtag.js) — Ads + Analytics.
+            Consent Mode v2 default state MUST be set *before* any config
+            calls, otherwise tags may set cookies before the visitor has had
+            a chance to choose. CookieConsent calls gtag('consent', 'update',
+            ...) when the visitor accepts. */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTNP6PZVJE" />
         <script
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer = window.dataLayer || [];
@@ -141,6 +141,7 @@ gtag('consent', 'default', {
   wait_for_update: 500
 });
 gtag('js', new Date());
+gtag('config', 'G-KTNP6PZVJE');
 gtag('config', 'AW-18165743878');`,
           }}
         />

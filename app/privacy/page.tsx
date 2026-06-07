@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
 
-const LAST_UPDATED = "May 17, 2026";
+const LAST_UPDATED = "June 7, 2026";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -58,7 +58,9 @@ export default function PrivacyPage() {
           When you visit the Site we collect standard log data including IP
           address, browser type, pages visited, referring URL, and timestamps.
           We use Vercel Analytics for privacy-friendly, cookie-free traffic
-          measurement.
+          measurement. With your consent, we also use Google Analytics 4 (GA4)
+          to understand how visitors use the Site — for example, which pages
+          are viewed, how long sessions last, and general traffic sources.
         </p>
         <p className={P}>
           <strong className="text-gray-900">Cookies and similar
@@ -82,7 +84,8 @@ export default function PrivacyPage() {
           We do not sell or rent your personal information. We share
           information only with: (a) trusted service providers that help us
           operate the Site or deliver the Services (e.g., hosting, email,
-          analytics) under confidentiality obligations; (b) authorities when
+          analytics, advertising measurement) under confidentiality obligations;
+          (b) authorities when
           required by law; or (c) a successor entity in connection with a
           merger, acquisition, or sale of assets.
         </p>
@@ -146,15 +149,29 @@ export default function PrivacyPage() {
             <strong className="text-gray-900">Analytics.</strong> We use{" "}
             Vercel Analytics, a privacy-friendly product that does not use
             cookies and does not collect personally identifiable information.
-            No consent is required for this.
+            No consent is required for this. When you consent, we also load
+            Google Analytics 4 via <code>gtag.js</code> (measurement ID{" "}
+            <code>G-KTNP6PZVJE</code>) to measure site usage, page views, and
+            traffic sources. GA4 may set first-party cookies on our domain and
+            send pseudonymous usage data to Google. See{" "}
+            <a
+              className={A}
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Google&apos;s Privacy Policy
+            </a>{" "}
+            for how Google processes that data.
           </li>
           <li>
             <strong className="text-gray-900">Advertising and conversion
-            measurement.</strong> When you consent, we load the Google Ads tag
-            (<code>gtag.js</code>) so we can measure which campaigns produce
-            conversions and, where permitted, build remarketing audiences.
-            This sets cookies in the <code>.google.com</code>,{" "}
-            <code>.doubleclick.net</code>, and our own domain.
+            measurement.</strong> When you consent, we also configure the
+            Google Ads tag (<code>gtag.js</code>) so we can measure which
+            campaigns produce conversions and, where permitted, build
+            remarketing audiences. This sets cookies in the{" "}
+            <code>.google.com</code>, <code>.doubleclick.net</code>, and our
+            own domain.
           </li>
         </ul>
 
@@ -173,6 +190,12 @@ export default function PrivacyPage() {
             don&apos;t ask again. First-party, 12 months.
           </li>
           <li>
+            <code>_ga</code>, <code>_ga_*</code>, <code>_gid</code> —
+            analytics. Set by Google Analytics 4 when you consent, to
+            distinguish visitors and sessions. First-party, up to 24 months
+            (<code>_ga</code>) or 24 hours (<code>_gid</code>).
+          </li>
+          <li>
             <code>_gcl_au</code>, <code>_gcl_aw</code>, <code>_gcl_dc</code> —
             advertising. Set by Google Ads to measure ad clicks and
             conversions. First-party, up to 90 days.
@@ -187,9 +210,9 @@ export default function PrivacyPage() {
         <p className={P}>
           <strong className="text-gray-900">Your choices.</strong> When you
           first visit, you&apos;ll see a consent banner allowing you to accept
-          or reject non-essential cookies. Until you accept, advertising and
-          measurement tags run in Google&apos;s &quot;Consent Mode&quot;
-          denied state and do not set advertising cookies. You can change
+          or reject non-essential cookies. Until you accept, Google Analytics
+          and advertising tags run in Google&apos;s &quot;Consent Mode&quot;
+          denied state and do not set analytics or advertising cookies. You can change
           your choice at any time by clearing the{" "}
           <code>ml-cookie-consent</code> cookie in your browser, or by using
           your browser&apos;s built-in cookie controls (typically under

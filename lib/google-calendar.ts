@@ -1,6 +1,6 @@
 import { createSign } from "crypto";
 import prisma from "@/lib/prisma";
-import type { CalendarOccurrence } from "@/lib/delivery/calendar";
+import { isOccurrenceCompleted, type CalendarOccurrence } from "@/lib/delivery/calendar";
 
 type GoogleCalendarEventDate = {
   date?: string;
@@ -390,6 +390,28 @@ export async function listGoogleCalendarOccurrences(
   );
 
   const items = response.items ?? [];
+  const deliveryTaskIds = [
+    ...new Set(
+      items
+        .map((event) => event.extendedProperties?.private?.deliveryTaskId)
+        .filter((id): id is string => !!id),
+    ),
+  ];
+
+  const deliveryTasks =
+    deliveryTaskIds.length > 0
+      ? await prisma.deliveryTask.findMany({
+          where: { id: { in: deliveryTaskIds } },
+          select: {
+            id: true,
+            kind: true,
+            completedAt: true,
+            lastCompletedAt: true,
+            nextDueAt: true,
+          },
+        })
+      : [];
+  const tasksById = new Map(deliveryTasks.map((task) => [task.id, task]));
 
   return items
     .filter((event) => event.status !== "cancelled")
@@ -398,14 +420,16 @@ export async function listGoogleCalendarOccurrences(
       const date = parseGoogleEventDate(event.start) ?? "";
       const userEmail = meta.userEmail ?? "calendar@macrolight-builder.local";
       const userName = meta.userName || null;
-      const taskId = meta.deliveryTaskId ?? event.id;
+      const deliveryTaskId = meta.deliveryTaskId ?? null;
+      const task = deliveryTaskId ? tasksById.get(deliveryTaskId) : null;
+      const taskId = deliveryTaskId ?? event.id;
       const userId = meta.userId ?? "";
       const projectHref = meta.projectHref || null;
       const kind: CalendarOccurrence["kind"] =
         meta.kind === "RECURRING" ? "RECURRING" : "ONE_TIME";
       const recurrence: CalendarOccurrence["recurrence"] =
         meta.recurrence === "MONTHLY" ? "MONTHLY" : "NONE";
-      const completed = false;
+      const completed = task && date ? isOccurrenceCompleted(task, date) : false;
 
       return {
         taskId,
@@ -417,6 +441,7 @@ export async function listGoogleCalendarOccurrences(
         kind,
         date,
         completed,
+        completable: !!deliveryTaskId,
         projectHref,
         htmlLink: event.htmlLink ?? null,
         source: "google" as const,

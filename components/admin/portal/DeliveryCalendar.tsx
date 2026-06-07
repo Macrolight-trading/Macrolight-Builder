@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, type ReactNode, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useState } from "react";
 import type { CalendarOccurrence } from "@/lib/delivery/calendar";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -47,10 +47,107 @@ function EventLink({
   return <span className={className}>{children}</span>;
 }
 
+function occurrenceKey(event: CalendarOccurrence) {
+  return `${event.taskId}-${event.date}`;
+}
+
+function CalendarEventRow({
+  event,
+  busy,
+  onToggle,
+  compact = false,
+}: {
+  event: CalendarOccurrence;
+  busy: string | null;
+  onToggle: (event: CalendarOccurrence) => void;
+  compact?: boolean;
+}) {
+  const key = occurrenceKey(event);
+  const eventClass = event.completed
+    ? "bg-gray-100 text-gray-400 line-through"
+    : event.kind === "RECURRING"
+      ? "bg-amber-50 text-amber-900 hover:bg-amber-100"
+      : event.source === "google"
+        ? "bg-sky-50 text-sky-900 hover:bg-sky-100"
+        : "bg-violet-50 text-violet-900 hover:bg-violet-100";
+
+  if (compact) {
+    return (
+      <li className="flex items-start gap-0.5">
+        {event.completable !== false ? (
+          <input
+            type="checkbox"
+            checked={event.completed}
+            disabled={busy === key}
+            onChange={() => onToggle(event)}
+            aria-label={`Mark ${event.title} complete`}
+            className="mt-0.5 h-3 w-3 shrink-0 rounded border-gray-300 text-violet-600"
+          />
+        ) : (
+          <span className="mt-0.5 inline-block h-3 w-3 shrink-0" aria-hidden />
+        )}
+        <EventLink
+          event={event}
+          className={`block min-w-0 flex-1 rounded px-1 py-0.5 text-[10px] leading-tight truncate ${eventClass}`}
+          title={`${event.userName ?? event.userEmail}: ${event.title}`}
+        >
+          {event.userName?.split(" ")[0] ?? event.userEmail.split("@")[0]}
+          : {event.title}
+        </EventLink>
+      </li>
+    );
+  }
+
+  return (
+    <li className="flex items-center gap-2 text-sm">
+      {event.completable !== false ? (
+        <input
+          type="checkbox"
+          checked={event.completed}
+          disabled={busy === key}
+          onChange={() => onToggle(event)}
+          aria-label={`Mark ${event.title} complete`}
+          className="h-4 w-4 shrink-0 rounded border-gray-300 text-violet-600"
+        />
+      ) : (
+        <span className="inline-block h-4 w-4 shrink-0" aria-hidden />
+      )}
+      <EventLink
+        event={event}
+        className={`min-w-0 flex-1 truncate ${
+          event.completed
+            ? "text-gray-400 line-through"
+            : "text-violet-600 hover:text-violet-800"
+        }`}
+      >
+        <Fragment>
+          <span className="text-gray-500">{event.date}</span>{" "}
+          {event.userName ?? event.userEmail} — {event.title}
+        </Fragment>
+      </EventLink>
+      <span
+        className={`shrink-0 text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ${
+          event.kind === "RECURRING"
+            ? "bg-amber-50 text-amber-700"
+            : event.source === "google"
+              ? "bg-sky-50 text-sky-700"
+              : "bg-violet-50 text-violet-700"
+        }`}
+      >
+        {event.kind === "RECURRING"
+          ? "Monthly"
+          : event.source === "google"
+            ? "Google"
+            : "One-time"}
+      </span>
+    </li>
+  );
+}
+
 export default function DeliveryCalendar({
   year,
   month,
-  occurrences,
+  occurrences: initialOccurrences,
 }: {
   year: number;
   month: number;
@@ -58,6 +155,12 @@ export default function DeliveryCalendar({
 }) {
   const router = useRouter();
   const [syncing, setSyncing] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [occurrences, setOccurrences] = useState(initialOccurrences);
+
+  useEffect(() => {
+    setOccurrences(initialOccurrences);
+  }, [initialOccurrences]);
 
   const first = new Date(Date.UTC(year, month - 1, 1));
   const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
@@ -102,6 +205,34 @@ export default function DeliveryCalendar({
       alert("Could not sync schedules.");
     } finally {
       setSyncing(false);
+    }
+  }
+
+  async function toggleComplete(event: CalendarOccurrence) {
+    if (event.completable === false) return;
+
+    const key = occurrenceKey(event);
+    setBusy(key);
+    try {
+      const res = await fetch(`/api/admin/portal/delivery/tasks/${event.taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: !event.completed }),
+      });
+      if (!res.ok) throw new Error("Update failed");
+
+      setOccurrences((prev) =>
+        prev.map((item) =>
+          item.taskId === event.taskId && item.date === event.date
+            ? { ...item, completed: !event.completed }
+            : item,
+        ),
+      );
+      router.refresh();
+    } catch {
+      alert("Could not update task.");
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -192,28 +323,15 @@ export default function DeliveryCalendar({
                       {day}
                     </p>
                     <ul className="space-y-1">
-                      {events.slice(0, 4).map((e) => {
-                        const eventClass = e.completed
-                          ? "bg-gray-100 text-gray-400 line-through"
-                          : e.kind === "RECURRING"
-                            ? "bg-amber-50 text-amber-900 hover:bg-amber-100"
-                            : e.source === "google"
-                              ? "bg-sky-50 text-sky-900 hover:bg-sky-100"
-                              : "bg-violet-50 text-violet-900 hover:bg-violet-100";
-
-                        return (
-                          <li key={`${e.taskId}-${e.date}`}>
-                            <EventLink
-                              event={e}
-                              className={`block rounded px-1 py-0.5 text-[10px] leading-tight truncate ${eventClass}`}
-                              title={`${e.userName ?? e.userEmail}: ${e.title}`}
-                            >
-                              {e.userName?.split(" ")[0] ?? e.userEmail.split("@")[0]}
-                              : {e.title}
-                            </EventLink>
-                          </li>
-                        );
-                      })}
+                      {events.slice(0, 4).map((e) => (
+                        <CalendarEventRow
+                          key={occurrenceKey(e)}
+                          event={e}
+                          busy={busy}
+                          onToggle={(item) => void toggleComplete(item)}
+                          compact
+                        />
+                      ))}
                       {events.length > 4 && (
                         <li className="text-[9px] text-gray-400 px-1">
                           +{events.length - 4} more
@@ -237,35 +355,12 @@ export default function DeliveryCalendar({
         ) : (
           <ul className="space-y-2 max-h-64 overflow-y-auto">
             {occurrences.map((e) => (
-              <li
-                key={`${e.taskId}-${e.date}`}
-                className="flex items-center justify-between gap-2 text-sm"
-              >
-                <EventLink
-                  event={e}
-                  className="text-violet-600 hover:text-violet-800 truncate"
-                >
-                  <Fragment>
-                    <span className="text-gray-500">{e.date}</span>{" "}
-                    {e.userName ?? e.userEmail} — {e.title}
-                  </Fragment>
-                </EventLink>
-                <span
-                  className={`shrink-0 text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded ${
-                    e.kind === "RECURRING"
-                      ? "bg-amber-50 text-amber-700"
-                      : e.source === "google"
-                        ? "bg-sky-50 text-sky-700"
-                        : "bg-violet-50 text-violet-700"
-                  }`}
-                >
-                  {e.kind === "RECURRING"
-                    ? "Monthly"
-                    : e.source === "google"
-                      ? "Google"
-                      : "One-time"}
-                </span>
-              </li>
+              <CalendarEventRow
+                key={occurrenceKey(e)}
+                event={e}
+                busy={busy}
+                onToggle={(item) => void toggleComplete(item)}
+              />
             ))}
           </ul>
         )}

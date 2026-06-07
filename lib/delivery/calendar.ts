@@ -9,6 +9,7 @@ export type CalendarOccurrence = {
   recurrence?: "NONE" | "MONTHLY";
   date: string;
   completed: boolean;
+  completable?: boolean;
   projectHref?: string | null;
   htmlLink?: string | null;
   source?: "internal" | "google";
@@ -44,6 +45,19 @@ function addMonths(d: Date, months: number): Date {
   return x;
 }
 
+export function isOccurrenceCompleted(
+  task: Pick<
+    TaskRow,
+    "kind" | "completedAt" | "lastCompletedAt" | "nextDueAt"
+  >,
+  occurrenceDate: string,
+): boolean {
+  if (task.kind === "ONE_TIME") return !!task.completedAt;
+  if (!task.lastCompletedAt) return false;
+  const periodStart = startOfDay(new Date(`${occurrenceDate}T00:00:00.000Z`));
+  return startOfDay(task.lastCompletedAt).getTime() >= periodStart.getTime();
+}
+
 function expandRecurring(
   task: TaskRow,
   rangeStart: Date,
@@ -61,9 +75,7 @@ function expandRecurring(
 
   let guard = 0;
   while (cursor <= end && guard < 36) {
-    const completed =
-      !!task.lastCompletedAt &&
-      startOfDay(task.lastCompletedAt).getTime() >= cursor.getTime();
+    const completed = isOccurrenceCompleted(task, toDateKey(cursor));
     out.push({
       taskId: task.id,
       userId: task.userId,
@@ -75,6 +87,7 @@ function expandRecurring(
       recurrence: task.recurrence,
       date: toDateKey(cursor),
       completed,
+      completable: true,
       projectHref: `/admin/portal/projects/${task.userId}`,
       htmlLink: null,
       source: "internal",
@@ -107,6 +120,7 @@ export function expandTasksToCalendar(
           recurrence: task.recurrence,
           date: toDateKey(day),
           completed: !!task.completedAt,
+          completable: true,
           projectHref: `/admin/portal/projects/${task.userId}`,
           htmlLink: null,
           source: "internal",
