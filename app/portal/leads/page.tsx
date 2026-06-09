@@ -67,6 +67,15 @@ export default async function PortalLeadsPage() {
         ) : null}
       </div>
 
+      <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-5">
+        <p className="text-sm font-semibold text-amber-900">Under construction</p>
+        <p className="mt-1 text-sm text-amber-800">
+          Lead tracking is still being built. The stats and table below are a preview
+          and may be incomplete until website form submissions are fully wired into
+          your portal.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-8">
         <StatCard
           label="Total Leads"
@@ -94,15 +103,6 @@ export default async function PortalLeadsPage() {
           }
           helper="Based on any estimated lead values on file"
         />
-      </div>
-
-      <div className="mb-8 rounded-xl border border-violet-200 bg-violet-50 p-5">
-        <p className="text-sm font-semibold text-violet-900">How this page works</p>
-        <p className="mt-1 text-sm text-violet-800">
-          This first version shows leads assigned directly to your portal account.
-          As your site-to-CRM wiring is completed, new website submissions can be
-          routed here automatically.
-        </p>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">

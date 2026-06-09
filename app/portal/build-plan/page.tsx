@@ -76,7 +76,7 @@ export default async function BuildPlanPage() {
             ? "Add or remove services. We'll prorate the difference and charge or credit your card immediately."
             : hasRecommendation
               ? "We've pre-filled the plan we recommended after our meeting. Review, adjust anything you'd like, and send it back to confirm."
-              : "Pick a base plan and tick the services you want. We'll send back a quote — no charges happen here."}
+              : "Pick a base plan and tick the services you want. When you're ready, check out to start your subscription."}
         </p>
       </div>
 
@@ -93,8 +93,8 @@ export default async function BuildPlanPage() {
               Based on our intro call, we&apos;ve put together the base plan and
               add-ons below. Feel free to adjust anything — when you&apos;re happy
               with it, hit{" "}
-              <span className="font-semibold">Request quote</span> and we&apos;ll
-              confirm the final pricing.
+              <span className="font-semibold">Checkout now</span> to start your
+              subscription.
             </p>
             {recommendation?.notes && (
               <p className="mt-2 italic text-violet-900/90">

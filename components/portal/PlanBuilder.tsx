@@ -876,18 +876,10 @@ export default function PlanBuilder({
                     ? "Update subscription"
                     : "Checkout now"}
               </button>
-              {/* Secondary CTA: ask for a quote. Same data, no Stripe. */}
-              <button
-                onClick={submit}
-                disabled={submitting}
-                className="mt-2 w-full px-4 py-2 text-sm font-semibold text-violet-700 bg-white border border-violet-200 rounded-lg hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {submitting ? "Sending…" : "Request a quote instead"}
-              </button>
               <p className="mt-2 text-[11px] text-gray-400 text-center leading-relaxed">
                 {hasActiveSubscription
                   ? "We'll charge or credit only the net difference. Changes apply immediately."
-                  : "Checkout sends you to secure Stripe billing. Choosing a quote lets us review and confirm pricing first."}
+                  : "You'll be redirected to secure Stripe billing to complete your subscription."}
               </p>
             </>
           )}
