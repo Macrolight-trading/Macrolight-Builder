@@ -16,6 +16,7 @@ const nav = [
     requiresOnboarding: true,
   },
   { label: "My Project", href: "/portal/project", icon: TimelineIcon },
+  { label: "Leads", href: "/portal/leads", icon: LeadsIcon },
   { label: "Messages", href: "/portal/messages", icon: ChatIcon },
   { label: "Media", href: "/portal/media", icon: PhotoIcon },
   { label: "Billing", href: "/portal/billing", icon: CreditCardIcon },
@@ -291,6 +292,14 @@ function TimelineIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function LeadsIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5V4H2v16h5m10 0v-4a3 3 0 00-3-3H10a3 3 0 00-3 3v4m10 0H7m8-11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   );
 }

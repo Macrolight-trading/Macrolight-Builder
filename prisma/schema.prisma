@@ -206,6 +206,28 @@ model Note {
   @@map("notes")
 }
 
+/// Traceability + idempotency marker for audit handoffs forwarded from VisBoost.
+/// Keyed on the source `handoffId` so webhook retries never create duplicate
+/// CRM records, and on `clientId` so repeat handoffs for the same client attach
+/// to the same Lead. `leadId` is a plain scalar (no FK relation) to keep this
+/// model fully standalone and the schema change isolated.
+model VisboostHandoff {
+  id           String   @id @default(cuid())
+  handoffId    String   @unique
+  auditId      String?
+  clientId     String
+  serviceType  String?
+  overallScore Int?
+  leadId       String?
+  noteId       String?
+  activityId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([clientId])
+  @@map("visboost_handoffs")
+}
+
 model Tag {
   id    String        @id @default(cuid())
   name  String        @unique
