@@ -25,6 +25,10 @@ export interface BlogPost {
   coverAlt: string;
   /** Key into the `authors` record in lib/authors.ts */
   authorKey?: string;
+  faqs?: Array<{
+    question: string;
+    answer: string;
+  }>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -51,6 +55,36 @@ function requireString(slug: string, field: string, value: unknown): string {
 
 function optionalString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function optionalFaqs(
+  slug: string,
+  value: unknown
+): Array<{ question: string; answer: string }> | undefined {
+  if (value == null) return undefined;
+  if (!Array.isArray(value)) {
+    throw new Error(
+      `Blog post "${slug}" has invalid frontmatter field "faqs"; expected an array`
+    );
+  }
+
+  return value.map((item, index) => {
+    if (
+      typeof item !== "object" ||
+      item === null ||
+      typeof (item as { question?: unknown }).question !== "string" ||
+      typeof (item as { answer?: unknown }).answer !== "string"
+    ) {
+      throw new Error(
+        `Blog post "${slug}" has invalid FAQ entry at index ${index}`
+      );
+    }
+
+    return {
+      question: (item as { question: string }).question,
+      answer: (item as { answer: string }).answer,
+    };
+  });
 }
 
 function loadPosts(): BlogPost[] {
@@ -85,6 +119,7 @@ function loadPosts(): BlogPost[] {
       coverImage: requireString(slug, "coverImage", data.coverImage),
       coverAlt: requireString(slug, "coverAlt", data.coverAlt),
       content: content.trimStart(),
+      faqs: optionalFaqs(slug, data.faqs),
     });
   }
 

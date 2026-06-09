@@ -116,9 +116,25 @@ export default function BlogPostPage({
     wordCount: post.content.split(/\s+/).length,
   };
 
+  const faqSchema = post.faqs?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: post.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
   return (
     <>
       <JsonLd data={blogPostingSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
 
       {/* ── Article header ── */}
       <section className="relative isolate overflow-hidden bg-stone-50 border-b border-stone-200/70 pt-20 pb-14 sm:pt-28 sm:pb-16">
