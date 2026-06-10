@@ -1,0 +1,58 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="108" y1="90" x2="1092" y2="548" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C89433"/>
+    </linearGradient>
+    <linearGradient id="violetCyan" x1="180" y1="130" x2="1010" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="96" y1="72" x2="1104" y2="564" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1040" cy="118" r="154" fill="#1D4ED8" fill-opacity="0.14"/>
+  <circle cx="162" cy="526" r="176" fill="#06B6D4" fill-opacity="0.12"/>
+
+  <rect x="60" y="50" width="1080" height="530" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="122" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.8">MACROLIGHT BUILDER</text>
+  <text x="96" y="204" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Wix vs custom website</text>
+  <text x="96" y="264" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Which wins more local customers?</text>
+  <text x="96" y="318" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">A practical comparison for SEO, AEO, GEO, and lead generation.</text>
+
+  <rect x="96" y="366" width="450" height="154" rx="26" fill="#0B1220" stroke="#334155"/>
+  <rect x="96" y="366" width="450" height="44" rx="26" fill="#111827"/>
+  <text x="126" y="394" fill="#A78BFA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">WIX</text>
+  <text x="126" y="442" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Best for fast, simple launches</text>
+  <text x="126" y="476" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Lower setup friction</text>
+  <text x="126" y="504" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Fine for brochure-style sites</text>
+
+  <rect x="654" y="366" width="450" height="154" rx="26" fill="#0B1220" stroke="#334155"/>
+  <rect x="654" y="366" width="450" height="44" rx="26" fill="#111827"/>
+  <text x="684" y="394" fill="#67E8F9" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">CUSTOM</text>
+  <text x="684" y="442" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Best for growth-focused lead engines</text>
+  <text x="684" y="476" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• More control over pages and funnels</text>
+  <text x="684" y="504" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Higher ceiling for local SEO and conversion</text>
+
+  <rect x="620" y="130" width="438" height="174" rx="26" fill="#0B1220" stroke="#334155"/>
+  <text x="650" y="172" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Decision scoreboard</text>
+
+  <text x="650" y="214" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Launch speed</text>
+  <rect x="810" y="198" width="190" height="20" rx="10" fill="#1E293B"/>
+  <rect x="810" y="198" width="142" height="20" rx="10" fill="#A78BFA"/>
+
+  <text x="650" y="248" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">SEO / AEO / GEO ceiling</text>
+  <rect x="872" y="232" width="128" height="20" rx="10" fill="#1E293B"/>
+  <rect x="872" y="232" width="104" height="20" rx="10" fill="#67E8F9"/>
+
+  <text x="650" y="282" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Conversion flexibility</text>
+  <rect x="842" y="266" width="158" height="20" rx="10" fill="#1E293B"/>
+  <rect x="842" y="266" width="132" height="20" rx="10" fill="url(#violetCyan)"/>
+
+  <text x="96" y="556" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder comparison asset for blog use only</text>
+</svg>
