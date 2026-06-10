@@ -35,6 +35,9 @@ export default async function UsersPage() {
                   User
                 </th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">
                   Role
                 </th>
                 <th className="text-left px-5 py-3 font-semibold text-gray-500 text-xs uppercase tracking-wider">
@@ -53,6 +56,7 @@ export default async function UsersPage() {
                 id: string;
                 name: string | null;
                 email: string;
+                phone: string | null;
                 role: string;
                 plan: string;
                 createdAt: Date;
@@ -71,6 +75,15 @@ export default async function UsersPage() {
                         <p className="text-xs text-gray-400">{user.email}</p>
                       </div>
                     </div>
+                  </td>
+                  <td className="px-5 py-3.5 text-gray-600">
+                    {user.phone ? (
+                      <a href={`tel:${user.phone}`} className="text-blue-600 hover:underline">
+                        {user.phone}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
                   </td>
                   <td className="px-5 py-3.5">
                     <RoleSelector
