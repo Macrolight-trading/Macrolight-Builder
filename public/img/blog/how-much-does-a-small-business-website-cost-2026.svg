@@ -1,0 +1,53 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="90" y1="96" x2="1094" y2="532" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C89433"/>
+    </linearGradient>
+    <linearGradient id="violetCyan" x1="120" y1="126" x2="1050" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="72" y1="50" x2="1120" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1024" cy="110" r="146" fill="#1D4ED8" fill-opacity="0.14"/>
+  <circle cx="160" cy="520" r="170" fill="#06B6D4" fill-opacity="0.12"/>
+
+  <rect x="60" y="50" width="1080" height="530" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="122" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.8">MACROLIGHT BUILDER</text>
+  <text x="96" y="198" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700">How much does a small business</text>
+  <text x="96" y="254" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700">website cost in 2026?</text>
+  <text x="96" y="306" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="23">Real numbers for DIY builders, designer help, and growth-focused sites.</text>
+
+  <rect x="96" y="358" width="300" height="152" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="124" y="394" fill="#A78BFA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">DIY SOFTWARE</text>
+  <text x="124" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">$2.75–$39/mo</text>
+  <text x="124" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Builder platform only</text>
+  <text x="124" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Owner handles strategy and updates</text>
+
+  <rect x="450" y="358" width="300" height="152" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="478" y="394" fill="#67E8F9" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">DESIGNER HELP</text>
+  <text x="478" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">$500+</text>
+  <text x="478" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Squarespace says a pro designer can</text>
+  <text x="478" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">range to a couple thousand dollars</text>
+
+  <rect x="804" y="358" width="300" height="152" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="832" y="394" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">GROWTH SITE</text>
+  <text x="832" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Scope-driven</text>
+  <text x="832" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Service pages, city pages, SEO,</text>
+  <text x="832" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">tracking, conversion, ongoing edits</text>
+
+  <rect x="640" y="128" width="424" height="158" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="668" y="170" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">What changes the real cost?</text>
+  <text x="668" y="212" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="19">• Copywriting and service-page depth</text>
+  <text x="668" y="240" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="19">• Local SEO and city-page architecture</text>
+  <text x="668" y="268" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="19">• Forms, analytics, CRM handoff, support</text>
+
+  <text x="96" y="554" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder cost-framework graphic for blog use only</text>
+</svg>
