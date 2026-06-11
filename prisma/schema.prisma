@@ -228,6 +228,106 @@ model VisboostHandoff {
   @@map("visboost_handoffs")
 }
 
+/// Builder-side CMS integration record for one client site on the shared Strapi
+/// instance. The Builder app stays the source of truth for business/workflow
+/// data — this model holds ONLY the Strapi connection + pairing metadata needed
+/// to (a) point a client site at the right scoped data in a shared Strapi and
+/// (b) let sibling products (e.g. VisBoost) pair to the correct Builder site via
+/// an API key.
+///
+/// `userId` / `projectId` are plain scalars (no FK relation) to keep this model
+/// standalone and the schema change isolated — same approach as VisboostHandoff.
+///
+/// The pairing key is never stored in plaintext: we keep a sha256 `pairingKeyHash`
+/// for verification, a `pairingKeyPrefix` for O(1) lookup, and `pairingKeyLast4`
+/// for display. The plaintext is shown to the admin exactly once on generation.
+model StrapiSite {
+  id        String @id @default(cuid())
+  /// Builder User.id of the owning client (scalar, no relation).
+  userId    String?
+  /// Builder Project.id this site belongs to (scalar, no relation).
+  projectId String?
+
+  /// Human label shown in the admin UI.
+  name String
+  /// Stable site identifier used to scope this site's data inside the shared
+  /// Strapi instance. Unique across all Builder sites.
+  slug String @unique
+
+  /// Base URL of the (shared) Strapi instance serving this site.
+  strapiBaseUrl String?
+  /// Identifier of the Strapi space / project this site lives in, when the
+  /// shared instance is partitioned by space.
+  strapiSpaceId String?
+  /// Optional collection/content-type identifier scoped to this site.
+  strapiCollection String?
+
+  status StrapiSiteStatus @default(PENDING)
+
+  /// sha256(pairingKey). Verified with a constant-time compare on pairing.
+  pairingKeyHash      String?
+  /// Public lookup prefix of the pairing key (e.g. "mlsk_ab12cd34").
+  pairingKeyPrefix    String? @unique
+  /// Last 4 chars of the pairing key, for non-sensitive display.
+  pairingKeyLast4     String?
+  pairingKeyRotatedAt DateTime?
+
+  /// Last successful content sync against Strapi.
+  lastSyncedAt DateTime?
+  /// Last time an external app paired with this site via its key.
+  lastPairedAt DateTime?
+  /// Most recent error surfaced by a sync/pair attempt, for admin triage.
+  lastError String?
+  notes     String?
+
+  contentEntries StrapiContentEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([status])
+  @@map("strapi_sites")
+}
+
+/// Builder-managed shared content records for a site on the Strapi layer.
+///
+/// For this phase, only Macrolight Builder and VisBoost read these records.
+/// Future client-site repos can consume them later through a dedicated scoped
+/// read token + public/read-only route once their rendering contract is ready.
+model StrapiContentEntry {
+  id              String               @id @default(cuid())
+  siteId          String
+  sourceProvider  String               @default("visboost")
+  sourceRequestId String?
+  entryType       String               @default("blog_post")
+  title           String
+  slug            String
+  excerpt         String?
+  seoTitle        String?
+  seoDescription  String?
+  markdown        String
+  html            String
+  heroImage       Json?
+  metadata        Json?
+  visibility      StrapiContentVisibility @default(INTERNAL)
+  status          StrapiContentStatus  @default(DRAFT)
+  externalEntryId String?
+  publishedAt     DateTime?
+  lastSyncedAt    DateTime?
+  lastError       String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  site            StrapiSite           @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, slug])
+  @@unique([siteId, sourceRequestId])
+  @@index([siteId, status])
+  @@index([sourceProvider])
+  @@map("strapi_content_entries")
+}
+
 model Tag {
   id    String        @id @default(cuid())
   name  String        @unique
@@ -818,4 +918,28 @@ enum DeliveryTaskKind {
 enum DeliveryRecurrence {
   NONE
   MONTHLY
+}
+
+enum StrapiSiteStatus {
+  /// Record exists but no Strapi connection details yet.
+  UNLINKED
+  /// Connection/pairing configured, not yet confirmed live.
+  PENDING
+  /// Paired and serving content.
+  ACTIVE
+  /// Last sync/pair attempt errored — see lastError.
+  ERROR
+  /// Manually disabled; pairing requests are rejected.
+  DISABLED
+}
+
+enum StrapiContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum StrapiContentVisibility {
+  INTERNAL
+  FUTURE_SITE_READ
 }

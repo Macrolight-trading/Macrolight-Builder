@@ -6,7 +6,7 @@
     "clean:next": "node scripts/clean-next.js",
     "dev": "npm run clean:next && next dev",
     "build": "npm run clean:next && next build",
-    "start": "npm run clean:next && next start",
+    "start": "next start",
     "lint": "next lint",
     "data:cleanup-defaults": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" scripts/remove-default-data.ts",
     "postinstall": "prisma generate"

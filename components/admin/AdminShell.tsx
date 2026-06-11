@@ -35,6 +35,7 @@ const nav: NavItem[] = [
   { label: "Plan Options", href: "/admin/portal/plan-options", icon: PlanOptionsIcon },
   { label: "Plan Categories", href: "/admin/portal/plan-categories", icon: PlanCategoriesIcon },
   { label: "Plan Requests", href: "/admin/portal/plan-requests", icon: PlanRequestsIcon },
+  { label: "Strapi CMS", href: "/admin/portal/strapi", icon: StrapiIcon },
 ];
 
 export default function AdminShell({
@@ -341,6 +342,14 @@ function PlanRecommendationsIcon({ active }: { active: boolean }) {
   return (
     <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17.5 6.5 21 8 13.5 3 9l6.5-.5L12 2z" />
+    </svg>
+  );
+}
+
+function StrapiIcon({ active }: { active: boolean }) {
+  return (
+    <svg className={iconCls(active)} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7c0-1.1.9-2 2-2h12a2 2 0 012 2v3H4V7zm0 5h16v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5zm10-2v4" />
     </svg>
   );
 }
