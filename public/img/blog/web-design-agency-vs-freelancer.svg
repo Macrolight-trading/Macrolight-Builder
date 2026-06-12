@@ -1,0 +1,65 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agency versus freelancer web design comparison graphic showing strategy, speed, support, and local lead generation">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="80" y1="80" x2="1110" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C89433"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="60" y1="50" x2="1140" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1028" cy="120" r="150" fill="#2563EB" fill-opacity="0.14"/>
+  <circle cx="164" cy="520" r="172" fill="#06B6D4" fill-opacity="0.1"/>
+
+  <rect x="58" y="48" width="1084" height="534" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="118" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.6">MACROLIGHT BUILDER</text>
+  <text x="96" y="194" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700">Agency vs freelancer</text>
+  <text x="96" y="252" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700">Which hire fits your growth stage?</text>
+  <text x="96" y="308" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">A practical guide for local-service websites, search visibility, and lead generation.</text>
+
+  <rect x="96" y="360" width="434" height="156" rx="24" fill="#0F172A" stroke="#334155"/>
+  <rect x="96" y="360" width="434" height="44" rx="24" fill="#111827"/>
+  <text x="126" y="389" fill="#A78BFA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">FREELANCER</text>
+  <text x="126" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Best for smaller, clearer scopes</text>
+  <text x="126" y="474" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Fast, direct collaboration</text>
+  <text x="126" y="502" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Strong when strategy is already clear</text>
+
+  <rect x="670" y="360" width="434" height="156" rx="24" fill="#0F172A" stroke="#334155"/>
+  <rect x="670" y="360" width="434" height="44" rx="24" fill="#111827"/>
+  <text x="700" y="389" fill="#67E8F9" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">AGENCY</text>
+  <text x="700" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Best for multi-part growth systems</text>
+  <text x="700" y="474" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Better coverage across content, SEO, and dev</text>
+  <text x="700" y="502" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">• Better for ongoing support and iteration</text>
+
+  <rect x="620" y="124" width="450" height="178" rx="24" fill="#111827" stroke="#475569"/>
+  <text x="650" y="164" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Decision scoreboard</text>
+
+  <text x="650" y="208" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Launch speed</text>
+  <rect x="806" y="192" width="210" height="20" rx="10" fill="#1E293B"/>
+  <rect x="806" y="192" width="160" height="20" rx="10" fill="url(#violet)"/>
+
+  <text x="650" y="244" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Strategy coverage</text>
+  <rect x="826" y="228" width="190" height="20" rx="10" fill="#1E293B"/>
+  <rect x="826" y="228" width="150" height="20" rx="10" fill="url(#cyan)"/>
+
+  <text x="650" y="280" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Ongoing support</text>
+  <rect x="812" y="264" width="204" height="20" rx="10" fill="#1E293B"/>
+  <rect x="812" y="264" width="168" height="20" rx="10" fill="url(#gold)"/>
+
+  <circle cx="582" cy="438" r="34" fill="#22C55E"/>
+  <path d="M566 438L578 450L600 426" stroke="#0F172A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="96" y="548" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+</svg>
