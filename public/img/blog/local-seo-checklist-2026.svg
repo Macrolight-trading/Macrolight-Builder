@@ -1,0 +1,52 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0F172A"/>
+  <defs>
+    <linearGradient id="gold" x1="130" y1="90" x2="1080" y2="540" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C8A24B"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="80" y1="70" x2="1110" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1025" cy="120" r="155" fill="#1D4ED8" fill-opacity="0.16"/>
+  <circle cx="165" cy="530" r="170" fill="#0EA5E9" fill-opacity="0.11"/>
+
+  <rect x="60" y="48" width="1080" height="534" rx="32" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="126" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.6">MACROLIGHT BUILDER</text>
+  <text x="96" y="204" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">Local SEO checklist</text>
+  <text x="96" y="266" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">for service businesses</text>
+  <text x="96" y="322" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">15 practical fixes for rankings, trust, and more qualified local leads.</text>
+
+  <rect x="96" y="380" width="296" height="132" rx="22" fill="#0B1220" stroke="#334155"/>
+  <text x="122" y="420" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Visibility basics</text>
+  <text x="122" y="455" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">GBP completeness</text>
+  <text x="122" y="484" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">service pages + city pages</text>
+  <circle cx="348" cy="418" r="18" fill="#22C55E"/>
+  <path d="M340 418L346 424L357 412" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="452" y="380" width="296" height="132" rx="22" fill="#0B1220" stroke="#334155"/>
+  <text x="478" y="420" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Trust signals</text>
+  <text x="478" y="455" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">reviews near CTAs</text>
+  <text x="478" y="484" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">clear FAQs + proof blocks</text>
+  <circle cx="704" cy="418" r="18" fill="#22C55E"/>
+  <path d="M696 418L702 424L713 412" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="808" y="380" width="296" height="132" rx="22" fill="#0B1220" stroke="#334155"/>
+  <text x="834" y="420" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Technical hygiene</text>
+  <text x="834" y="455" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">indexable pages</text>
+  <text x="834" y="484" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">sitemap + mobile speed</text>
+  <circle cx="1060" cy="418" r="18" fill="#22C55E"/>
+  <path d="M1052 418L1058 424L1069 412" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="850" y="126" width="214" height="146" rx="24" fill="#111827" stroke="#475569"/>
+  <text x="876" y="166" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Checklist</text>
+  <text x="876" y="202" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Service clarity</text>
+  <text x="876" y="232" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Reviews visible</text>
+  <text x="876" y="262" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• CTA audit-ready</text>
+
+  <text x="96" y="558" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+</svg>
