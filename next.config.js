@@ -45,6 +45,11 @@ const nextConfig = {
         hostname: "*.private.blob.vercel-storage.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/**",
+      },
     ],
   },
 };

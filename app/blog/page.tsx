@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import { getAllBlogFeedEntries } from "@/lib/blog-feed";
 import JsonLd from "@/components/JsonLd";
 import Reveal from "@/components/motion/Reveal";
-import SoroBlogEmbed from "@/components/SoroBlogEmbed";
+import BlogPostCard from "@/components/blog/BlogPostCard";
 
 const ACCENT = "#C8A24B";
 
 export const metadata: Metadata = {
-  // Keyword-rich title (template appends " | Macrolight Builder").
   title: "Local Business Web Design Blog",
   description:
     "Actionable insights on web design, lead generation, and online growth for local businesses. Learn how to turn your website into a client acquisition system.",
@@ -35,7 +35,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
+export const revalidate = 300;
+
+export default async function BlogPage() {
+  const posts = await getAllBlogFeedEntries();
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -57,6 +61,13 @@ export default function BlogPage() {
       name: "Macrolight Builder",
       url: "https://macrolight-builder.com",
     },
+    blogPost: posts.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      url: `https://macrolight-builder.com/blog/${p.slug}`,
+      datePublished: p.date,
+      author: { "@type": "Organization", name: p.author },
+    })),
   };
 
   return (
@@ -64,9 +75,7 @@ export default function BlogPage() {
       <JsonLd data={breadcrumbSchema} />
       <JsonLd data={blogSchema} />
 
-      {/* ── Hero header ── */}
       <section className="relative isolate overflow-hidden bg-stone-50 border-b border-stone-200/70 pt-20 pb-16 sm:pt-28 sm:pb-20">
-        {/* Soft gold radial — matches the homepage hero backdrop */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
@@ -99,10 +108,17 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* ── Soro blog embed ── */}
       <section className="bg-stone-50 py-16 sm:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-          <SoroBlogEmbed />
+          {posts.length === 0 ? (
+            <p className="text-center text-sm text-stone-500">No articles published yet.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8">
+              {posts.map((post, i) => (
+                <BlogPostCard key={`${post.source}-${post.slug}`} post={post} index={i} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>
