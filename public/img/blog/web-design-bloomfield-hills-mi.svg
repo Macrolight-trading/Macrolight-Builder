@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bloomfield Hills web design illustration showing local visibility, trust signals, premium positioning, and mobile lead capture">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="74" y1="74" x2="1100" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C8A24B"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="62" y1="48" x2="1128" y2="586" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1038" cy="108" r="152" fill="#8B5CF6" fill-opacity="0.16"/>
+  <circle cx="160" cy="514" r="178" fill="#2563EB" fill-opacity="0.11"/>
+
+  <rect x="58" y="48" width="1084" height="534" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="118" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.6">MACROLIGHT BUILDER</text>
+  <text x="96" y="194" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700">Web design in Bloomfield Hills, MI</text>
+  <text x="96" y="254" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700">for businesses that need trust and leads</text>
+  <text x="96" y="312" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Local relevance, proof near the CTA, answer-first structure, and premium conversion paths.</text>
+
+  <rect x="96" y="362" width="320" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="126" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Premium positioning</text>
+  <text x="126" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Clear service fit and</text>
+  <text x="126" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">credibility in seconds</text>
+  <rect x="338" y="386" width="52" height="52" rx="14" fill="url(#violet)"/>
+  <path d="M352 412L364 424L381 399" stroke="#0F172A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="440" y="362" width="320" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="470" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Local trust signals</text>
+  <text x="470" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Reviews, credentials,</text>
+  <text x="470" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">and useful nearby pages</text>
+  <path d="M692 395C692 375 708 359 728 359C748 359 764 375 764 395C764 427 728 443 728 443C728 443 692 427 692 395Z" fill="url(#violet)"/>
+  <circle cx="728" cy="393" r="10" fill="#FFFFFF"/>
+
+  <rect x="784" y="362" width="320" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="814" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Fast mobile CTA</text>
+  <text x="814" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Call, quote, or book</text>
+  <text x="814" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">without extra friction</text>
+  <rect x="980" y="386" width="88" height="42" rx="21" fill="url(#gold)"/>
+  <text x="1024" y="413" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">AUDIT</text>
+
+  <rect x="850" y="118" width="226" height="164" rx="24" fill="#111827" stroke="#475569"/>
+  <text x="880" y="160" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Checklist</text>
+  <text x="880" y="198" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Bloomfield Hills fit</text>
+  <text x="880" y="230" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Proof near CTA</text>
+  <text x="880" y="262" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Better city pages</text>
+
+  <text x="96" y="548" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+</svg>
