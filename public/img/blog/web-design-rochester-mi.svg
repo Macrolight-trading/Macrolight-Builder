@@ -1,0 +1,55 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Web Design in Rochester, MI cover graphic</title>
+  <desc id="desc">Original Macrolight graphic showing Rochester local web design elements including service-page structure, reviews, FAQs, a local pin, and a free SEO audit CTA.</desc>
+  <rect width="1200" height="630" rx="32" fill="#08111F"/>
+  <rect x="28" y="28" width="1144" height="574" rx="28" fill="url(#bg)" stroke="#2A3657"/>
+  <circle cx="1040" cy="120" r="96" fill="#8B5CF6" fill-opacity="0.14"/>
+  <circle cx="1080" cy="512" r="130" fill="#06B6D4" fill-opacity="0.12"/>
+  <circle cx="150" cy="520" r="84" fill="#22C55E" fill-opacity="0.1"/>
+
+  <text x="70" y="118" fill="#93A4C8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="3">MACROLIGHT BUILDER</text>
+  <text x="70" y="206" fill="white" font-family="Inter, Arial, sans-serif" font-size="60" font-weight="800">Web Design in Rochester, MI</text>
+  <text x="70" y="262" fill="#D8E4FF" font-family="Inter, Arial, sans-serif" font-size="33" font-weight="600">Help local customers choose you faster</text>
+
+  <g opacity="0.98">
+    <rect x="70" y="326" width="366" height="214" rx="24" fill="#111A2F" stroke="#334155"/>
+    <text x="100" y="372" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Rochester page essentials</text>
+    <circle cx="112" cy="418" r="9" fill="#22C55E"/>
+    <text x="136" y="426" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Service + city headline</text>
+    <circle cx="112" cy="458" r="9" fill="#22C55E"/>
+    <text x="136" y="466" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Reviews near the CTA</text>
+    <circle cx="112" cy="498" r="9" fill="#22C55E"/>
+    <text x="136" y="506" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">FAQ answers for buyers</text>
+  </g>
+
+  <g>
+    <rect x="472" y="326" width="298" height="214" rx="24" fill="#0F172A" stroke="#3B82F6"/>
+    <text x="502" y="356" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Local service page</text>
+    <rect x="502" y="372" width="186" height="18" rx="9" fill="#1D4ED8" fill-opacity="0.72"/>
+    <rect x="502" y="404" width="226" height="16" rx="8" fill="#334155"/>
+    <rect x="502" y="432" width="198" height="16" rx="8" fill="#334155"/>
+    <rect x="502" y="462" width="148" height="34" rx="17" fill="#22C55E"/>
+    <text x="522" y="485" fill="#052E16" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="800">Free SEO audit</text>
+    <rect x="502" y="512" width="112" height="10" rx="5" fill="#64748B"/>
+    <rect x="622" y="512" width="86" height="10" rx="5" fill="#64748B"/>
+  </g>
+
+  <g>
+    <rect x="806" y="326" width="318" height="214" rx="24" fill="#111A2F" stroke="#475569"/>
+    <path d="M930 370C930 337.967 955.967 312 988 312C1020.03 312 1046 337.967 1046 370C1046 413 988 466 988 466C988 466 930 413 930 370Z" fill="#F97316"/>
+    <circle cx="988" cy="370" r="22" fill="#FFF7ED"/>
+    <g fill="#FACC15">
+      <path d="M850 372L856.5 385H871L859 393.5L864 407L850 398L836 407L841 393.5L829 385H843.5L850 372Z"/>
+      <path d="M886 372L892.5 385H907L895 393.5L900 407L886 398L872 407L877 393.5L865 385H879.5L886 372Z"/>
+      <path d="M922 372L928.5 385H943L931 393.5L936 407L922 398L908 407L913 393.5L901 385H915.5L922 372Z"/>
+    </g>
+    <text x="834" y="514" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Rochester • SEO • AEO • GEO</text>
+  </g>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#101827"/>
+    </linearGradient>
+  </defs>
+</svg>
