@@ -1,0 +1,45 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="32" fill="#07111F"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)" stroke="#24364F"/>
+  <text x="72" y="118" fill="#8B5CF6" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">MACROLIGHT BUILDER</text>
+  <text x="72" y="176" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">2026 Local Business</text>
+  <text x="72" y="228" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">Web Presence Audit</text>
+  <text x="72" y="274" fill="#B6C2D2" font-family="Arial, Helvetica, sans-serif" font-size="24">SEO + AEO + GEO checklist for Metro Detroit service businesses</text>
+
+  <rect x="72" y="324" width="310" height="188" rx="24" fill="#0F1B2F" stroke="#334155"/>
+  <rect x="396" y="324" width="310" height="188" rx="24" fill="#0F1B2F" stroke="#334155"/>
+  <rect x="720" y="324" width="310" height="188" rx="24" fill="#0F1B2F" stroke="#334155"/>
+
+  <text x="102" y="372" fill="#60A5FA" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">SEO</text>
+  <text x="426" y="372" fill="#34D399" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">AEO</text>
+  <text x="750" y="372" fill="#F59E0B" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">GEO</text>
+
+  <g fill="#E5EEF9" font-family="Arial, Helvetica, sans-serif" font-size="22">
+    <text x="102" y="416">• Service pages</text>
+    <text x="102" y="450">• City pages</text>
+    <text x="102" y="484">• Internal links</text>
+
+    <text x="426" y="416">• FAQ answers</text>
+    <text x="426" y="450">• Question-led H2s</text>
+    <text x="426" y="484">• Clear CTAs</text>
+
+    <text x="750" y="416">• Source-backed claims</text>
+    <text x="750" y="450">• Original assets</text>
+    <text x="750" y="484">• Author + dates</text>
+  </g>
+
+  <rect x="860" y="86" width="230" height="146" rx="20" fill="#111C31" stroke="#3B4F6A"/>
+  <text x="890" y="132" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Audit first:</text>
+  <g fill="#C9D6E5" font-family="Arial, Helvetica, sans-serif" font-size="20">
+    <text x="890" y="170">1. Homepage</text>
+    <text x="890" y="198">2. Core services</text>
+    <text x="890" y="226">3. Best city pages</text>
+  </g>
+
+  <defs>
+    <linearGradient id="bg" x1="84" y1="60" x2="1094" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1326"/>
+      <stop offset="1" stop-color="#101F37"/>
+    </linearGradient>
+  </defs>
+</svg>
