@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="96" y1="96" x2="1080" y2="534" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C89433"/>
+    </linearGradient>
+    <linearGradient id="violetCyan" x1="120" y1="132" x2="1050" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="60" y1="50" x2="1140" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1025" cy="112" r="148" fill="#1D4ED8" fill-opacity="0.14"/>
+  <circle cx="164" cy="522" r="172" fill="#06B6D4" fill-opacity="0.12"/>
+
+  <rect x="60" y="50" width="1080" height="530" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="122" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.8">MACROLIGHT BUILDER</text>
+  <text x="96" y="196" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700">Website redesign ROI</text>
+  <text x="96" y="250" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700">What is a new site actually worth?</text>
+  <text x="96" y="302" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="23">Simple math for traffic, conversion lift, lead value, and payback.</text>
+
+  <rect x="96" y="354" width="292" height="154" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="124" y="392" fill="#A78BFA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">TRAFFIC</text>
+  <text x="124" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">500 → 575</text>
+  <text x="124" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Modest lift from better local</text>
+  <text x="124" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">structure and cleaner intent matching</text>
+
+  <rect x="454" y="354" width="292" height="154" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="482" y="392" fill="#67E8F9" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">CONVERSION</text>
+  <text x="482" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">2.0% → 3.2%</text>
+  <text x="482" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Better CTA, trust proof, and</text>
+  <text x="482" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">shorter mobile friction to contact</text>
+
+  <rect x="812" y="354" width="292" height="154" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="840" y="392" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PAYBACK</text>
+  <text x="840" y="438" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">+$6.3k / month</text>
+  <text x="840" y="472" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">Worked example for a local</text>
+  <text x="840" y="498" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="18">service-business redesign model</text>
+
+  <rect x="658" y="128" width="406" height="156" rx="24" fill="#0B1220" stroke="#334155"/>
+  <text x="686" y="170" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700">ROI formula</text>
+  <text x="686" y="212" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="19">Additional leads × close rate × avg job value</text>
+  <text x="686" y="242" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="19">− redesign cost = practical payback signal</text>
+  <rect x="686" y="258" width="210" height="10" rx="5" fill="#1E293B"/>
+  <rect x="686" y="258" width="156" height="10" rx="5" fill="url(#violetCyan)"/>
+
+  <text x="96" y="554" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder ROI framework graphic for blog use only</text>
+</svg>
