@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DIY website vs done-for-you website comparison</title>
+  <desc id="desc">A simple Macrolight Builder cover graphic comparing lower software cost but higher owner time for DIY websites against higher upfront spend but lower owner workload for done-for-you websites.</desc>
+  <rect width="1200" height="630" rx="32" fill="#0B1120"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="#111827" stroke="#334155"/>
+  <text x="76" y="112" fill="#A5B4FC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Macrolight Builder</text>
+  <text x="76" y="182" fill="white" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="800">DIY Website vs Done-for-You</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="500">What really costs more for a busy local business owner?</text>
+
+  <rect x="76" y="286" width="490" height="232" rx="24" fill="#0F172A" stroke="#475569"/>
+  <text x="108" y="334" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800">DIY</text>
+  <text x="108" y="378" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Lower software spend</text>
+  <text x="108" y="420" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• Owner writes, edits, and maintains</text>
+  <text x="108" y="454" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• Slower if the business gets busy</text>
+  <text x="108" y="488" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• SEO structure depends on owner skill</text>
+
+  <rect x="634" y="286" width="490" height="232" rx="24" fill="#0F172A" stroke="#475569"/>
+  <text x="666" y="334" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800">Done-for-You</text>
+  <text x="666" y="378" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Higher spend, lower owner workload</text>
+  <text x="666" y="420" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• Strategy, copy, and structure handled</text>
+  <text x="666" y="454" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• Faster launch with less owner drag</text>
+  <text x="666" y="488" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="22">• Better fit when leads matter now</text>
+
+  <line x1="600" y1="298" x2="600" y2="506" stroke="#475569" stroke-dasharray="10 10"/>
+  <rect x="76" y="542" width="1048" height="24" rx="12" fill="#1E293B"/>
+  <rect x="76" y="542" width="420" height="24" rx="12" fill="#22C55E"/>
+  <rect x="704" y="542" width="420" height="24" rx="12" fill="#60A5FA"/>
+  <text x="76" y="602" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="20">Cheaper to buy</text>
+  <text x="920" y="602" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="20">Cheaper to own when time is scarce</text>
+</svg>
