@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Novi, Michigan web design illustration showing local visibility, trust signals, answer-first structure, and mobile lead capture">
+  <rect width="1200" height="630" fill="#0B1120"/>
+  <defs>
+    <linearGradient id="gold" x1="74" y1="74" x2="1100" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C8A24B"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="62" y1="48" x2="1128" y2="586" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1028" cy="110" r="150" fill="#2563EB" fill-opacity="0.15"/>
+  <circle cx="168" cy="518" r="176" fill="#06B6D4" fill-opacity="0.1"/>
+
+  <rect x="58" y="48" width="1084" height="534" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="118" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.6">MACROLIGHT BUILDER</text>
+  <text x="96" y="194" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Web design in Novi, MI</text>
+  <text x="96" y="254" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">for local businesses that want leads</text>
+  <text x="96" y="312" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Local relevance, trust signals, answer-first content, and frictionless mobile CTAs.</text>
+
+  <rect x="96" y="362" width="318" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="126" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Local visibility</text>
+  <text x="126" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Novi + nearby city</text>
+  <text x="126" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">signals tied to real services</text>
+  <path d="M348 396C348 376 364 360 384 360C404 360 420 376 420 396C420 428 384 444 384 444C384 444 348 428 348 396Z" fill="url(#cyan)"/>
+  <circle cx="384" cy="394" r="10" fill="#FFFFFF"/>
+
+  <rect x="440" y="362" width="318" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="470" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Trust signals</text>
+  <text x="470" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Reviews, proof, guarantees,</text>
+  <text x="470" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">and clear differentiation</text>
+  <circle cx="706" cy="398" r="18" fill="#22C55E"/>
+  <path d="M698 398L704 404L715 392" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="784" y="362" width="320" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="814" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Fast mobile CTA</text>
+  <text x="814" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Call, quote, or book</text>
+  <text x="814" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">without extra friction</text>
+  <rect x="980" y="386" width="88" height="42" rx="21" fill="url(#gold)"/>
+  <text x="1024" y="413" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">AUDIT</text>
+
+  <rect x="850" y="118" width="226" height="164" rx="24" fill="#111827" stroke="#475569"/>
+  <text x="880" y="160" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Checklist</text>
+  <text x="880" y="198" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Service clarity</text>
+  <text x="880" y="230" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Novi relevance</text>
+  <text x="880" y="262" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Reviews near CTA</text>
+
+  <text x="96" y="548" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+</svg>
