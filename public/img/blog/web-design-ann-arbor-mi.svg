@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ann Arbor, Michigan web design illustration showing local relevance, trust signals, answer-first content, and mobile lead capture">
+  <rect width="1200" height="630" fill="#08111F"/>
+  <defs>
+    <linearGradient id="gold" x1="86" y1="78" x2="1116" y2="566" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6D365"/>
+      <stop offset="1" stop-color="#C89A3D"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="60" y1="48" x2="1140" y2="586" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#17263A"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="1014" cy="112" r="148" fill="#2563EB" fill-opacity="0.16"/>
+  <circle cx="184" cy="522" r="178" fill="#06B6D4" fill-opacity="0.09"/>
+
+  <rect x="58" y="48" width="1084" height="534" rx="34" fill="url(#panel)" stroke="#334155"/>
+
+  <text x="96" y="118" fill="#E2E8F0" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="1.5">MACROLIGHT BUILDER</text>
+  <text x="96" y="194" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Web design in Ann Arbor, MI</text>
+  <text x="96" y="254" fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="700">for service businesses that need better leads</text>
+  <text x="96" y="312" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Local relevance, review trust, answer-first structure, and faster mobile conversion.</text>
+
+  <rect x="96" y="362" width="318" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="126" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Local relevance</text>
+  <text x="126" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Ann Arbor + nearby market</text>
+  <text x="126" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">signals tied to real services</text>
+  <path d="M348 396C348 376 364 360 384 360C404 360 420 376 420 396C420 428 384 444 384 444C384 444 348 428 348 396Z" fill="url(#blue)"/>
+  <circle cx="384" cy="394" r="10" fill="#FFFFFF"/>
+
+  <rect x="440" y="362" width="318" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="470" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Trust signals</text>
+  <text x="470" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Reviews, proof, and</text>
+  <text x="470" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">clear differentiation</text>
+  <circle cx="706" cy="398" r="18" fill="#22C55E"/>
+  <path d="M698 398L704 404L715 392" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="784" y="362" width="320" height="136" rx="24" fill="#0F172A" stroke="#334155"/>
+  <text x="814" y="404" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Fast mobile CTA</text>
+  <text x="814" y="440" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">Call, quote, or book</text>
+  <text x="814" y="468" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20">without extra friction</text>
+  <rect x="978" y="386" width="90" height="42" rx="21" fill="url(#gold)"/>
+  <text x="1023" y="413" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">AUDIT</text>
+
+  <rect x="852" y="118" width="224" height="164" rx="24" fill="#111827" stroke="#475569"/>
+  <text x="882" y="160" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Checklist</text>
+  <text x="882" y="198" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Service clarity</text>
+  <text x="882" y="230" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• Ann Arbor relevance</text>
+  <text x="882" y="262" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="22">• FAQ + review proof</text>
+
+  <text x="96" y="548" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+</svg>
