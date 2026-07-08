@@ -1,0 +1,53 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Web Design in West Bloomfield, MI cover graphic</title>
+  <desc id="desc">Original Macrolight graphic showing West Bloomfield local web design elements including a map pin, service page cards, review stars, FAQ blocks, and a free SEO audit CTA.</desc>
+  <rect width="1200" height="630" rx="32" fill="#09111F"/>
+  <rect x="28" y="28" width="1144" height="574" rx="28" fill="url(#bg)" stroke="#2B3558"/>
+  <circle cx="1032" cy="116" r="92" fill="#2563EB" fill-opacity="0.16"/>
+  <circle cx="1100" cy="508" r="118" fill="#06B6D4" fill-opacity="0.12"/>
+  <circle cx="154" cy="510" r="86" fill="#22C55E" fill-opacity="0.10"/>
+
+  <text x="70" y="118" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="3">MACROLIGHT BUILDER</text>
+  <text x="70" y="206" fill="white" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800">Web Design in West Bloomfield, MI</text>
+  <text x="70" y="264" fill="#D6E1FF" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="600">Turn local searches into better leads</text>
+
+  <g opacity="0.98">
+    <rect x="70" y="322" width="374" height="218" rx="24" fill="#11182D" stroke="#334155"/>
+    <text x="102" y="368" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">West Bloomfield page essentials</text>
+    <circle cx="112" cy="414" r="9" fill="#22C55E"/>
+    <text x="136" y="422" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Service + city headline</text>
+    <circle cx="112" cy="454" r="9" fill="#22C55E"/>
+    <text x="136" y="462" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Reviews near the CTA</text>
+    <circle cx="112" cy="494" r="9" fill="#22C55E"/>
+    <text x="136" y="502" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">FAQ answers for buyers</text>
+  </g>
+
+  <g>
+    <rect x="470" y="322" width="304" height="218" rx="24" fill="#0F172A" stroke="#3B82F6"/>
+    <text x="500" y="356" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Local service page</text>
+    <rect x="500" y="376" width="188" height="20" rx="10" fill="#1D4ED8" fill-opacity="0.7"/>
+    <rect x="500" y="412" width="232" height="16" rx="8" fill="#334155"/>
+    <rect x="500" y="440" width="204" height="16" rx="8" fill="#334155"/>
+    <rect x="500" y="474" width="150" height="34" rx="17" fill="#22C55E"/>
+    <text x="521" y="497" fill="#052E16" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="800">Free SEO audit</text>
+  </g>
+
+  <g>
+    <rect x="810" y="322" width="314" height="218" rx="24" fill="#11182D" stroke="#475569"/>
+    <path d="M932 368C932 335.967 957.967 310 990 310C1022.03 310 1048 335.967 1048 368C1048 411 990 464 990 464C990 464 932 411 932 368Z" fill="#F97316"/>
+    <circle cx="990" cy="368" r="22" fill="#FFF7ED"/>
+    <g fill="#FACC15">
+      <path d="M850 372L856.5 385H871L859 393.5L864 407L850 398L836 407L841 393.5L829 385H843.5L850 372Z"/>
+      <path d="M886 372L892.5 385H907L895 393.5L900 407L886 398L872 407L877 393.5L865 385H879.5L886 372Z"/>
+      <path d="M922 372L928.5 385H943L931 393.5L936 407L922 398L908 407L913 393.5L901 385H915.5L922 372Z"/>
+    </g>
+    <text x="846" y="510" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">West Bloomfield • SEO • AEO • GEO</text>
+  </g>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+</svg>
