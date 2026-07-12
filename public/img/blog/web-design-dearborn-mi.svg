@@ -1,0 +1,56 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Web Design in Dearborn, MI cover graphic</title>
+  <desc id="desc">Original Macrolight graphic showing Dearborn business districts, local web design essentials, answer-first structure, reviews, and a free SEO audit CTA.</desc>
+  <rect width="1200" height="630" rx="32" fill="#08111F"/>
+  <rect x="28" y="28" width="1144" height="574" rx="28" fill="url(#bg)" stroke="#2A3657"/>
+  <circle cx="1080" cy="114" r="104" fill="#22C55E" fill-opacity="0.12"/>
+  <circle cx="106" cy="520" r="88" fill="#F97316" fill-opacity="0.12"/>
+  <circle cx="980" cy="520" r="148" fill="#2563EB" fill-opacity="0.10"/>
+
+  <text x="70" y="118" fill="#93A4C8" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="3">MACROLIGHT BUILDER</text>
+  <text x="70" y="198" fill="white" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="800">Web Design in Dearborn, MI</text>
+  <text x="70" y="252" fill="#D8E4FF" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="600">Built for local trust, service clarity, and faster lead flow</text>
+
+  <g>
+    <rect x="70" y="318" width="360" height="222" rx="24" fill="#111A2F" stroke="#334155"/>
+    <text x="98" y="360" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Dearborn page essentials</text>
+    <circle cx="110" cy="406" r="9" fill="#22C55E"/>
+    <text x="134" y="414" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Service + city headline</text>
+    <circle cx="110" cy="448" r="9" fill="#22C55E"/>
+    <text x="134" y="456" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">Reviews near the CTA</text>
+    <circle cx="110" cy="490" r="9" fill="#22C55E"/>
+    <text x="134" y="498" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="24">FAQ answers for buyers</text>
+  </g>
+
+  <g>
+    <rect x="458" y="318" width="304" height="222" rx="24" fill="#0F172A" stroke="#3B82F6"/>
+    <text x="486" y="354" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Business districts</text>
+    <rect x="486" y="372" width="202" height="18" rx="9" fill="#1D4ED8" fill-opacity="0.72"/>
+    <text x="486" y="420" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22">East Downtown</text>
+    <text x="486" y="454" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="22">West Downtown</text>
+    <text x="486" y="488" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="22">Michigan Avenue fit</text>
+    <rect x="486" y="506" width="132" height="20" rx="10" fill="#F97316"/>
+  </g>
+
+  <g>
+    <rect x="792" y="318" width="332" height="222" rx="24" fill="#111A2F" stroke="#475569"/>
+    <path d="M924 378C924 346.52 949.52 321 981 321C1012.48 321 1038 346.52 1038 378C1038 420.8 981 473 981 473C981 473 924 420.8 924 378Z" fill="#F97316"/>
+    <circle cx="981" cy="378" r="20" fill="#FFF7ED"/>
+    <g fill="#FACC15">
+      <path d="M838 382L844.5 395H859L847 403.5L852 417L838 408L824 417L829 403.5L817 395H831.5L838 382Z"/>
+      <path d="M874 382L880.5 395H895L883 403.5L888 417L874 408L860 417L865 403.5L853 395H867.5L874 382Z"/>
+      <path d="M910 382L916.5 395H931L919 403.5L924 417L910 408L896 417L901 403.5L889 395H903.5L910 382Z"/>
+    </g>
+    <rect x="838" y="490" width="194" height="34" rx="17" fill="#22C55E"/>
+    <text x="935" y="513" text-anchor="middle" fill="#052E16" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="800">Free SEO audit</text>
+  </g>
+
+  <text x="70" y="576" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="18">Original Macrolight Builder asset for blog use only</text>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#101827"/>
+    </linearGradient>
+  </defs>
+</svg>
