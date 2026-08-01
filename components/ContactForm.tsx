@@ -490,7 +490,9 @@ export default function ContactForm({ industry }: ContactFormProps = {}) {
           We respond within one business day. No spam, ever.
         </p>
       </div>
-    </form>
+    
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
+      </form>
   );
 }
 

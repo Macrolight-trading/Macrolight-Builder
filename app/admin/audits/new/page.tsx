@@ -195,6 +195,8 @@ export default function NewAuditPage() {
             Don&apos;t close the tab.
           </p>
         )}
+      
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
       </form>
     </>
   );

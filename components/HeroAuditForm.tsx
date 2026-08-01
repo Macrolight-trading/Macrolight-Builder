@@ -139,6 +139,8 @@ export default function HeroAuditForm() {
         <p className="text-xs text-gray-400 pl-1.5">
           Free AI-powered website audit. Done in under 24 hours.
         </p>
+      
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
       </form>
     );
   }
@@ -213,6 +215,8 @@ export default function HeroAuditForm() {
       <p className="text-center text-xs text-gray-400">
         Free. No pitch. No credit card.
       </p>
-    </form>
+    
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
+      </form>
   );
 }

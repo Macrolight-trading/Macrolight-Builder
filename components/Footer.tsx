@@ -133,6 +133,8 @@ export default function Footer() {
           </p>
         </div>
       </div>
+    
+      <a href="/privacy#ccpa">Do Not Sell My Info</a>
     </footer>
   );
 }

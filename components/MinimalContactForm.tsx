@@ -157,6 +157,8 @@ export default function MinimalContactForm() {
       <p className="text-center text-xs text-gray-400">
         Free. No pitch. Done in under 24 hours.
       </p>
-    </form>
+    
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
+      </form>
   );
 }

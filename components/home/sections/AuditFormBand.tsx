@@ -137,7 +137,9 @@ export default function AuditFormBand() {
             <p className="mt-3 sm:mt-4 text-[0.7rem] sm:text-xs uppercase tracking-[0.18em] text-stone-400">
               Free · 24-hr turnaround · No sales follow-up unless you ask
             </p>
-          </form>
+          
+        <p className="text-xs text-gray-500 mt-2">By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
+      </form>
         </Reveal>
       </div>
     </section>

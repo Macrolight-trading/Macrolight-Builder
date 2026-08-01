@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Analytics } from "@vercel/analytics/next";
 import ChatWidget from "@/components/ChatWidget";
 import SiteShell from "@/components/SiteShell";
 import JsonLd from "@/components/JsonLd";
@@ -157,6 +156,7 @@ gtag('config', 'AW-18165743878');`,
         />
       </head>
       <body className="font-sans antialiased min-h-screen flex flex-col bg-white text-gray-900">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-white px-4 py-2 z-50">Skip to main content</a>
         <JsonLd data={organizationSchema} />
         <JsonLd data={websiteSchema} />
         <SessionProvider>
@@ -169,7 +169,6 @@ gtag('config', 'AW-18165743878');`,
           </SiteShell>
         </SessionProvider>
         <CookieConsent />
-        <Analytics />
         <Clarity />
       </body>
     </html>

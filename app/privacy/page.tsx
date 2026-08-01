@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
 
-const LAST_UPDATED = "June 7, 2026";
+const LAST_UPDATED = "August 1, 2026";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -249,6 +249,9 @@ export default function PrivacyPage() {
             bbayley50@gmail.com
           </a>
         </address>
+      
+        <p>Privacy requests: <a href="mailto:privacy@macrolight-builder.com">privacy@macrolight-builder.com</a>.</p>
+        <p>California residents have the right to know the categories of personal information collected, request deletion, and opt out of sale or sharing.</p>
       </article>
     </Section>
   );
