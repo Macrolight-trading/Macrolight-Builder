@@ -80,7 +80,16 @@ Your homepage, primary services, best city pages, and comparison pages should no
 Google's AI-features documentation says you do **not** need new machine-readable files, AI text files, or special schema.org structured data specifically to appear in AI features. That is useful because it keeps the focus where it belongs: publish useful pages that are technically accessible and easy to understand. ([Google Search Central](https://developers.google.com/search/docs/appearance/ai-features))
 
 ### 13. Is your site crawlable, indexable, and included in your XML sitemap?
-If an important service or location page is blocked, orphaned, or missing from your broader site structure, it is much harder for search engines to discover and evaluate it reliably.
+If an important service or location page is blocked, orphaned, or missing from your broader site structure, it is much harder for search engines to discover and evaluate it reliably. Google says a sitemap helps search engines discover URLs and crawl a site more efficiently, but it **does not guarantee** that every submitted URL will be crawled or indexed. ([Google Search Central: Learn about sitemaps](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview))
+
+A useful verification pass is:
+
+1. Open the live URL and confirm it is not intentionally marked `noindex`.
+2. Confirm the canonical URL points to the version you want indexed.
+3. Check that the URL appears in the XML sitemap and is linked from at least one relevant page.
+4. Use Google Search Console's URL Inspection report to verify what Google actually knows about the page instead of assuming that a sitemap submission equals indexing.
+
+This distinction matters for local SEO because a new city or service page can be well written and still fail to contribute if search engines cannot discover or index it. For a practical prioritization of the pages worth checking first, [get your free SEO audit](/contact) and use the report to separate visibility problems from conversion problems.
 
 ### 14. Is the site fast enough and clean enough to use on a phone?
 A slow, bloated mobile site does not just hurt user experience. It also makes local conversions harder because the visitor is often trying to solve a problem quickly. You do not need perfection; you do need a site that feels fast and friction-light.
