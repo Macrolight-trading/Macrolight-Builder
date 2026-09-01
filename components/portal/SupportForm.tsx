@@ -127,6 +127,7 @@ export default function SupportForm({
           {loading ? "Sending…" : "Send request"}
         </button>
       </div>
-    </form>
+    <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
   );
 }

@@ -436,7 +436,8 @@ export default function DentistsShowcase({ industry: _industry }: { industry: In
                     <button type="submit" className="dent-btn-teal" style={{ ...btn(C.teal, "#fff"), width: "100%", justifyContent: "center", padding: "15px", fontSize: "1rem" }}>
                       Request My Appointment →
                     </button>
-                  </form>
+                  <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
                 </>
               )}
             </div>

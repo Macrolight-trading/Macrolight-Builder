@@ -73,6 +73,7 @@ export default function ReviewFeedbackForm() {
       >
         {status === "sending" ? "Sending…" : "Send feedback"}
       </button>
-    </form>
+    <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
   );
 }

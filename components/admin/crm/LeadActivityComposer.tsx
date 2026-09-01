@@ -89,6 +89,7 @@ export default function LeadActivityComposer({
         placeholder="Add details (optional)"
         className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm min-h-[60px]"
       />
-    </form>
+    <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
   );
 }

@@ -466,7 +466,8 @@ export default function RestaurantsShowcase({ industry }: { industry: IndustryPr
                       For parties of 8+, please call us directly at{" "}
                       <a href="tel:6145550218" style={{ color: C.gold, textDecoration: "none" }}>(614) 555-0218</a>
                     </p>
-                  </form>
+                  <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
                 </>
               )}
             </div>

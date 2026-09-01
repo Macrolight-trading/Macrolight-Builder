@@ -332,7 +332,8 @@ function AuditForm() {
         <span className="font-medium text-stone-700">Free 20-point audit.</span>
         <span>Delivered to your inbox in under 24 hours.</span>
       </p>
-    </form>
+    <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
   );
 }
 

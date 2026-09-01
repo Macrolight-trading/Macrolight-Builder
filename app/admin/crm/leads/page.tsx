@@ -109,7 +109,8 @@ export default async function LeadsPage({
           placeholder="Search by name, email, or company…"
           className="w-full max-w-sm rounded-lg border border-gray-200 px-3.5 py-2 text-sm"
         />
-      </form>
+      <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         {leads.length === 0 ? (

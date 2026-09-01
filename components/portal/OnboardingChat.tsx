@@ -232,7 +232,8 @@ export default function OnboardingChat({
             Send
           </button>
         </div>
-      </form>
+      <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
     </div>
   );
 }

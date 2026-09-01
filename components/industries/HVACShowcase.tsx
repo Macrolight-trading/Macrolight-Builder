@@ -431,7 +431,8 @@ export default function HVACShowcase({ industry: _industry }: { industry: Indust
                     <button type="submit" className="hvac-btn-primary" style={{ ...btn(C.orange, "#fff"), width: "100%", justifyContent: "center", padding: "15px", fontSize: "1rem" }}>
                       Send My Request →
                     </button>
-                  </form>
+                  <p className="mt-2 text-xs text-gray-500">By submitting this form, you agree to our <a href="/privacy" className="underline">Privacy Policy</a>.</p>
+        </form>
                 </>
               )}
             </div>
