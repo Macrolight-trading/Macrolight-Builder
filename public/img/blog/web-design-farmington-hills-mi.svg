@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Web design in Farmington Hills, Michigan</title>
+  <desc id="desc">An original Macrolight Builder illustration showing a local map pin, service page structure, trust signals, and a lead capture path.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#164e63"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".98"/><stop offset="1" stop-color="#e0f2fe" stop-opacity=".96"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1020" cy="80" r="190" fill="#22d3ee" opacity=".12"/>
+  <circle cx="110" cy="570" r="230" fill="#38bdf8" opacity=".10"/>
+  <path d="M0 490 C260 390 350 600 570 490 S930 370 1200 480" fill="none" stroke="#67e8f9" stroke-opacity=".2" stroke-width="3"/>
+  <text x="80" y="110" fill="#67e8f9" font-family="Arial, sans-serif" font-size="26" font-weight="700" letter-spacing="3">MACROLIGHT BUILDER</text>
+  <text x="80" y="205" fill="#fff" font-family="Arial, sans-serif" font-size="64" font-weight="700">Farmington Hills</text>
+  <text x="80" y="270" fill="#bae6fd" font-family="Arial, sans-serif" font-size="38" font-weight="600">web design that earns trust</text>
+  <text x="80" y="330" fill="#e0f2fe" font-family="Arial, sans-serif" font-size="24">Local relevance • clear answers • more qualified leads</text>
+  <g transform="translate(770 145)">
+    <rect width="330" height="350" rx="24" fill="url(#card)"/>
+    <rect x="28" y="28" width="274" height="42" rx="10" fill="#bae6fd"/>
+    <circle cx="52" cy="49" r="9" fill="#0891b2"/><rect x="76" y="43" width="140" height="12" rx="6" fill="#0f172a" opacity=".75"/>
+    <circle cx="165" cy="132" r="48" fill="#cffafe" stroke="#0891b2" stroke-width="5"/>
+    <path d="M165 103c-18 0-32 14-32 32 0 25 32 58 32 58s32-33 32-58c0-18-14-32-32-32z" fill="#0e7490"/><circle cx="165" cy="135" r="11" fill="#fff"/>
+    <rect x="42" y="222" width="246" height="18" rx="9" fill="#0f172a" opacity=".85"/><rect x="42" y="253" width="190" height="12" rx="6" fill="#64748b" opacity=".7"/>
+    <rect x="42" y="292" width="112" height="34" rx="17" fill="#0891b2"/><text x="98" y="315" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="14" font-weight="700">GET FOUND</text>
+    <rect x="166" y="292" width="122" height="34" rx="17" fill="#0f172a"/><text x="227" y="315" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="14" font-weight="700">GET AUDIT</text>
+  </g>
+  <text x="80" y="555" fill="#a5f3fc" font-family="Arial, sans-serif" font-size="22">Metro Detroit local SEO + conversion strategy</text>
+</svg>
