@@ -32,7 +32,7 @@ export default function SiteShell({
   return (
     <>
       {navbar}
-      <main className="flex-1 relative">{children}</main>
+      <main id="main-content" className="flex-1 relative">{children}</main>
       {footer}
       {chatWidget}
     </>

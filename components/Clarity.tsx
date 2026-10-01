@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Script from "next/script";
 
 /**
@@ -23,7 +24,14 @@ import Script from "next/script";
  */
 export default function Clarity() {
   const projectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
-  if (!projectId) return null;
+  const [consented, setConsented] = useState(false);
+  useEffect(() => {
+    const sync = () => setConsented(window.localStorage.getItem("ml-cookie-consent") === "accepted");
+    sync();
+    window.addEventListener("ml-cookie-consent-updated", sync);
+    return () => window.removeEventListener("ml-cookie-consent-updated", sync);
+  }, []);
+  if (!projectId || !consented) return null;
 
   // Project ID is interpolated into a string literal in the official
   // snippet, so we validate it's a simple alphanumeric token to avoid

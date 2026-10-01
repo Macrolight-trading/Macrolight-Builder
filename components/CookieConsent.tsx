@@ -67,6 +67,7 @@ export default function CookieConsent() {
   function persist(choice: Choice) {
     try {
       window.localStorage.setItem(STORAGE_KEY, choice);
+      window.dispatchEvent(new Event("ml-cookie-consent-updated"));
     } catch {
       // Ignore — choice still applies for this session.
     }
