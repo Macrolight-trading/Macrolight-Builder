@@ -18,7 +18,7 @@ faqs:
   - question: "Do reviews actually help HVAC visibility?"
     answer: "Yes. Google says more reviews and positive ratings can help local ranking, and reviews also reduce buying friction when a homeowner is choosing between similar providers."
   - question: "How fast should an HVAC website load on mobile?"
-    answer: "Faster is better, especially because many HVAC searches happen on phones in urgent situations. A slow page adds friction before the call, form fill, or financing click ever happens."
+    answer: "Use Google's Core Web Vitals as a diagnostic baseline: aim for LCP under 2.5 seconds, INP under 200 milliseconds, and CLS under 0.1 at the 75th percentile. These are experience targets, not ranking guarantees, so pair them with clear service pages and a frictionless call path."
   - question: "How should an HVAC website work with Google Business Profile?"
     answer: "Your HVAC website and Google Business Profile should reinforce the same services, service areas, review themes, and next-step CTA so Google and homeowners get one consistent story about the business."
   - question: "Should an HVAC company use separate pages for each city it serves?"
@@ -161,6 +161,19 @@ That does not replace SEO. It strengthens it. Google's AI-features guidance says
 ## How should an HVAC company measure whether its website is working?
 
 **Measure search visibility and booked-demand signals separately.** Search Console can show whether the pages and queries you changed are gaining clicks, impressions, and average-position visibility; your call, estimate, booking, and form records show whether that visibility is producing qualified service demand. More impressions alone are not proof that the redesign generated revenue. ([Search Console Performance report](https://support.google.com/webmasters/answer/7042828))
+
+## What page-speed targets should an HVAC website use on mobile?
+
+**Use Google's Core Web Vitals as a diagnostic baseline: aim for LCP under 2.5 seconds, INP under 200 milliseconds, and CLS under 0.1 at the 75th percentile.** These are experience targets, not ranking guarantees, but they give an HVAC owner concrete thresholds to check before blaming content or publishing more city pages. ([Google Search Central: Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals))
+
+For an urgent HVAC visitor, speed is part of the conversion path. Check the pages that receive the most calls and quote requests first, especially the homepage, emergency-service page, and high-priority city pages. A practical review should look for:
+
+- A large hero image or video delaying the first useful content
+- Third-party chat, tracking, or booking scripts delaying interaction
+- Layout shifts caused by images, banners, or late-loading fonts
+- Tap targets and phone CTAs that become difficult to use on a small screen
+
+Treat the result as a prioritization signal rather than a promise: Google says page experience is one part of its systems, and a good Core Web Vitals result does not guarantee top rankings. Pair performance work with clear service intent, local relevance, review proof, and a frictionless call or request-service path. The [Local SEO Checklist for 2026](/blog/local-seo-checklist-2026) covers the wider technical and conversion pass.
 
 Before changing a page, record the URL, target service or city query, date range, clicks, impressions, click-through rate, and average position. After the page has been crawled and had time to gather data, compare those same visibility signals with calls, quote requests, booked estimates, and qualified forms from the matching period. Google says traffic from AI Overviews and AI Mode is included in the overall Search Console Performance report under the **Web** search type, so do not wait for a separate AI-only dashboard when evaluating an HVAC page. ([Google Search Central: AI features and your website](https://developers.google.com/search/docs/appearance/ai-features))
 
