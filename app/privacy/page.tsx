@@ -252,7 +252,18 @@ export default function PrivacyPage() {
       
         <p>Privacy requests: <a href="mailto:privacy@macrolight-builder.com">privacy@macrolight-builder.com</a>.</p>
         <p>California residents have the right to know the categories of personal information collected, request deletion, and opt out of sale or sharing.</p>
-      </article>
+          <section aria-labelledby="privacy-rights">
+          <h2 id="privacy-rights">Your privacy rights</h2>
+          <p>
+            You may request access to your personal data, rectification of inaccurate data,
+            erasure (deletion), portability of your data, or object to processing. California
+            residents may exercise the right to know the categories of personal information
+            collected, the right to delete personal information, and the right to opt out of
+            the sale or sharing of personal information. Contact privacy@macrolight-builder.com
+            for a privacy request.
+          </p>
+        </section>
+    </article>
     </Section>
   );
 }

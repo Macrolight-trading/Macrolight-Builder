@@ -1,0 +1,3 @@
+[mcp_servers.nano-banana]
+command = "node"
+args = ["c:/Users/Bradley/Documents/Macrolight Builder/nano-banana-mcp/server.js"]
