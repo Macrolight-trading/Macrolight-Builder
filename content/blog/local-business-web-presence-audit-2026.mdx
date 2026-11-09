@@ -2,7 +2,7 @@
 title: "Local SEO Audit for Service Businesses: SEO, AEO, and GEO Checklist"
 seoTitle: "Local SEO Audit Checklist for 2026"
 description: "Use this practical local SEO audit checklist to find the SEO, AEO, and GEO issues costing qualified leads. Built for Metro Detroit service businesses that want a clearer website and a prioritized next step."
-date: "2026-11-08"
+date: "2026-11-09"
 author: "Bradley Bayley"
 authorKey: "bradley"
 readTime: "10 min read"
@@ -211,7 +211,7 @@ That workflow supports GEO without treating “AI-written” as an optimization 
 
 StatCounter's current U.S. chart reports **Bing at 9.89% of search-engine market share for September 2026**, which is a practical reminder that your pages should be discoverable beyond one platform. Google also highlighted that visual search behavior is growing, saying **1.5 billion people** use Google Lens to search what they see every month. That does not mean every local business needs a visual-search strategy tomorrow, but it does mean search behavior is broader and more multimodal than many owners assume. ([StatCounter](https://gs.statcounter.com/search-engine-market-share/all/united-states-of-america), [Google Blog](https://blog.google/products/search/google-search-ai-mode-update/))
 
-For ChatGPT visibility, add one more access check to the audit: review `robots.txt` and confirm that your important public pages are not accidentally blocking **OAI-SearchBot**, the crawler OpenAI documents for ChatGPT search. Allowing the crawler is an eligibility check, not a promise that ChatGPT will cite or send traffic to the business. If the site intentionally blocks it, record that as a business decision; if the block is accidental, fix it before judging the site's GEO performance. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+For ChatGPT visibility, add one more access check to the audit: review `robots.txt` and confirm that your important public pages are not accidentally blocking **OAI-SearchBot**, the crawler OpenAI documents for ChatGPT search. OpenAI says OAI-SearchBot is used to surface websites in ChatGPT search features, and that sites opted out of it will not be shown in ChatGPT search answers, although they can still appear as navigational links. Allowing the crawler is an eligibility check, not a promise that ChatGPT will cite or send traffic to the business. If the site intentionally blocks it, record that as a business decision; if the block is accidental, fix it before judging the site's GEO performance. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
 
 Your technical audit should confirm:
 
@@ -222,6 +222,20 @@ Your technical audit should confirm:
 | Mobile usability | Calls, forms, and booking steps are easy on a phone |
 | Metadata | Titles and descriptions match the actual page intent |
 | Visual proof | Images, screenshots, or graphics support trust instead of acting as decoration |
+
+## What should a local business check in robots.txt for ChatGPT search?
+
+**Check that important public pages are not accidentally disallowed for OAI-SearchBot, then verify the same URLs are crawlable, indexable, and linked internally.** OpenAI documents OAI-SearchBot as the crawler used to surface websites in ChatGPT search features; opting out means a site will not be shown in ChatGPT search answers, though it may still appear as a navigational link. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+
+This is an access check, not a GEO ranking score. A practical review looks like this:
+
+1. Open the live `/robots.txt` file and look for a rule that blocks `OAI-SearchBot` or broadly blocks the pages you want discovered.
+2. Confirm the homepage, priority service pages, and useful city pages are public and do not carry an accidental `noindex` directive.
+3. Check canonical tags, sitemap inclusion, and internal links for the same URLs.
+4. Record intentional restrictions separately from accidental configuration errors.
+5. Measure qualified calls, forms, bookings, and quote requests after changes; crawler access alone does not guarantee a citation or lead.
+
+Do not confuse OpenAI's crawler controls. OpenAI says its OAI-SearchBot and GPTBot `robots.txt` settings are independent: a business can allow OAI-SearchBot for search visibility while choosing a different policy for GPTBot. Follow the current OpenAI documentation rather than copying a generic robots.txt snippet from an old SEO post. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
 
 ## What is the 13-point audit checklist Macrolight would use first?
 
