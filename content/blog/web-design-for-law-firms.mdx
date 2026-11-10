@@ -160,6 +160,20 @@ Google says a sitemap can help search engines discover URLs but does not guarant
 
 Use the [Local SEO Checklist for 2026](/blog/local-seo-checklist-2026) and [local business web presence audit](/blog/local-business-web-presence-audit-2026) to turn that check into a repeatable review. If the same technical or structural problems keep appearing, [get your free SEO audit](/contact) before investing in more pages.
 
+## What should a law firm check in robots.txt for ChatGPT search?
+
+**Check that important public practice-area, attorney, and location pages are not accidentally disallowed for OAI-SearchBot, then verify the same URLs are crawlable, indexable, and linked internally.** OpenAI documents OAI-SearchBot as the crawler used to surface websites in ChatGPT search features; opting out means a site will not be shown in ChatGPT search answers, although it may still appear as a navigational link. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+
+This is an access check, not a citation or lead guarantee. A practical law-firm review should:
+
+1. Open the live `/robots.txt` file and look for a rule that blocks `OAI-SearchBot` or broadly blocks the pages you want discovered.
+2. Confirm the homepage, priority practice-area pages, attorney bios, and useful city pages are public and do not carry an accidental `noindex` directive.
+3. Check canonical tags, sitemap inclusion, and internal links for those same URLs.
+4. Keep intentional crawler restrictions separate from configuration mistakes.
+5. Measure consultation calls, qualified intake forms, and booked consultations after changes; crawler access alone does not prove visibility or business impact.
+
+Do not copy a generic robots.txt snippet without checking the current policy. OpenAI says OAI-SearchBot and GPTBot controls are independent, so a firm can allow ChatGPT search crawling while making a separate choice about training-related crawling. For a page-level review of access, practice-area clarity, trust, and intake conversion, [request Macrolight's free 50-point SEO audit](/contact). ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+
 ## What does a high-performing law firm site look like in practice?
 
 **It looks specific, credible, and easy to act on.** It does not read like a generic agency template with the word “law” pasted into it.
