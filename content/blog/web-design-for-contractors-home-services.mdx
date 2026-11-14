@@ -2,7 +2,7 @@
 title: "Web Design for Contractors & Home Services: More Quote Requests, Less Phone Tag"
 seoTitle: "Contractor Website Design Guide"
 description: "What should a contractor website include to turn local searches into quote requests in 2026? Here is the practical blueprint for contractor and home-service web design, mobile performance, and local SEO."
-date: "2026-09-14"
+date: "2026-11-14"
 author: "Bradley Bayley"
 authorKey: "bradley"
 readTime: "10 min read"
@@ -19,8 +19,8 @@ faqs:
     answer: "Usually yes when the company truly offers those services in those markets and can make each page genuinely useful. Strong service and city pages are better than one vague catch-all page."
   - question: "Do reviews actually help contractor websites rank and convert?"
     answer: "Yes. Google says more reviews and positive ratings can help local ranking, and reviews also reduce hesitation when homeowners compare several providers before requesting a quote."
-  - question: "How does contractor web design support AEO and GEO, not just SEO?"
-    answer: "Question-led pages with direct answers, clear service and location details, and source-backed trust signals are easier for search engines and AI systems to interpret, summarize, and cite."
+  - question: "Should a contractor check OAI-SearchBot in robots.txt?"
+    answer: "Yes. If ChatGPT search visibility matters, check that important public pages are not accidentally blocked for OAI-SearchBot. OpenAI says this crawler helps surface websites in ChatGPT search, but allowing it does not guarantee citations or leads."
   - question: "What Core Web Vitals should a contractor website target?"
     answer: "Use Google's practical thresholds as a baseline: LCP under 2.5 seconds, INP under 200 milliseconds, and CLS under 0.1 at the 75th percentile. These do not guarantee rankings, but they help identify mobile friction."
 ---
@@ -155,6 +155,19 @@ If your headings sound like real questions — **"Do you serve Birmingham and ne
 Google's AI-features documentation says the best practices for SEO remain relevant for AI features and that there are **no additional requirements to appear in AI Overviews or AI Mode**. That matters because it keeps the strategy grounded in useful content, strong structure, and technical accessibility instead of gimmicks. It is also smart to think beyond one engine: StatCounter's June 2026 U.S. data put Bing at 8.73% of search-engine market share, which is a reminder that answer-driven visibility increasingly spans multiple ecosystems. ([Google Search Central](https://developers.google.com/search/docs/appearance/ai-features), [StatCounter](https://gs.statcounter.com/search-engine-market-share/all/united-states-of-america))
 
 If you want the broader retrieval playbook, read [How to Get Your Business Cited by ChatGPT and Google AI Overviews](/blog/how-to-get-cited-by-chatgpt-and-google-ai-overviews) and [Local SEO Checklist for 2026](/blog/local-seo-checklist-2026). For a page-by-page way to prioritize the fixes, use [The 2026 Local Business Web Presence Audit](/blog/local-business-web-presence-audit-2026) before deciding whether you need more content or a new site structure.
+
+## Should a contractor check OAI-SearchBot in robots.txt?
+
+**Yes—check that important public pages are not accidentally blocked for OAI-SearchBot if you want those pages eligible to appear in ChatGPT search answers.** OpenAI documents OAI-SearchBot as the crawler used to surface websites in ChatGPT search features. Allowing the crawler is an access check, not a promise of citations, rankings, traffic, or quote requests. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+
+For a contractor serving Birmingham, Royal Oak, Troy, or nearby Metro Detroit markets, review the homepage, priority service pages, city pages, and estimate funnel in this order:
+
+1. Open the live `robots.txt` file and check for a rule that blocks `OAI-SearchBot` or broadly blocks the URLs you want discovered.
+2. Confirm those pages are public, internally linked, canonicalized correctly, and not accidentally marked `noindex`.
+3. Keep the service, city, phone, and trust details consistent across the page and Google Business Profile.
+4. Measure the business outcome—qualified calls, quote requests, and booked estimates—rather than treating crawler access as proof of performance.
+
+OpenAI also documents OAI-SearchBot and GPTBot as separate controls. Do not copy a generic robots.txt snippet without checking the current policy and the business's actual distribution choices. If the configuration is unclear, [get your free SEO audit](/contact) to review crawlability alongside local relevance, service-page clarity, and quote conversion. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
 
 ## What does a high-performing contractor website look like in practice?
 
