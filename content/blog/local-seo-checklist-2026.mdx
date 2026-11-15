@@ -172,6 +172,18 @@ This distinction matters for local SEO because a new city or service page can be
 
 Use the same priority order in both ecosystems: verify the property, submit the XML sitemap, inspect your homepage and highest-value service or city URLs, and fix accidental `noindex`, canonical, or crawl problems. This is a distribution safeguard—not a shortcut around useful content, local relevance, or a strong conversion path. If your site and Google Business Profile also need to be aligned, use our [Google Business Profile optimization guide](/blog/google-business-profile-optimization-2026) alongside this checklist.
 
+### Is your `robots.txt` policy compatible with the AI-search surfaces you care about?
+**If ChatGPT search visibility matters, check that your public priority pages are not accidentally blocked for OAI-SearchBot.** OpenAI documents OAI-SearchBot as the crawler used to surface websites in ChatGPT search features, while GPTBot is a separate control. Allowing the crawler is an eligibility check—not a promise of citations, rankings, or leads. ([OpenAI: Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots))
+
+For the homepage, highest-value service pages, city pages, and comparison or cost guides, verify:
+
+- `robots.txt` does not broadly disallow OAI-SearchBot or the URLs you want discovered.
+- The pages are public, internally linked, canonicalized correctly, and not accidentally marked `noindex`.
+- The business name, services, coverage, and proof agree with the site's other local-business signals.
+- You measure qualified calls, quote requests, bookings, and forms instead of treating crawler access as an outcome.
+
+This is the GEO companion to the crawlability checks below. For the broader citation-readiness framework, see [how to get your business cited by ChatGPT and Google AI Overviews](/blog/how-to-get-cited-by-chatgpt-and-google-ai-overviews).
+
 ### 16. Is the site fast enough and clean enough to use on a phone?
 A slow, bloated mobile site does not just hurt user experience. It also makes local conversions harder because the visitor is often trying to solve a problem quickly. Use Google's current Core Web Vitals thresholds as a diagnostic baseline: **LCP under 2.5 seconds, INP under 200 milliseconds, and CLS under 0.1** at the 75th percentile. Google also says page experience is one part of its systems and that a good score does not guarantee top rankings, so review performance alongside useful content, search intent, local relevance, and CTA clarity. ([Google Search Central: Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals), [Google Search Central: Page experience](https://developers.google.com/search/docs/appearance/page-experience))
 
